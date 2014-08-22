@@ -291,46 +291,61 @@ $ssummary =~ s/\\'/\'/g;
 
     if ($emailx eq "yes") {
 	open (MAIL,"|$mailprog -t");
-	print MAIL "To: $final_list\n";
-	print MAIL "Bcc: usmaialeph\@umd.edu\n";
-	print MAIL "From: $from\n";
-	print MAIL "Subject: REPLY:$slug#$row_id:$ssummary\n";
-	print MAIL "This is a REPLY to the RxWeb listed below\n";
-	print MAIL "\n";
-        print MAIL "http:\/\/www.itd.umd.edu\/cgi-bin\/ALEPH16\/ALEPHsum_full.cgi?$row_id\n";
-	print MAIL "\n";
-        print MAIL " Original Report # : $row_id\n";
-        print MAIL "  Date of Report # : $sdate\n";
-        print MAIL "   Functional Group: $grp\n";
-        print MAIL "             Status: $sstatus\n";
-        print MAIL "\n";
+        print MAIL <<END;
+To: $final_list
+Bcc: usmaialeph\@umd.edu
+From: $from
+Subject: REPLY:$slug#$row_id:$ssummary
 
-$dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-$statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
-$sth_1 = $dbh_1->prepare($statement_1)
-    or die "Couldn't prepare the query: $sth_1->errstr";
+--------------------------------------------------------------------------------
+Please do not reply directly to this e-mail. 
+To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$row_id
+(If prompted, sign in with the standard USMAI username/password.)
+--------------------------------------------------------------------------------
 
-$rv_1 = $sth_1->execute
-    or die "Couldn't execute the query: $dbh_1->errstr";
+This is a REPLY to the RxWeb listed below:
 
-	  while (@row = $sth_1->fetchrow_array) {
-    $itd = $row[3];
-    &reply_type;
-    print MAIL " $reply_type submitted by: $row[0]\n";
-    print MAIL "       Date/Time submitted: $row[1]\n";
-    print MAIL "                     Reply: $row[2]\n";
-    print MAIL "\n";
-    print MAIL "-----------------------------------------------\n";
-}
-$rc_1 = $sth_1->finish;
-$rc_1 = $dbh_1->disconnect;
-	 print MAIL "\n";
-	 print MAIL "Original Report by: $sname\n";
-	 print MAIL "   Original Report: $stext\n";
-	 print MAIL "\n";
-         print MAIL "-----------------------------------------------\n";
-	 close (MAIL);
-	 $row_id = "";
+  Original Report # : $row_id
+   Date of Report # : $sdate
+    Functional Group: $grp
+              Status: $sstatus
+
+END
+
+        $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+        $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
+        $sth_1 = $dbh_1->prepare($statement_1)
+            or die "Couldn't prepare the query: $sth_1->errstr";
+
+        $rv_1 = $sth_1->execute
+            or die "Couldn't execute the query: $dbh_1->errstr";
+
+        while (@row = $sth_1->fetchrow_array) {
+            $itd = $row[3];
+            &reply_type;
+            print MAIL <<END;
+ $reply_type submitted by: $row[0]
+       Date/Time submitted: $row[1]
+                     Reply: $row[2]
+
+-----------------------------------------------
+END
+        }
+        $rc_1 = $sth_1->finish;
+        $rc_1 = $dbh_1->disconnect;
+
+        print MAIL <<END;
+
+Original Report by: $sname
+   Original Report: $stext
+
+-----------------------------------------------
+
+===================================================================================
+View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$row_id
+END
+        close (MAIL);
+        $row_id = "";
     } 
 }
 
