@@ -1,0 +1,87 @@
+digraph {
+    rankdir = LR
+    node [ shape = rect style = filled ]
+    edge [ arrowhead = open ]
+
+    // public pages
+    node [ fillcolor = "#ccffcc" ]
+    form [ label = "ALPEHform.cgi" fontname = "Times-Bold" ]
+    email_confirm [ label = "ALEPHemail.cgi" ]
+    // XXX: NON-PRODUCTION: ALEPHdate.cgi
+
+    // user pages requiring login (ALEPH16 directory)
+    node [ fillcolor = "#ffffcc" ]
+    user_summary [ label = "ALPEH16/ALEPHsum.cgi" ]
+    stats [ label = "ALEPH16/ALEPHstats.cgi" ]
+    search [ label = "ALEPH16/ALEPHsearch.cgi" ]
+    user_full [ label = "ALEPH16/ALEPHsum_full.cgi" ]
+    user_reply [ label = "ALEPH16/ALEPHreply.cgi" ]
+    user_reply_sent [ label = "ALEPH16/ALEPHxreply.cgi" ]
+
+    // staff-only pages (ALEPH16/ALEPH directory)
+    node [ fillcolor = "#ffcccc" ]
+    staff_summary
+        [ label = "ALEPH16/ALEPH/ALEPHform2.cgi" fontname = "Times-Bold" ]
+    staff_search [ label = "ALEPH16/ALEPH/ALEPHsearch.cgi" ]
+    staff_edit_record [ label = "ALEPH16/ALEPH/ALEPHurecord.cgi" ]
+    staff_edit_reply [ label = "ALEPH16/ALEPH/ALEPHureply.cgi" ]
+    // XXX: NON-PRODUCTION: ALEPHfulltext.cgi
+    /*
+    // XXX: isolated; no inbound links from the entry points
+    drecord [ label = "ALEPH16/ALEPH/ALEPHdrecord.cgi" ]
+    irecord [ label = "ALEPH16/ALEPH/ALEPHirecord.cgi" ]
+    recs [ label = "ALEPH16/ALEPH/ALEPHrecs.cgi" ]
+    update [ label = "ALEPH16/ALEPH/ALEPHupdate.cgi" ]
+    xrecord [ label = "ALEPH16/ALEPH/ALEPHxrecord.cgi" ]
+    */
+
+    // navigation
+    form -> user_summary [ label = "[Rx Web]" ]
+    user_summary -> stats [ label = "[RxWeb Statistics]" ]
+    user_summary -> search [ label = "[Basic Search]" ]
+    user_summary -> user_full [ label = "{report.id}" ]
+    search -> user_summary [ label = "[Rx Web Reports]" ]
+    user_full -> user_reply [ label = "Reply to This Report" ]
+    user_full -> form [ label = "[RxWeb Form]" ]
+    user_full -> user_summary [ label = "[RxWeb]" ]
+    user_reply_sent -> user_reply [ label = "Reply to This Report" ]
+    user_reply_sent -> form [ label = "[RxWeb Form]" ]
+    user_reply_sent -> user_summary [ label = "[RxWeb]" ]
+    staff_summary -> staff_search [ label = "[Basic Search]" ]
+    staff_summary -> user_full [ label = "{report.id}" ]
+    staff_summary -> staff_edit_record [ label = "(UPDATE)" ]
+    staff_search -> staff_summary [ label = "[RxWeb Maintenance Summaries]" ]
+    staff_edit_record -> user_summary [ label = "[RxWeb]" ]
+    staff_edit_record -> staff_summary [ label = "[RxWeb Update]" ]
+    staff_edit_record -> staff_edit_reply [ label = "edit" ]
+    staff_edit_reply -> staff_summary [ label = "[RxWeb Update]" ]
+    staff_edit_reply -> staff_edit_record 
+        [ label = "RxWeb Update Record {record.id}" ]
+    /*
+    // XXX: isolated
+    irecord -> drecord [ label = "(DELETE)" ]
+    xrecord -> drecord [ label = "(DELETE)" ]
+    xrecord -> staff_edit_record
+    */
+
+    // non-updating form submissions
+    search -> search [ label = "[Submit Query]" ]
+    user_summary -> user_full [ label = "[Go]" ]
+    user_full -> user_full [ label = "[Go]" ]
+    staff_search -> staff_search [ label = "[Submit Query]" ]
+    /*
+    // XXX: isolated
+    drecord -> xrecord [ label = "[No]" ]
+    */
+    
+    // POSTs that update the server
+    edge [ dir = both; arrowtail = tee ]
+    form -> email_confirm [ label = "[SUBMIT]" ]
+    user_reply -> user_reply_sent [ label = "[Submit Your Reply]" ]
+    staff_edit_record -> staff_summary [ label = "[submit]" ]
+    staff_edit_reply -> staff_edit_reply [ label = "[submit]" ]
+    /*
+    // XXX: isolated
+    drecord -> xrecord [ label = "[Yes]" ]
+    */
+}

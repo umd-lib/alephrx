@@ -1,0 +1,7 @@
+# ignore Vim backups and swapfiles
+*~
+*.swp
+# ignore other backup files
+*.bak
+# ignore the Apache password file
+passwd
