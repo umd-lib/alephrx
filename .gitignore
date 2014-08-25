@@ -5,3 +5,5 @@
 *.bak
 # ignore the Apache password file
 passwd
+# ignore the test emails directory
+t/mails
