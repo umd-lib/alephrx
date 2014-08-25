@@ -254,20 +254,28 @@ sub mail {
     open (MAIL,"|$mailprog -t");
     print MAIL "To: $final_email_list\n";
     print MAIL "Bcc: $bcc\n" if $bcc;
-    print MAIL "From: $from\n";
-    print MAIL "Subject: NEW:$slug#$id:$ssummary\n";
-    print MAIL "The following RxWeb can be viewed online at:\n"; 
-    print MAIL "http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$row_id\n";
-    print MAIL "\n";
-    print MAIL "Report Submitted by: $name_mail\n";
-    print MAIL "           Report# : $id\n";
-    print MAIL "    Date of problem: $date\n";
-    print MAIL "   Functional Group: $grp\n";
-    print MAIL "             Campus: $campus\n";
-    print MAIL "             Status: $status\n";
-    print MAIL "\n";
-    print MAIL "     Problem Report: $stext\n"; 
-    print MAIL "\n";
+    print MAIL <<END;
+From: $from
+Subject: NEW:$slug#$id:$ssummary
+
+--------------------------------------------------------------------------------
+Please do not reply directly to this e-mail. 
+To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+(If prompted, sign in with the standard USMAI username/password.)
+--------------------------------------------------------------------------------
+
+Report Submitted by: $name_mail
+           Report# : $id
+    Date of problem: $date
+   Functional Group: $grp
+             Campus: $campus
+             Status: $status
+
+     Problem Report: $stext 
+
+===================================================================================
+View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id     
+END
     close (MAIL);
 }
 
