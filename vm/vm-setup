@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# must run as root
+
+# The puppet manifest in manifests/simple.pp takes care of installing necessary
+# packages.
+
+# Apache vhost
+cp /vagrant/alephrx.conf /etc/httpd/conf.d
+
+# set up hosts file
+echo "127.0.0.1 alephrx.local" >> /etc/hosts
+
+# Set up an alias for perl because the Aleph Rx CGI scripts use
+# /usr/local/bin/perl in their shebang lines.
+[ -e /usr/local/bin/perl ] || ln -s `which perl` /usr/local/bin/perl
+
+# start servers
+# TODO: ensure they start automatically on server startup
+/etc/init.d/httpd start
+/etc/init.d/mysqld start
+
+# Create the Aleph Rx database and the user that accesses it.
+mysql -uroot < /vagrant/createdb.sql
+
+# mailing works out of the box, so no need to set anything up

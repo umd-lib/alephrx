@@ -7,3 +7,5 @@
 passwd
 # ignore the test emails directory
 t/mails
+# ignore Vagrant's housekeeping data
+.vagrant
