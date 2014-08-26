@@ -283,7 +283,7 @@ print "</TD>\n";
 print "<TD ALIGN=RIGHT WIDTH=\"5%\">\n";
 print "<B>Date:</B>\n";
 print "</TD><TD>\n";
-print "<input type=text wrap=\"physical\" name=phone size=10 value=\"$date\">\n";
+print "<input type=text wrap=\"physical\" name=date size=10 value=\"$date\">\n";
 print "</TD>\n";
 print "</TR>\n";
 print "<TR>\n";

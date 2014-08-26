@@ -1681,61 +1681,75 @@ sub bad_email_display {
 
 sub mail {
 
-#removes the escape from single quote
-$text =~ s/\\'/\'/g;
-$name =~ s/\\'/\'/g;
-$stext =~ s/\\'/\'/g;
-$sname =~ s/\\'/\'/g;
-$summary =~ s/\\'/\'/g;
-#$final_email_list =~ s/\\'/\'/g;
+    #removes the escape from single quote
+    $text =~ s/\\'/\'/g;
+    $name =~ s/\\'/\'/g;
+    $stext =~ s/\\'/\'/g;
+    $sname =~ s/\\'/\'/g;
+    $summary =~ s/\\'/\'/g;
+    #$final_email_list =~ s/\\'/\'/g;
 
-&bcc_create;
+    &bcc_create;
 
     if ($emailx eq "yes") {
-	open (MAIL,"|$mailprog -t");
-	print MAIL "To: $final_email_list\n";
+        open (MAIL,"|$mailprog -t");
+        print MAIL "To: $final_email_list\n";
         print MAIL "Bcc: $bcc\n" if $bcc;
-	print MAIL "From: $from\n";
-	print MAIL "Subject: RESPONSE:$slug#$id:$summary\n";
-	print MAIL "This is an ITD response to the RxWeb listed below\n";
-	print MAIL "\n";
-        print MAIL "http:\/\/www.itd.umd.edu\/cgi-bin\/ALEPH16\/ALEPHsum_full.cgi?$id\n";
-	print MAIL "\n";
-        print MAIL " Original Report # : $id\n";
-        print MAIL "  Date of Report # : $date\n";
-        print MAIL "   Functional Group: $grp\n";
-        print MAIL "             Status: $status\n";
-        print MAIL "\n";
+        print MAIL <<END;
+From: $from
+Subject: RESPONSE:$slug#$id:$summary
 
-$dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-$statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$id' ORDER BY date DESC";
-$sth_1 = $dbh_1->prepare($statement_1)
-    or die "Couldn't prepare the query: $sth_1->errstr";
+--------------------------------------------------------------------------------
+Please do not reply directly to this e-mail. 
+To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+(If prompted, sign in with the standard USMAI username/password.)
+--------------------------------------------------------------------------------
 
-$rv_1 = $sth_1->execute
-    or die "Couldn't execute the query: $dbh_1->errstr";
+This is a DSS response to the RxWeb listed below
 
-	  while (@row = $sth_1->fetchrow_array) {
-    $itd = $row[3];
-&reply_type;
-    print MAIL "  $reply_type submitted by: $row[0]\n";
-    print MAIL "              Date/Time: $row[1]\n";
-    print MAIL "               $reply_type: $row[2]\n";
-    print MAIL "\n";
-    print MAIL "-----------------------------------------------\n";
-}
+ Original Report # : $id
+  Date of Report # : $date
+   Functional Group: $grp
+             Status: $status
+
+END
+
+        $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+        $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$id' ORDER BY date DESC";
+        $sth_1 = $dbh_1->prepare($statement_1)
+            or die "Couldn't prepare the query: $sth_1->errstr";
+
+        $rv_1 = $sth_1->execute
+            or die "Couldn't execute the query: $dbh_1->errstr";
+
+        while (@row = $sth_1->fetchrow_array) {
+            $itd = $row[3];
+            &reply_type;
+            print MAIL <<END;
+  $reply_type submitted by: $row[0]
+              Date/Time: $row[1]
+               $reply_type: $row[2]
+
+-----------------------------------------------
+END
+        }
 
 
-$rc_1 = $sth_1->finish;
-$rc_1 = $dbh_1->disconnect;
+        $rc_1 = $sth_1->finish;
+        $rc_1 = $dbh_1->disconnect;
 
-&text;
-	 print MAIL "\n";
-	 print MAIL "Original Report by: $original_name\n";
-         print MAIL "   Original Report: $original_text\n";
-	 print MAIL "\n";
-         print MAIL "-----------------------------------------------\n";
-	 close (MAIL);
+        &text;
+        print MAIL <<END;
+
+Original Report by: $original_name
+   Original Report: $original_text
+
+-----------------------------------------------
+
+===================================================================================
+View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
+END
+        close (MAIL);
 #	 $row_id = "";
     } else {}
 }
