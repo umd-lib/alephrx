@@ -12,7 +12,7 @@ my $mail_dir = "$Bin/mails";
 
 my $out_file = sprintf '%s/mail_%s', $mail_dir, time;
 
-open my $fh, '>', $out_file;
+open my $fh, '>', $out_file or die "Cannot open $out_file";
 while (<>) {
     print $fh $_
 }
