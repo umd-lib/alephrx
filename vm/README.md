@@ -11,10 +11,19 @@ would like to use.
     # Edit using your favorite editor to replace __DB_NAME__, __DB_USER__, and
     # __DB_PASS__ with your chosen values...
 
-Initialize and provision the VM.
+Initialize and provision the VM. By default, the VM will get a private IP
+address of 192.168.33.10. If you want to change it, set the environment varaible
+`ALEPHRX_VM_IP` before calling `vagrant up` or `vagrant reload`.
 
     $ cd vm
     $ vagrant up
+    # To reload the VM using a different private IP address once
+    $ ALEPHRX_VM_IP=192.168.17.17 vagrant reload
+    # To use a custom IP without having to enter it any time you want to bring
+    # up or reload the VM, export the environment variable, either in your shell
+    # or in your .bash_profile
+    $ export ALEPHRX_VM_IP=192.168.17.17
+    $ vagrant reload
 
 SSH into the new vagrant server to complete the setup.
 
@@ -35,8 +44,9 @@ utility. Add users itdstaff, usmai, 3ALL, and maryland.
     # Enter password info...
     # Repeat for the remaining users
 
-Add a line to your workstation's */etc/hosts* file to map the VM's IP address to
-the name *alephrx.local*. For example:
+Add a line to your workstation's */etc/hosts* file to map the VM's private IP
+address to the name *alephrx.local*. For example, if you are using the default
+address:
 
     192.168.33.10  alephrx.local
 
@@ -48,8 +58,3 @@ On your workstation, in the alephrx working copy:
 
     $ mkdir -p t/mails
     $ sudo chmod 777 t/mails
-
-TODO
-----
-
-Make the private IP address and the development hostname configurable.
