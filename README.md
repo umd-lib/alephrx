@@ -11,8 +11,8 @@ following entry points:
 Codebase
 --------
 
-- **cgi-bin:** CGI scripts making up the bulk of the application
-- **docs:** Documentation
+- **[cgi-bin](cgi-bin):** CGI scripts making up the bulk of the application
+- **[docs](docs):** Documentation
     - [aleph16.mwb](docs/aleph16.mwb): MySQL Workbench diagram of the database
       schema
     - [aleph16.sql](docs/aleph16.sql): The database schema (table definitions)
@@ -26,5 +26,7 @@ Codebase
       submission connections between the CGI scripts
     - [scripts.md](docs/scripts.md): List of all the CGI scripts and their
       general functionality
-- **htdocs:** Static files used by the application
-- **t:** Test scripts and utilities
+- **[htdocs](htdocs):** Static files used by the application
+- **[t](t):** Test scripts and utilities
+- **[vm](vm):** Vagrantfile and related scripts to create and provision a development
+  VM environment
