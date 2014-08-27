@@ -15,10 +15,13 @@ echo "127.0.0.1 alephrx.local" >> /etc/hosts
 # /usr/local/bin/perl in their shebang lines.
 [ -e /usr/local/bin/perl ] || ln -s `which perl` /usr/local/bin/perl
 
-# start servers
-# TODO: ensure they start automatically on server startup
+# Start servers...
 /etc/init.d/httpd start
 /etc/init.d/mysqld start
+
+# ... and ensure they start automatically on server startup
+/sbin/chkconfig httpd on
+/sbin/chkconfig mysqld on
 
 # Create the Aleph Rx database and the user that accesses it.
 mysql -uroot < /vagrant/createdb.sql

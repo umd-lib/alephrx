@@ -52,6 +52,4 @@ On your workstation, in the alephrx working copy:
 TODO
 ----
 
-Ensure that httpd and mysqld start up every time the server reboots.
-
 Make the private IP address and the development hostname configurable.
