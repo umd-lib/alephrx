@@ -11,9 +11,12 @@ would like to use.
     # Edit using your favorite editor to replace __DB_NAME__, __DB_USER__, and
     # __DB_PASS__ with your chosen values...
 
-Initialize and provision the VM. By default, the VM will get a private IP
-address of 192.168.33.10. If you want to change it, set the environment varaible
-`ALEPHRX_VM_IP` before calling `vagrant up` or `vagrant reload`.
+Initialize and provision the VM. The first time you do this, vagrant will need
+to download and install the CentOS 5.1 box.
+
+By default, the VM will get a private IP address of 192.168.33.10. If you want
+to change it, set the environment variable `ALEPHRX_VM_IP` before calling
+`vagrant up` or `vagrant reload`.
 
     $ cd vm
     $ vagrant up
