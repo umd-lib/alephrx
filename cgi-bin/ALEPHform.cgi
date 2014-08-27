@@ -49,48 +49,48 @@ read ( STDIN, $form_info, $input_size );
 %input = ();
 
 foreach $pair (@input_pairs) {
-  #Convert plusses to spaces
+    #Convert plusses to spaces
     $pair =~ s/\+/ /g;
 
-  #Split the name and value pair
+    #Split the name and value pair
     ($name, $value) = split (/=/, $pair);
 
-  #Decode the URL encoded name and value
+    #Decode the URL encoded name and value
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
 
-  #Escape the single quotes
-   $value =~ s/\'/\\\'/g;
-  #Escape the backslashes
-  $value =~ s/\\/\\\\/g;
+    #Escape the single quotes
+    $value =~ s/\'/\\\'/g;
+    #Escape the backslashes
+    $value =~ s/\\/\\\\/g;
 
-  #Copy the name and value into the hash
+    #Copy the name and value into the hash
     $input{$name} = $value;
 }
 
 
 
 
-    $name = $query->param('name');
-    $id = $query->param('id');
-    $campus = $query->param('campus');
-    $status = $query->param('status');
-    $text = $query->param('text');
-    $summary = $query->param('summary');
-    $date = $query->param('date');
-    $grp = $query->param('grp');
-    $time = $query->param('time');
-    $hour = $query->param('ampm');
-    $phone = $query->param('phone');
-    $email = $query->param('email');
-    $email1 = $query->param('email1');
-    $email2 = $query->param('email2');
-    $email3 = $query->param('email3');
-    $email3a = $query->param('email3a');
-    $email4 = $query->param('email4');
-    $email4a = $query->param('email4a');
-    $cataloger = $query->param('cataloger');
-    $email_config = $query->param('email_config');
+$name = $query->param('name');
+$id = $query->param('id');
+$campus = $query->param('campus');
+$status = $query->param('status');
+$text = $query->param('text');
+$summary = $query->param('summary');
+$date = $query->param('date');
+$grp = $query->param('grp');
+$time = $query->param('time');
+$hour = $query->param('ampm');
+$phone = $query->param('phone');
+$email = $query->param('email');
+$email1 = $query->param('email1');
+$email2 = $query->param('email2');
+$email3 = $query->param('email3');
+$email3a = $query->param('email3a');
+$email4 = $query->param('email4');
+$email4a = $query->param('email4a');
+$cataloger = $query->param('cataloger');
+$email_config = $query->param('email_config');
 
 
 #to be used in email before single quotes are escaped
@@ -123,18 +123,18 @@ if ($query->param('submitted')) {
     &validate_form;
 
     if ($error_message ne "") {
-	&display_error;
+        &display_error;
 
     } elsif ($error_message eq "") {
-	&insert_data;
-	&recipient;
-	&email_config;
+        &insert_data;
+        &recipient;
+        &email_config;
 
     } 
-    } else {
-           &set_initial_values;
-            &print_form;
-       }
+} else {
+    &set_initial_values;
+    &print_form;
+}
 
 ##########################################
 # validates the data submitted on the form
@@ -142,41 +142,41 @@ if ($query->param('submitted')) {
 
 sub validate_form {
 
-   if ($match_rows gt '0') {
-	   $error_message .= "<LI>This is a duplicate record. <B>Procedure not allowed.</B> Clear the form and enter a new report. \n";
-   }
+    if ($match_rows gt '0') {
+        $error_message .= "<LI>This is a duplicate record. <B>Procedure not allowed.</B> Clear the form and enter a new report. \n";
+    }
 
 
-   if ($grp eq "") {
-	  $error_message .= "<LI>Please select a functional area.\n";
-   }
+    if ($grp eq "") {
+        $error_message .= "<LI>Please select a functional area.\n";
+    }
 
-   if ($campus eq "") {
-	  $error_message .= "<LI>Please select a campus.\n";
-   }
+    if ($campus eq "") {
+        $error_message .= "<LI>Please select a campus.\n";
+    }
 
-   if ($name eq "") {
-	  $error_message .= "<LI>Please enter a name.\n";
-   }
+    if ($name eq "") {
+        $error_message .= "<LI>Please enter a name.\n";
+    }
 
-   if ($phone =~ /\d\d\d-\d\d\d-\d\d\d\d/) {
-   } else {
-	   $error_message .= "<LI> Please enter a valid phone number.\n";
-   }
+    if ($phone =~ /\d\d\d-\d\d\d-\d\d\d\d/) {
+    } else {
+        $error_message .= "<LI> Please enter a valid phone number.\n";
+    }
 
-   if ($summary eq "") {
-	  $error_message .= "<LI>Please enter a summary.\n";
-   }
+    if ($summary eq "") {
+        $error_message .= "<LI>Please enter a summary.\n";
+    }
 
-   if ($text eq "") {
-	  $error_message .= "<LI>Please enter the text for your report.\n";
-   }
+    if ($text eq "") {
+        $error_message .= "<LI>Please enter the text for your report.\n";
+    }
 
-   if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $error_message .= "<LI>Please enter a valid email address.\n"; }
- 
-   
+    if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $error_message .= "<LI>Please enter a valid email address.\n"; }
+
+
 }						       						      
-   
+
 
 sub set_initial_values {
     $name = "";
@@ -338,47 +338,47 @@ sub print_page_end {
 sub insert_data {
 
 
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-$statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES 
-               ('$name','$grp','$campus','$phone','$email')";
+    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES 
+    ('$name','$grp','$campus','$phone','$email')";
 
-$query1 = $statement;
+    $query1 = $statement;
 
-$sth = $dbh->prepare($statement)
-	or die "Couldn't prepare the query: $sth->errstr";
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
 
-$rv = $sth->execute
-	or die "Couldn't execute the query: $dbh->errstr";
-
-
-
-$statement =   "SELECT last_insert_id()";
-
-$sth = $dbh->prepare($statement)
-    or die "Couldn't prepare the query: $sth->errstr";
-
-$rc = $sth->execute
-    or die "Couldn't execute the query: $dbh->errstr";
-
-$last = $sth->fetchrow_array; 
-
-
-$statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
-               (LAST_INSERT_ID(),NOW(),'$status','$summary','$text','$cataloger', NOW(), NOW(), '18.01')";
-
-$query2 = $statement;
-
-$sth = $dbh->prepare($statement)
-	or die "Couldn't prepare the query: $sth->errstr";
-
-$rv = $sth->execute
-	or die "Couldn't execute the query: $statement";
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
 
 
 
-$rc = $sth->finish;
-$rc = $dbh->disconnect
+    $statement =   "SELECT last_insert_id()";
+
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+
+    $rc = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
+
+    $last = $sth->fetchrow_array; 
+
+
+    $statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
+    (LAST_INSERT_ID(),NOW(),'$status','$summary','$text','$cataloger', NOW(), NOW(), '18.01')";
+
+    $query2 = $statement;
+
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $statement";
+
+
+
+    $rc = $sth->finish;
+    $rc = $dbh->disconnect
 
 }
 
@@ -389,51 +389,51 @@ $rc = $dbh->disconnect
 
 sub recipient {
 
-if ($grp eq "Circulation") {
-    $recipient = "usmaicoicircresill\@umd.edu";
-}
-if ($grp eq "Technical") {
-    $recipient = "usmaicoidesktech\@umd.edu";
-}
-if ($grp eq "Web OPAC") {
-    $recipient = "usmaicoiuserinter\@umd.edu";
-}
+    if ($grp eq "Circulation") {
+        $recipient = "usmaicoicircresill\@umd.edu";
+    }
+    if ($grp eq "Technical") {
+        $recipient = "usmaicoidesktech\@umd.edu";
+    }
+    if ($grp eq "Web OPAC") {
+        $recipient = "usmaicoiuserinter\@umd.edu";
+    }
 
-if ($grp eq "Cataloging") {
-    $recipient = "usmaicoicatdbmaint\@umd.edu";
-}
+    if ($grp eq "Cataloging") {
+        $recipient = "usmaicoicatdbmaint\@umd.edu";
+    }
 
-if ($grp eq "Serials") {
-    $recipient = "usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Serials") {
+        $recipient = "usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Acquisitions") {
-    $recipient = "usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Acquisitions") {
+        $recipient = "usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Item Maintenance") {
-    $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Item Maintenance") {
+        $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Reserves") {
-    $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
-}
+    if ($grp eq "Reserves") {
+        $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
+    }
 
-if ($grp eq "ILL") {
-    $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
-}
+    if ($grp eq "ILL") {
+        $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
+    }
 
-if ($grp eq "Change request") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "Change request") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 
-if ($grp eq "other") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "other") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 
-if ($grp eq "Report request") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "Report request") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 }
 
 
@@ -448,10 +448,10 @@ sub match{
 
     $statement = "select report.text, report.date, people.phone, people.name from report, people WHERE people.id = report.id and report.text = '$text' and report.date = NOW() and people.phone = '$phone' and people.name = '$name'";
 
-$sth = $dbh->prepare($statement)
-    or die "Couldn't prepare the query: $sth->errstr";
-$rv = $sth->execute
-    or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
 
     $match_rows = $sth->rows;
 
@@ -506,27 +506,27 @@ sub email_config {
 ###########################################################
 
 sub display_error {
- 
-	       print "Content-type:  text/html\n\n";
-	       print "<html>\n<head>\n";
-	       print "<title>RxWeb Web Report</title>\n";
-	       print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-	       print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-	       print "</head>\n<body>\n";
-	       print "<center>\n";
-	       print "<h1>RxWeb Web Report</h1>\n";
-	       print "<h3>You must complete the form</h3>\n";
-	       print "<table>\n";
-	       print "<tr><td align=\"left\">\n";
-	       print "<UL>\n" , $error_message, "</UL>\n";
-	       print "</td></tr></table>\n";
-	       print "<SCRIPT=\"Javascript\">\n";
-	       print "<form>\n";
-	       print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
-	       print "</form>\n";
-  	       print "</body>\n</html>\n";
-	   }
-	 
+
+    print "Content-type:  text/html\n\n";
+    print "<html>\n<head>\n";
+    print "<title>RxWeb Web Report</title>\n";
+    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
+    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
+    print "</head>\n<body>\n";
+    print "<center>\n";
+    print "<h1>RxWeb Web Report</h1>\n";
+    print "<h3>You must complete the form</h3>\n";
+    print "<table>\n";
+    print "<tr><td align=\"left\">\n";
+    print "<UL>\n" , $error_message, "</UL>\n";
+    print "</td></tr></table>\n";
+    print "<SCRIPT=\"Javascript\">\n";
+    print "<form>\n";
+    print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
+    print "</form>\n";
+    print "</body>\n</html>\n";
+}
+
 
 ##########################################################
 ## displays emailing options after form has been submitted
@@ -562,34 +562,3 @@ sub email_display {
     print "</TABLE><br>\n";
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

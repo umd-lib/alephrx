@@ -33,18 +33,18 @@ read ( STDIN, $form_info, $input_size );
 %input = ();
 
 foreach $pair (@input_pairs) {
-  #Convert plusses to spaces
-  $pair =~ s/\+/ /g;
+    #Convert plusses to spaces
+    $pair =~ s/\+/ /g;
 
-  #Split the name and value pair
-  ($name, $value) = split (/=/, $pair);
+    #Split the name and value pair
+    ($name, $value) = split (/=/, $pair);
 
-  #Decode the URL encoded name and value
-  $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
-  $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
+    #Decode the URL encoded name and value
+    $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
+    $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
 
-  #Copy the name and value into the hash
-  $input{$name} = $value;
+    #Copy the name and value into the hash
+    $input{$name} = $value;
 }
 $RECORD = $input{'record'};
 $p = $input{'page_increment'};
@@ -57,7 +57,7 @@ $value = $ENV{'QUERY_STRING'};
 &print_page_start;
 
 if ($error_message eq "")  {
-&get_full_record;
+    &get_full_record;
 } else {
     print "<B>$error_message</B>\n";
 }
@@ -72,29 +72,29 @@ if ($error_message eq "")  {
 
 sub fetchreply {
 
-$dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-$statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
-$sth_1 = $dbh_1->prepare($statement_1)
-    or die "Couldn't prepare the query: $sth_1->errstr";
+    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
+    $sth_1 = $dbh_1->prepare($statement_1)
+        or die "Couldn't prepare the query: $sth_1->errstr";
 
-$rv_1 = $sth_1->execute
-    or die "Couldn't execute the query: $dbh_1->errstr";
+    $rv_1 = $sth_1->execute
+        or die "Couldn't execute the query: $dbh_1->errstr";
 
-	  while (@rrow = $sth_1->fetchrow_array) {
+    while (@rrow = $sth_1->fetchrow_array) {
 
-    $rrow[2] = &escapeXml($rrow[2]);
-    $rrow[2] =~ s/\n/<BR>/g;
-    $itd = $rrow[3];
-    &reply_type;
-    print "<TR>\n";
-    print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"$font_color\">&nbsp;$reply_type from:&nbsp;\n";
-    print "$rrow[0]</TD>\n";
-    print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>Date:&nbsp;$rrow[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-    print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>&nbsp;$rrow[2]</TD>\n";
-    print "</TR>\n";
-}
-$rc_1 = $sth_1->finish;
-$rc_1 = $dbh_1->disconnect;
+        $rrow[2] = &escapeXml($rrow[2]);
+        $rrow[2] =~ s/\n/<BR>/g;
+        $itd = $rrow[3];
+        &reply_type;
+        print "<TR>\n";
+        print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"$font_color\">&nbsp;$reply_type from:&nbsp;\n";
+        print "$rrow[0]</TD>\n";
+        print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>Date:&nbsp;$rrow[1]&nbsp;&nbsp;&nbsp;</TD>\n";
+        print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>&nbsp;$rrow[2]</TD>\n";
+        print "</TR>\n";
+    }
+    $rc_1 = $sth_1->finish;
+    $rc_1 = $dbh_1->disconnect;
 }
 
 
@@ -105,32 +105,32 @@ $rc_1 = $dbh_1->disconnect;
 sub fetchresponse {
 
 
-$dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-$statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
+    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
 
-$sth_2 = $dbh_2->prepare($statement_2)
-    or die "Couldn't prepare the query: $sth_2->errstr";
+    $sth_2 = $dbh_2->prepare($statement_2)
+        or die "Couldn't prepare the query: $sth_2->errstr";
 
-$rv_2 = $sth_2->execute
-    or die "Couldn't execute the query: $dbh_2->errstr";
+    $rv_2 = $sth_2->execute
+        or die "Couldn't execute the query: $dbh_2->errstr";
 
-	  while (@row = $sth_2->fetchrow_array) {
-	      if ($row[0] eq "") {
-      }else{
+    while (@row = $sth_2->fetchrow_array) {
+        if ($row[0] eq "") {
+        }else{
 
-    $row[2] = &escapeXml($row[2]);
-    $row[2] =~ s/\n/<BR>/g;
+            $row[2] = &escapeXml($row[2]);
+            $row[2] =~ s/\n/<BR>/g;
 
-    print "<TR>\n";
-    print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-    print "$row[0]</TD>\n";
-    print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-    print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-    print "</TR>\n";
-}
-$rc_2 = $sth_2->finish;
-$rc_2 = $dbh_2->disconnect;
-}
+            print "<TR>\n";
+            print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
+            print "$row[0]</TD>\n";
+            print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
+            print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
+            print "</TR>\n";
+        }
+        $rc_2 = $sth_2->finish;
+        $rc_2 = $dbh_2->disconnect;
+    }
 }
 
 
@@ -142,7 +142,7 @@ sub response_get {
 
     if ($row[6] eq "") {
     }else{
-	$response = "*";
+        $response = "*";
     }
 }
 
@@ -152,20 +152,20 @@ sub response_get {
 
 sub get_reply {
 
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-$statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
-$sth_9 = $dbh->prepare($statement_9)
-    or die "Couldn't prepare the query: $sth_9->errstr";
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
+    $sth_9 = $dbh->prepare($statement_9)
+        or die "Couldn't prepare the query: $sth_9->errstr";
 
-$rv_9 = $sth_9->execute
-    or die "Couldn't execute the query: $dbh->errstr";
+    $rv_9 = $sth_9->execute
+        or die "Couldn't execute the query: $dbh->errstr";
 
-	  while (@srow = $sth_1->fetchrow_array) {
-	      $count++;
-	      $reply_count = '* ' x $count;
-}
-$rc_9 = $sth_9->finish;
-$rc_9 = $dbh->disconnect;
+    while (@srow = $sth_1->fetchrow_array) {
+        $count++;
+        $reply_count = '* ' x $count;
+    }
+    $rc_9 = $sth_9->finish;
+    $rc_9 = $dbh->disconnect;
 }
 
 
@@ -175,21 +175,21 @@ $rc_9 = $dbh->disconnect;
 
 sub print_page_start {
 
-print "Content-type: text/html\n\n";
-print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
-print "<a NAME=\"top\"></a>\n";
-print "<center>\n";
-print "<H1>RxWeb</H1>\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
-print "</FORM>\n";
-print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
-print "<B>Go to report # :</B>\n";
-print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
-print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
-print "</FORM>\n";
-print "<TABLE BORDER=0 CELLPADDING=2>\n";
+    print "Content-type: text/html\n\n";
+    print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
+    print "<a NAME=\"top\"></a>\n";
+    print "<center>\n";
+    print "<H1>RxWeb</H1>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
+    print "</FORM>\n";
+    print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
+    print "<B>Go to report # :</B>\n";
+    print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
+    print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
+    print "</FORM>\n";
+    print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
 }
 
@@ -200,10 +200,10 @@ print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
 sub print_page_end {
 
-print "</TABLE>\n";
-$rc = $sth->finish;
-$rc = $dbh->disconnect;
-print "</BODY>\n</HTML>\n";
+    print "</TABLE>\n";
+    $rc = $sth->finish;
+    $rc = $dbh->disconnect;
+    print "</BODY>\n</HTML>\n";
 
 } 
 
@@ -216,20 +216,20 @@ print "</BODY>\n</HTML>\n";
 
 sub record {
 
-if ($RECORD){
-    if ($RECORD eq ""){
-	$RECORD = "id";
+    if ($RECORD){
+        if ($RECORD eq ""){
+            $RECORD = "id";
+        }
     }
-}
 
-if ($RECORD) {
-    if ($RECORD =~ /\D/) {
-    $value = "id";
-}else{
-    $value = $RECORD;
+    if ($RECORD) {
+        if ($RECORD =~ /\D/) {
+            $value = "id";
+        }else{
+            $value = $RECORD;
 
-}
-}
+        }
+    }
 }
 
 
@@ -239,34 +239,34 @@ if ($RECORD) {
 
 sub get_full_record {
 
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-$statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = $value and people.id = report.id";
+    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = $value and people.id = report.id";
 
-$sth = $dbh->prepare($statement)
-    or die "Couldn't prepare the query: $sth->errstr";
-$rv = $sth->execute
-    or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
 
 
 
-while (@row = $sth->fetchrow_array) {
-print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
+    while (@row = $sth->fetchrow_array) {
+        print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
         print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
 
-    $row[8] = &escapeXml($row[8]);
+        $row[8] = &escapeXml($row[8]);
 #    $row[8] =~ s!\n!<BR>!g;
-    $row[8] =~ s/\n/<BR>/g;
+        $row[8] =~ s/\n/<BR>/g;
 
 
-         print "<TR>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Phone</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Date</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Func. Area</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
-         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
+        print "<TR>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Phone</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Date</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Func. Area</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
 #        print "<TR><TD COLSPAN=8><FONT SIZE=-1><B><i>&nbsp;</TD></TR>\n";
 
 
@@ -298,16 +298,16 @@ print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0
 #######################################################
 sub validate {
 
-   if ($RECORD =~ /\d/) {
-   $error_message = "";
+    if ($RECORD =~ /\d/) {
+        $error_message = "";
     }else{
-   $error_message = "You must enter a record number!";
-}
-   if ($value =~ /\d/) {
-   $error_message = "";
+        $error_message = "You must enter a record number!";
+    }
+    if ($value =~ /\d/) {
+        $error_message = "";
     }else{
-   $error_message = "You must enter a record number!";
-}
+        $error_message = "You must enter a record number!";
+    }
 
 }
 
@@ -320,10 +320,10 @@ sub validate {
 sub reply_type {
 
     if ($itd eq "yes") {
-	$reply_type = "ITD Response";
-	$font_color = "DarkRed";
+        $reply_type = "ITD Response";
+        $font_color = "DarkRed";
     } else {
-	$reply_type = "Reply";
+        $reply_type = "Reply";
         $font_color = "DarkBlue";
     } 
 }
@@ -338,4 +338,3 @@ sub escapeXml {
 
     return $text;
 }
-

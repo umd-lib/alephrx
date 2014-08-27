@@ -32,11 +32,11 @@ $submitted = $query->param('submitted');
 
 if ($submitted eq "yes") {
     if ($term eq "") {
-	&error;
+        &error;
     }else {
-    &do_search;
-    &display_results;
-}
+        &do_search;
+        &display_results;
+    }
 }
 
 &print_page_end;
@@ -92,33 +92,33 @@ sub print_page_end {
 sub do_search {
 
 #escape the single quotes
-$term =~ s/\'/\\\'/g;
-$field =~ s/\'/\\\'/g;
+    $term =~ s/\'/\\\'/g;
+    $field =~ s/\'/\\\'/g;
 
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
-
-
-if ($field eq "reply") {
-
-$statement =   "SELECT DISTINCT people.id, report.summary, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, people.grp, report.status from people, report, reply where (reply.text LIKE '%$term%' or reply.name LIKE '%$term%') and reply.parent_id = report.id and report.id = people.id order by people.id"; 
-
-} else {
-
-
-$statement =   "SELECT people.id, report.summary, DATE_FORMAT(date,'%m/%d/%y'), people.name, people.grp, report.status from people, report where $field LIKE '%$term%' and report.id = people.id order by people.id";
-}
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
 
 
+    if ($field eq "reply") {
 
-$sth = $dbh->prepare($statement)
-	 or die "Couldn't prepare the query: $sth->errstr";
+        $statement =   "SELECT DISTINCT people.id, report.summary, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, people.grp, report.status from people, report, reply where (reply.text LIKE '%$term%' or reply.name LIKE '%$term%') and reply.parent_id = report.id and report.id = people.id order by people.id"; 
 
-$rv = $sth->execute
-	 or die "Couldn't execute the query: $dbh->errstr";
+    } else {
 
-$nr = $sth->rows;
+
+        $statement =   "SELECT people.id, report.summary, DATE_FORMAT(date,'%m/%d/%y'), people.name, people.grp, report.status from people, report where $field LIKE '%$term%' and report.id = people.id order by people.id";
+    }
+
+
+
+
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
+
+    $nr = $sth->rows;
 
 }
 
@@ -130,30 +130,30 @@ $nr = $sth->rows;
 sub display_results {
 
     print "Your search found <B>$nr</B> records<BR><BR>\n";
- 
+
     if ($nr gt "0") {
-    print "<table border=\"0\" cellpadding=\"4\">\n";
-    print "<TR><TH ALIGN=LEFT>ID</td><TH ALIGN=LEFT>SUMMARY</TD><TH ALIGN=LEFT>DATE</TD><TH ALIGN=LEFT>NAME</TD><TH ALIGN=LEFT>GROUP</TD><TH ALIGN=LEFT>STATUS</TD></TR>\n";
+        print "<table border=\"0\" cellpadding=\"4\">\n";
+        print "<TR><TH ALIGN=LEFT>ID</td><TH ALIGN=LEFT>SUMMARY</TD><TH ALIGN=LEFT>DATE</TD><TH ALIGN=LEFT>NAME</TD><TH ALIGN=LEFT>GROUP</TD><TH ALIGN=LEFT>STATUS</TD></TR>\n";
 
-    print "<TR><TD></TD></TR>\n";
+        print "<TR><TD></TD></TR>\n";
 
-while (@row = $sth->fetchrow_array) {
+        while (@row = $sth->fetchrow_array) {
 
-   print "<TR bgcolor=\"#E9E9E9\"><TD>$row[0]&nbsp;</TD>\n";
-   print "<TD><a href=\"ALEPHsum_full.cgi?$row[0]\">$row[1]</a></td>\n";
-   print "<TD>$row[2]&nbsp;</TD>\n";
-   print "<TD>$row[3]&nbsp;</TD>\n";
-   print "<TD>$row[4]</TD>\n";
-   print "<TD>$row[5]</TD>\n";
-   print "</TR>\n";
+            print "<TR bgcolor=\"#E9E9E9\"><TD>$row[0]&nbsp;</TD>\n";
+            print "<TD><a href=\"ALEPHsum_full.cgi?$row[0]\">$row[1]</a></td>\n";
+            print "<TD>$row[2]&nbsp;</TD>\n";
+            print "<TD>$row[3]&nbsp;</TD>\n";
+            print "<TD>$row[4]</TD>\n";
+            print "<TD>$row[5]</TD>\n";
+            print "</TR>\n";
 
-      }
-   print "<TR><TD></TD></TR>\n";
-   print "</table>\n";
-}
+        }
+        print "<TR><TD></TD></TR>\n";
+        print "</table>\n";
+    }
 
-$rc = $sth->finish;
-$rc = $dbh->disconnect;
+    $rc = $sth->finish;
+    $rc = $dbh->disconnect;
 
 
 }
@@ -169,18 +169,3 @@ sub error {
     print "<b>You must enter a search term!</b>\n";
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

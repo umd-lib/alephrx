@@ -61,49 +61,49 @@ read ( STDIN, $form_info, $input_size );
 %input = ();
 
 foreach $pair (@input_pairs) {
-  #Convert plusses to spaces
+    #Convert plusses to spaces
     $pair =~ s/\+/ /g;
 
-  #Split the name and value pair
+    #Split the name and value pair
     ($name, $value) = split (/=/, $pair);
 
-  #Decode the URL encoded name and value
+    #Decode the URL encoded name and value
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
 
-  #Escape the single quotes
+    #Escape the single quotes
 #    $value =~ s/\'/\\\'/g;
-  #Escape the backslashes
+    #Escape the backslashes
 #  $value =~ s/\\/\\\\/g;
 
-  #Copy the name and value into the hash
+    #Copy the name and value into the hash
     $input{$name} = $value;
 }
 
 
 
 
-    $name = $query->param('name');
-    $id = $query->param('id');
-    $campus = $query->param('campus');
-    $status = $query->param('status');
-    $text = $query->param('text');
-    $summary = $query->param('summary');
-    $date = $query->param('date');
-    $grp = $query->param('grp');
-    $time = $query->param('time');
-    $hour = $query->param('ampm');
-    $phone = $query->param('phone');
-    $email = $query->param('email');
-    $email1 = $query->param('email1');
-    $email2 = $query->param('email2');
-    $email3 = $query->param('email3');
-    $email3a = $query->param('email3a');
-    $email4 = $query->param('email4');
-    $email4a = $query->param('email4a');
-    $email5 = $query->param('email5');
-    $cataloger = $query->param('cataloger');
-    $email_config = $query->param('email_config');
+$name = $query->param('name');
+$id = $query->param('id');
+$campus = $query->param('campus');
+$status = $query->param('status');
+$text = $query->param('text');
+$summary = $query->param('summary');
+$date = $query->param('date');
+$grp = $query->param('grp');
+$time = $query->param('time');
+$hour = $query->param('ampm');
+$phone = $query->param('phone');
+$email = $query->param('email');
+$email1 = $query->param('email1');
+$email2 = $query->param('email2');
+$email3 = $query->param('email3');
+$email3a = $query->param('email3a');
+$email4 = $query->param('email4');
+$email4a = $query->param('email4a');
+$email5 = $query->param('email5');
+$cataloger = $query->param('cataloger');
+$email_config = $query->param('email_config');
 
 
 #to be used in email before single quotes are escaped
@@ -134,20 +134,20 @@ if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
 
-    if ($email_config = "yes") {
-	&Check_Email;
-	if ($email_check gt 1) {
-	    &bad_email_display;
-	} else {
-	    &recipient;
-	    &slug;
-	    &email_options;
-	    &display_record;
-	    if ($email_count > 0) {
-	    &mail;
-	}
+if ($email_config = "yes") {
+    &Check_Email;
+    if ($email_check gt 1) {
+        &bad_email_display;
+    } else {
+        &recipient;
+        &slug;
+        &email_options;
+        &display_record;
+        if ($email_count > 0) {
+            &mail;
+        }
     }
-    }
+}
 
 
 sub print_page_start {
@@ -175,62 +175,62 @@ sub print_page_end {
 sub display_record {
 
 
-print "Content-type: text/html\n\n";
-print "<HTML>\n<HEAD>\n<TITLE>RxWeb  Reports Summaries</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-print "<FORM ACTION=\"\/cgi-bin\/ALEPH16\/ALEPHsum.cgi\" METHOD=\"post\">\n";
-print "<center>\n";
-print "<H1>ALEPH Reports</H1>\n";
-print "<FONT SIZE=+1 COLOR=\"#FF0000\">You have submitted report number #$id</FONT>\n";
-print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='\/cgi-bin\/ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
-print "<TABLE BORDER=0 CELLPADDING=2>\n";
+    print "Content-type: text/html\n\n";
+    print "<HTML>\n<HEAD>\n<TITLE>RxWeb  Reports Summaries</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<FORM ACTION=\"\/cgi-bin\/ALEPH16\/ALEPHsum.cgi\" METHOD=\"post\">\n";
+    print "<center>\n";
+    print "<H1>ALEPH Reports</H1>\n";
+    print "<FONT SIZE=+1 COLOR=\"#FF0000\">You have submitted report number #$id</FONT>\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='\/cgi-bin\/ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
+    print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
 
-$statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = '$id' and people.id = report.id";
+    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = '$id' and people.id = report.id";
 
-$sth = $dbh->prepare($statement)
-    or die "Couldn't prepare the query: $sth->errstr";
-$rv = $sth->execute
-    or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement)
+        or die "Couldn't prepare the query: $sth->errstr";
+    $rv = $sth->execute
+        or die "Couldn't execute the query: $dbh->errstr";
 
-while (@row = $sth->fetchrow_array) {
-	  print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
-	   print "<TR>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Phone</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Date</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Group</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
-	   <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
+    while (@row = $sth->fetchrow_array) {
+        print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
+        print "<TR>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Phone</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Date</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Group</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
+        <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
 #        print "<TR><TD COLSPAN=8><FONT SIZE=-1><B><i>&nbsp;</TD></TR>\n";
 
 
 
-	  print "<TR>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[2]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[3]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[4]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[5]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[6]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[7]</TD>\n";
-	  print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[8]</TD>\n";
-	  print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"\/cgi-bin\/ALEPH16\/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
-	  $row_id = $row[0];
-	  $date = $row[4];
-	  $stext = $row[8];
-	  $ssummary = $row[1];
-	  print "</TR>\n";
-	  print "</TR>\n";
-	  print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
-      }
-print "</TABLE>\n";
-$rc = $sth->finish;
-$rc = $dbh->disconnect;
-print "</FORM>\n";
-print "</BODY>\n</HTML>\n";
+        print "<TR>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[2]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[3]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[4]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[5]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[6]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[7]</TD>\n";
+        print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[8]</TD>\n";
+        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"\/cgi-bin\/ALEPH16\/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
+        $row_id = $row[0];
+        $date = $row[4];
+        $stext = $row[8];
+        $ssummary = $row[1];
+        print "</TR>\n";
+        print "</TR>\n";
+        print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
+    }
+    print "</TABLE>\n";
+    $rc = $sth->finish;
+    $rc = $dbh->disconnect;
+    print "</FORM>\n";
+    print "</BODY>\n</HTML>\n";
 
 
 
@@ -288,9 +288,9 @@ END
 sub bcc_create {
 
     if ($final_email_list =~ /usmaialeph\@umd.edu/i) {
-	$bcc = '';
+        $bcc = '';
     }else{
-	$bcc = "usmaialeph\@umd.edu";
+        $bcc = "usmaialeph\@umd.edu";
     }
 }
 
@@ -302,39 +302,39 @@ sub bcc_create {
 sub email_options {
 
     if ($email1) {
-	 $recipient =~ s/\s+//g;
-	 $rec1 = "$recipient";
-	 $email_count++;
+        $recipient =~ s/\s+//g;
+        $rec1 = "$recipient";
+        $email_count++;
     }
 
     if ($email2) {
-	 $email =~ s/\s+//g;
-	 $rec2 = ",$email";
-	 $email_count++;
+        $email =~ s/\s+//g;
+        $rec2 = ",$email";
+        $email_count++;
     }
 
     if ($email3) {
-	 $email3a =~ s/\s+//g;
-	 $rec3 = ",$email3a";
-	 $email_count++;
+        $email3a =~ s/\s+//g;
+        $rec3 = ",$email3a";
+        $email_count++;
     }
 
     if ($email4) {
-	 $email4a =~ s/\s+//g;
-	 $rec4 = ",$email4a";
-	 $email_count++;
+        $email4a =~ s/\s+//g;
+        $rec4 = ",$email4a";
+        $email_count++;
     }
 
 
     if ($email5) {
-	 $rec5 = ",$email5";
-	 $email_count++;
+        $rec5 = ",$email5";
+        $email_count++;
     }
 
     $final_email_list = $rec1 . $rec2 . $rec3 . $rec4 . $rec5;
 
     if ($email_count < 1) {
-	 $final_email_list = "jamieb\@kitabu.umd.edu";
+        $final_email_list = "jamieb\@kitabu.umd.edu";
     }
 
 }
@@ -347,10 +347,10 @@ sub Check_Email
 
 {
 
-     if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)|(^\d+)|(\d+$)/ || ($_[0] !~ /^.+\@localhost$/ && $_[0] !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $email_check++; push @store, $_[0]; }
-	 else { }
+    if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)|(^\d+)|(\d+$)/ || ($_[0] !~ /^.+\@localhost$/ && $_[0] !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $email_check++; push @store, $_[0]; }
+    else { }
 
-    }
+}
 
 #############################################################
 ## displays error message when bad email address is submitted
@@ -369,7 +369,7 @@ sub bad_email_display {
     print "<tr><td><cite><font size=+1>\n";
 
     foreach $store (@store) {
-	 print "$store<br>\n";
+        print "$store<br>\n";
     }
 
     print "</cite></font></td></tr></table>\n";
@@ -387,51 +387,51 @@ sub bad_email_display {
 
 sub recipient {
 
-if ($grp eq "Circulation") {
-    $recipient = "usmaicoicircresill\@umd.edu";
-}
-if ($grp eq "Technical") {
-    $recipient = "usmaicoidesktech\@umd.edu";
-}
-if ($grp eq "Web OPAC") {
-    $recipient = "usmaicoiuserinter\@umd.edu";
-}
+    if ($grp eq "Circulation") {
+        $recipient = "usmaicoicircresill\@umd.edu";
+    }
+    if ($grp eq "Technical") {
+        $recipient = "usmaicoidesktech\@umd.edu";
+    }
+    if ($grp eq "Web OPAC") {
+        $recipient = "usmaicoiuserinter\@umd.edu";
+    }
 
-if ($grp eq "Cataloging") {
-    $recipient = "usmaicoicatdbmaint\@umd.edu";
-}
+    if ($grp eq "Cataloging") {
+        $recipient = "usmaicoicatdbmaint\@umd.edu";
+    }
 
-if ($grp eq "Serials") {
-    $recipient = "usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Serials") {
+        $recipient = "usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Acquisitions") {
-    $recipient = "usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Acquisitions") {
+        $recipient = "usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Item Maintenance") {
-    $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
-}
+    if ($grp eq "Item Maintenance") {
+        $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
+    }
 
-if ($grp eq "Reserves") {
-    $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
-}
+    if ($grp eq "Reserves") {
+        $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
+    }
 
-if ($grp eq "other") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "other") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 
-if ($grp eq "Report request") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "Report request") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 
-if ($grp eq "Change request") {
-    $recipient = "usmaialeph\@umd.edu";
-}
+    if ($grp eq "Change request") {
+        $recipient = "usmaialeph\@umd.edu";
+    }
 
-if ($grp eq "ILL") {
-    $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
-}
+    if ($grp eq "ILL") {
+        $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
+    }
 }
 
 
@@ -441,87 +441,49 @@ if ($grp eq "ILL") {
 
 sub slug {
 
-if ($grp eq "Circulation") {
-    $slug = "CIRC:";
+    if ($grp eq "Circulation") {
+        $slug = "CIRC:";
+    }
+    if ($grp eq "Technical") {
+        $slug = "TECH:";
+    }
+    if ($grp eq "Web OPAC") {
+        $slug = "OPAC:";
+    }
+
+    if ($grp eq "Cataloging") {
+        $slug = "CAT:";
+    }
+
+    if ($grp eq "Serials") {
+        $slug = "SER:";
+    }
+
+    if ($grp eq "Acquisitions") {
+        $slug = "ACQ:";
+    }
+
+    if ($grp eq "Item Maintenance") {
+        $slug = "ITM:";
+    }
+
+    if ($grp eq "Reserves") {
+        $slug = "RES:";
+    }
+
+    if ($grp eq "other") {
+        $slug = "OTHR:";
+    }
+
+    if ($grp eq "Report request") {
+        $slug = "RQST:";
+    }
+
+    if ($grp eq "Change request") {
+        $slug = "CHNG:";
+    }
+
+    if ($grp eq "ILL") {
+        $slug = "ILL:";
+    }
 }
-if ($grp eq "Technical") {
-    $slug = "TECH:";
-}
-if ($grp eq "Web OPAC") {
-    $slug = "OPAC:";
-}
-
-if ($grp eq "Cataloging") {
-    $slug = "CAT:";
-}
-
-if ($grp eq "Serials") {
-    $slug = "SER:";
-}
-
-if ($grp eq "Acquisitions") {
-    $slug = "ACQ:";
-}
-
-if ($grp eq "Item Maintenance") {
-    $slug = "ITM:";
-}
-
-if ($grp eq "Reserves") {
-    $slug = "RES:";
-}
-
-if ($grp eq "other") {
-    $slug = "OTHR:";
-}
-
-if ($grp eq "Report request") {
-    $slug = "RQST:";
-}
-
-if ($grp eq "Change request") {
-    $slug = "CHNG:";
-}
-
-if ($grp eq "ILL") {
-    $slug = "ILL:";
-}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
