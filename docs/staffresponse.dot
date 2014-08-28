@@ -1,0 +1,98 @@
+// The AlephRx staff response and report updating process.
+
+digraph {
+    // pages
+    node [
+        shape = rect
+    ]
+    StaffSummary
+    ReportUpdateErrorPage
+    ReportUpdateForm
+    ReplyEditForm
+    ReplyForm
+    ReportDetailsPage
+    ReportLookupErrorPage
+
+    // processes
+    node [
+        shape = ellipse
+    ]
+    insert_response [ label = "insert response into database" ]
+    send_email [ label = "send email notifications" ]
+    generate_report_update_notice [ label = "generate update notice" ]
+    generate_reply_update_notice [ label = "generate update notice" ]
+    update_reply [ label = "update reply in database" ]
+
+    // error checking
+    node [
+        shape = diamond
+        label = ""
+    ]
+    validate_response
+    validate_report_number
+
+    // set the starting page
+    start [ shape = point ]
+    start -> StaffSummary
+
+    // application flow
+    StaffSummary -> ReportUpdateForm [ label = "UPDATE" ]
+    ReportUpdateForm -> validate_response [ label = "submit" ]
+    validate_response -> insert_response [ label = "[valid]" ]
+    validate_response -> ReportUpdateErrorPage [ label = "[invalid email]" ]
+    ReportUpdateErrorPage -> ReportUpdateForm [ label = "Back" ]
+    validate_response -> StaffSummary [ label = "[empty name or text]" ]
+    insert_response -> send_email
+    send_email -> generate_report_update_notice
+    generate_report_update_notice -> StaffSummary
+    
+    StaffSummary -> ReportDetailsPage [ label = "{report #}" ]
+    ReportDetailsPage -> validate_report_number [ label = "Go" ]
+    validate_report_number -> ReportLookupErrorPage [ label = "[invalid report #]" ]
+    ReportLookupErrorPage -> validate_report_number [ label = "Go" ]
+    validate_report_number -> ReportDetailsPage [ label = "[valid report #]" ]
+    ReportDetailsPage -> ReplyForm [ label = "Reply to this Report" ]
+
+    ReportUpdateForm -> ReplyEditForm [ label = "edit" ]
+    ReplyEditForm -> update_reply [ label = "submit" ]
+    update_reply -> generate_reply_update_notice
+    generate_reply_update_notice -> ReplyEditForm
+    
+    // group the pages and processes by which script handles them
+    subgraph cluster_0 {
+        label = "ALEPH16/ALEPH/ALEPHform2.cgi"
+        // use rank = min to ensure this page is at the top of the diagram
+        { rank = min; StaffSummary }
+        ReportUpdateErrorPage
+        validate_response
+        insert_response
+        send_email
+        generate_report_update_notice
+    }
+    subgraph cluster_1 {
+        label = "ALEPH16/ALEPH/ureport.cgi"
+        ReportUpdateForm
+    }
+    subgraph cluster_2 {
+        label = "ALEPH16/ALEPH/ureply.cgi"
+        labelloc = b
+        ReplyEditForm
+        update_reply
+        generate_reply_update_notice
+    }
+    subgraph cluster_3 {
+        label = "ALEPH16/sum_full.cgi"
+        ReportDetailsPage
+        validate_report_number
+        ReportLookupErrorPage
+    }
+    subgraph cluster_4 {
+        label = "ALEPH16/ALEPHreply.cgi"
+        labelloc = b
+        // to link between diagrams
+        URL = "submit.svg#ALEPHreply.cgi"
+        fontcolor = blue
+        ReplyForm
+    }
+}
+

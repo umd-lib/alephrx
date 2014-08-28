@@ -76,6 +76,7 @@ digraph {
     subgraph cluster_2 {
         label = "ALEPH16/ALEPHreply.cgi"
         labelloc = b
+        id = "ALEPHreply.cgi"
         ReplyForm
     }
     subgraph cluster_3 {
