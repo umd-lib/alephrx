@@ -1,5 +1,10 @@
 #!/usr/local/bin/perl
 
+=head1 NAME
+
+ALEPHform.cgi - Report Submission Form
+
+=cut
 
 ## Jamie Bush, 2004 
 ## RxWeb (AlephRx) version 3.1
@@ -14,12 +19,6 @@ use DBI;
 use CGI::Carp qw(fatalsToBrowser);
 use IO::Handle;
 use lib "/lims/lib/perl";
-
-
-
-
-
-
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -36,15 +35,9 @@ $from = "usmaialeph\@umd.edu (RxWeb)";
 $mailprog = $ENV{ALEPHRX_MAILER};
 $query = new CGI;
 
-
-
-
-
-
 $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
 @input_pairs = split (/[&;]/, $form_info);
-
 
 %input = ();
 
@@ -68,9 +61,6 @@ foreach $pair (@input_pairs) {
     $input{$name} = $value;
 }
 
-
-
-
 $name = $query->param('name');
 $id = $query->param('id');
 $campus = $query->param('campus');
@@ -92,7 +82,6 @@ $email4a = $query->param('email4a');
 $cataloger = $query->param('cataloger');
 $email_config = $query->param('email_config');
 
-
 #to be used in email before single quotes are escaped
 $summary_mail = $summary;
 $name_mail = $name;
@@ -113,9 +102,6 @@ $phone =~ s/\'/\\\'/g;
 #$name =~ s/\\/\\\\/g;
 #$text =~ s/\\/\\\\/g;
 
-
-
-
 if ($query->param('submitted')) {
 
     $error_message = "";
@@ -124,28 +110,28 @@ if ($query->param('submitted')) {
 
     if ($error_message ne "") {
         &display_error;
-
     } elsif ($error_message eq "") {
         &insert_data;
         &recipient;
         &email_config;
-
     } 
 } else {
     &set_initial_values;
     &print_form;
 }
 
-##########################################
-# validates the data submitted on the form
-##########################################
+=head2 validate_form()
 
+Validates the data submitted to the form. If there are any matching rows, as
+determined by C<match()>, or any problems with the data, this function places an
+HTML-formatted error message into C<$error_message>.
+
+=cut
 sub validate_form {
 
     if ($match_rows gt '0') {
         $error_message .= "<LI>This is a duplicate record. <B>Procedure not allowed.</B> Clear the form and enter a new report. \n";
     }
-
 
     if ($grp eq "") {
         $error_message .= "<LI>Please select a functional area.\n";
@@ -172,12 +158,16 @@ sub validate_form {
         $error_message .= "<LI>Please enter the text for your report.\n";
     }
 
-    if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $error_message .= "<LI>Please enter a valid email address.\n"; }
-
-
+    if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
+        $error_message .= "<LI>Please enter a valid email address.\n";
+    }
 }						       						      
 
+=head2 set_initial_values()
 
+Initializes variables that store the submitted values.
+
+=cut
 sub set_initial_values {
     $name = "";
     $id = "";
@@ -194,10 +184,13 @@ sub set_initial_values {
     $cataloger = "";
 }
 
-#######################################################
-## prints the form if no "sumitted" variable is present
-#######################################################
+=head2 print_form()
 
+Prints the report form for submitting a new request. This function prints both
+the HTTP header and the HTML page. It is only called if there is no C<submitted>
+request parameter.
+
+=cut
 sub print_form {
 
     print "Content-type:  text/html\n\n";
@@ -310,7 +303,11 @@ sub print_form {
     print "</table>\n";
 }
 
+=head2 print_page_start()
 
+Print the HTTP header and the start of the HTML page.
+
+=cut
 sub print_page_start {
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
@@ -321,6 +318,11 @@ sub print_page_start {
     print "</body>\n</html>\n";
 }
 
+=head2 print_page_end()
+
+Print the end of the HTML page, from the close of the body onward.
+
+=cut
 sub print_page_end {
     print "</body>\n";
     print "<HEAD>\n";
@@ -329,15 +331,13 @@ sub print_page_end {
     print "</HEAD></HTML>\n";
 }
 
+=head2 insert_data()
 
+Inserts the form data into database. Creates a new row in both the C<people> and
+C<report> tables.
 
-######################################
-## inserts the form data into database
-######################################
-
+=cut
 sub insert_data {
-
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
     $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES 
@@ -350,7 +350,6 @@ sub insert_data {
 
     $rv = $sth->execute
         or die "Couldn't execute the query: $dbh->errstr";
-
 
 
     $statement =   "SELECT last_insert_id()";
@@ -375,18 +374,17 @@ sub insert_data {
     $rv = $sth->execute
         or die "Couldn't execute the query: $statement";
 
-
-
+    
     $rc = $sth->finish;
     $rc = $dbh->disconnect
-
 }
 
 
-#############################################################
-## determines the recipient email based on the selected group
-#############################################################
+=head2 recipient()
 
+Sets the recipient email (C<$recipient>) based on the selected group (C<$grp>).
+
+=cut
 sub recipient {
 
     if ($grp eq "Circulation") {
@@ -398,51 +396,42 @@ sub recipient {
     if ($grp eq "Web OPAC") {
         $recipient = "usmaicoiuserinter\@umd.edu";
     }
-
     if ($grp eq "Cataloging") {
         $recipient = "usmaicoicatdbmaint\@umd.edu";
     }
-
     if ($grp eq "Serials") {
         $recipient = "usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Acquisitions") {
         $recipient = "usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Item Maintenance") {
         $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Reserves") {
         $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
     }
-
     if ($grp eq "ILL") {
         $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
     }
-
     if ($grp eq "Change request") {
         $recipient = "usmaialeph\@umd.edu";
     }
-
     if ($grp eq "other") {
         $recipient = "usmaialeph\@umd.edu";
     }
-
     if ($grp eq "Report request") {
         $recipient = "usmaialeph\@umd.edu";
     }
 }
 
+=head2 match()
 
+Checks the database for matching/duplicate reports when submitting. Sets
+C<$match_rows> to the number of matching rows found.
 
-########################################################
-## checks for matching/duplicate reports when submitting 
-########################################################
-
-sub match{
+=cut
+sub match {
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
@@ -454,16 +443,19 @@ sub match{
         or die "Couldn't execute the query: $dbh->errstr";
 
     $match_rows = $sth->rows;
-
-
-
 }
 
+=head2 email_config()
 
-###########################################################
-## displays the emailing options once the form is submitted
-###########################################################
+Displays the form with emailing options. Calls L<email_display()> to print the
+actual form for selecting email addresses. Also includes the report data as
+hidden fields, to get passed on to the report confirmation page rendered by
+ALEPHemail.cgi.
 
+This form is submitted to the ALEPHemail.cgi script, which does the validation
+of the email addresses and the actual emailing.
+
+=cut
 sub email_config {
 
     $display = "yes";
@@ -500,11 +492,12 @@ sub email_config {
 }
 
 
+=head2 display_error()
 
-###########################################################
-## displays error messaging when the form does not validate
-###########################################################
+Displays an error page when the form does not validate. The error message is
+expected to be in the C<$error_message> variable.
 
+=cut
 sub display_error {
 
     print "Content-type:  text/html\n\n";
@@ -528,13 +521,13 @@ sub display_error {
 }
 
 
-##########################################################
-## displays emailing options after form has been submitted
-##########################################################
+=head2 email_display()
 
+Prints the HTML of the form to select which email addresses to send to. Called
+by L<email_config()>.
+
+=cut
 sub email_display {
-
-
     print "<TABLE border=\"0\" width=\"60%\">\n";
     print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
     print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
@@ -560,5 +553,4 @@ sub email_display {
     print "</select></td>\n";
     print "</tr>\n";
     print "</TABLE><br>\n";
-
 }
