@@ -1,6 +1,15 @@
 Starting a Fresh Development Environment
 ========================================
 
+Prerequisites
+-------------
+
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- [Vagrant](http://www.vagrantup.com/downloads.html)
+
+Instructions
+------------
+
 Clone the repository. Copy the *vm/alephrx.conf.template* and
 *vm/createdb.sql.template* files to *vm/alephrx.conf* and *vm/createdb.sql*,
 respectively, and edit them to fill in the database connection information you
