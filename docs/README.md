@@ -66,3 +66,14 @@ functionality. For more technical information, please see the following:
 
 - [CGI Scripts](scripts.md)
 - [Database Schema](database.md)
+
+Diagrams
+--------
+
+The .dot diagrams in the documentation are written using
+[GraphViz](http://www.graphviz.org). Images can be generated from them using the
+`dot` command line program:
+
+    $ dot -Tpng -osubmit.png submit.dot
+
+See the [documentaion Makefile](Makefile) for more info.

@@ -1,0 +1,88 @@
+// The AlephRx report submission and reply process.
+
+digraph {
+    // pages
+    node [
+        shape = rect
+    ]
+    ReportForm
+    EmailConfigForm
+    ReportErrorPage
+    EmailErrorPage
+    ReportConfirmationPage
+    ReplyForm
+    ReplyErrorPage
+    ReportDetailsPage
+
+    // processes
+    node [
+        shape = ellipse
+    ]
+    insert_report [ label = "insert report into database" ]
+    send_email [ label = "send email notifications" ]
+    insert_reply [ label = "insert reply into database" ]
+
+    // error checking
+    node [
+        shape = diamond
+        label = ""
+    ]
+    report_validation
+    email_validation
+    reply_validation
+
+    // set the starting page
+    start [ shape = point ]
+    start -> ReportForm
+
+    // application flow
+    ReportForm -> report_validation [ label = "SUBMIT" ]
+    report_validation -> ReportErrorPage [ label = "[invalid]" ]
+    ReportErrorPage -> ReportForm [ label = "Back" ]
+    report_validation -> insert_report [ label = "[valid]" ]
+    insert_report -> EmailConfigForm
+
+    EmailConfigForm -> email_validation [ label = "Confirm Email Configuration" ]
+    email_validation -> EmailErrorPage [ label = "[invalid]" ]
+    EmailErrorPage -> EmailConfigForm [ label = "Back" ]
+    email_validation -> send_email [ label = "[valid]" ]
+    send_email -> ReportConfirmationPage
+
+    ReportConfirmationPage -> ReplyForm [ label = "Reply" ]
+
+    ReplyForm -> reply_validation [ label = "Submit Your Reply" ]
+    reply_validation -> ReplyErrorPage [ label = "[invalid]" ]
+    ReplyErrorPage -> ReplyForm [ label = "Back" ]
+    reply_validation -> insert_reply [ label = "[valid]" ]
+    insert_reply -> ReportDetailsPage
+    ReportDetailsPage -> ReplyForm [ label = "Reply to this Report" ]
+
+    // group the pages and processes by which script handles them
+    subgraph cluster_0 {
+        label = "ALEPHform.cgi"
+        ReportForm
+        EmailConfigForm
+        ReportErrorPage
+        report_validation
+        insert_report
+    }
+    subgraph cluster_1 {
+        label = "ALEPHemail.cgi"
+        email_validation
+        EmailErrorPage
+        send_email
+        ReportConfirmationPage
+    }
+    subgraph cluster_2 {
+        label = "ALEPH16/ALEPHreply.cgi"
+        labelloc = b
+        ReplyForm
+    }
+    subgraph cluster_3 {
+        label = "ALEPH16/xreply.cgi"
+        reply_validation
+        ReplyErrorPage
+        insert_reply
+        ReportDetailsPage
+    }
+}

@@ -1,3 +1,5 @@
+// High-level flow between the CGI scripts in Aleph Rx
+
 digraph {
     rankdir = LR
     node [ shape = rect style = filled ]
@@ -50,6 +52,7 @@ digraph {
     staff_summary -> staff_search [ label = "[Basic Search]" ]
     staff_summary -> user_full [ label = "{report.id}" ]
     staff_summary -> staff_edit_record [ label = "(UPDATE)" ]
+    staff_summary -> staff_edit_record [ label = "[Go]" ]
     staff_search -> staff_summary [ label = "[RxWeb Maintenance Summaries]" ]
     staff_edit_record -> user_summary [ label = "[RxWeb]" ]
     staff_edit_record -> staff_summary [ label = "[RxWeb Update]" ]
@@ -74,9 +77,10 @@ digraph {
     drecord -> xrecord [ label = "[No]" ]
     */
     
-    // POSTs that update the server
+    // POSTs that update or take other actions on the server
     edge [ dir = both; arrowtail = tee ]
-    form -> email_confirm [ label = "[SUBMIT]" ]
+    form -> form [ label = "[SUBMIT]" ]
+    form -> email_confirm [ label = "Confirm Email Configuration" ]
     user_reply -> user_reply_sent [ label = "[Submit Your Reply]" ]
     staff_edit_record -> staff_summary [ label = "[submit]" ]
     staff_edit_reply -> staff_edit_reply [ label = "[submit]" ]
