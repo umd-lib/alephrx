@@ -1,0 +1,82 @@
+// The AlephRx user reply process.
+
+digraph {
+    // pages
+    node [
+        shape = rect
+    ]
+    UserSummaryPage
+    // both sum_full.cgi and xreply.cgi display a report details page
+    // use two separate pages to distinguish which script renders each one
+    // note that in the code, these could most likely be combined into one
+    // rendering template
+    ReportDetailsPage
+    ReportDetailsPage_xreply [ label = ReportDetailsPage ]
+    ReportLookupErrorPage
+    ReplyForm
+    ReplyErrorPage
+
+    // processes
+    node [
+        shape = ellipse
+    ]
+    send_email [ label = "send email notifications" ]
+    insert_reply [ label = "insert reply into database" ]
+
+    // error checking
+    node [
+        shape = diamond
+        label = ""
+    ]
+    validate_reply
+    validate_report_number
+
+    // set the starting page
+    start [ shape = point ]
+    start -> UserSummaryPage
+
+    // application flow
+    UserSummaryPage -> ReportDetailsPage [ label = "{report #}" ]
+    UserSummaryPage -> validate_report_number [ label = "Go" ]
+
+    ReportDetailsPage -> validate_report_number [ label = "Go" ]
+    validate_report_number -> ReportLookupErrorPage [ label = "[invalid report #]" ]
+    ReportLookupErrorPage -> validate_report_number [ label = "Go" ]
+    validate_report_number -> ReportDetailsPage [ label = "[valid report #]" ]
+    ReportDetailsPage -> ReplyForm [ label = "Reply to this Report" ]
+
+    ReplyForm -> validate_reply [ label = "Submit Your Reply" ]
+    validate_reply -> ReplyErrorPage [ label = "[invalid]" ]
+    ReplyErrorPage -> ReplyForm [ label = "Back" ]
+    validate_reply -> insert_reply [ label = "[valid]" ]
+    insert_reply -> send_email
+    send_email -> ReportDetailsPage_xreply
+    ReportDetailsPage_xreply -> ReplyForm [ label = "Reply to this Report" ]
+
+    // group the pages and processes by which script handles them
+    subgraph cluster_0 {
+        label = "ALEPH16/ALEPHsum.cgi"
+        UserSummaryPage
+    }
+    subgraph cluster_1 {
+        label = "ALEPH16/ALEPHsum_full.cgi"
+        labelloc = b
+        ReportDetailsPage
+        ReportLookupErrorPage
+        validate_report_number
+    }
+    subgraph cluster_2 {
+        label = "ALEPH16/ALEPHreply.cgi"
+        labelloc = b
+        ReplyForm
+    }
+    subgraph cluster_3 {
+        label = "ALEPH16/xreply.cgi"
+        validate_reply
+        ReplyErrorPage
+        insert_reply
+        send_email
+        ReportDetailsPage_xreply
+    }
+}
+

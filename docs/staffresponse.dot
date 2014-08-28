@@ -5,7 +5,7 @@ digraph {
     node [
         shape = rect
     ]
-    StaffSummary
+    StaffSummaryPage
     ReportUpdateErrorPage
     ReportUpdateForm
     ReplyEditForm
@@ -33,20 +33,20 @@ digraph {
 
     // set the starting page
     start [ shape = point ]
-    start -> StaffSummary
+    start -> StaffSummaryPage
 
     // application flow
-    StaffSummary -> ReportUpdateForm [ label = "UPDATE" ]
+    StaffSummaryPage -> ReportUpdateForm [ label = "UPDATE" ]
     ReportUpdateForm -> validate_response [ label = "submit" ]
     validate_response -> insert_response [ label = "[valid]" ]
     validate_response -> ReportUpdateErrorPage [ label = "[invalid email]" ]
     ReportUpdateErrorPage -> ReportUpdateForm [ label = "Back" ]
-    validate_response -> StaffSummary [ label = "[empty name or text]" ]
+    validate_response -> StaffSummaryPage [ label = "[empty name or text]" ]
     insert_response -> send_email
     send_email -> generate_report_update_notice
-    generate_report_update_notice -> StaffSummary
+    generate_report_update_notice -> StaffSummaryPage
     
-    StaffSummary -> ReportDetailsPage [ label = "{report #}" ]
+    StaffSummaryPage -> ReportDetailsPage [ label = "{report #}" ]
     ReportDetailsPage -> validate_report_number [ label = "Go" ]
     validate_report_number -> ReportLookupErrorPage [ label = "[invalid report #]" ]
     ReportLookupErrorPage -> validate_report_number [ label = "Go" ]
@@ -62,7 +62,7 @@ digraph {
     subgraph cluster_0 {
         label = "ALEPH16/ALEPH/ALEPHform2.cgi"
         // use rank = min to ensure this page is at the top of the diagram
-        { rank = min; StaffSummary }
+        { rank = min; StaffSummaryPage }
         ReportUpdateErrorPage
         validate_response
         insert_response
@@ -89,9 +89,6 @@ digraph {
     subgraph cluster_4 {
         label = "ALEPH16/ALEPHreply.cgi"
         labelloc = b
-        // to link between diagrams
-        URL = "submit.svg#ALEPHreply.cgi"
-        fontcolor = blue
         ReplyForm
     }
 }

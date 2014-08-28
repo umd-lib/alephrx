@@ -1,12 +1,6 @@
-images: png svg
+images: png
 
-png: pageflow.png submit.png staffresponse.png
-
-svg: pageflow.svg submit.svg staffresponse.svg
-
-# generate SVG images from the GraphViz diagrams
-%.svg: %.dot
-	dot -Tsvg -o$@ $<
+png: pageflow.png submit.png staffresponse.png userreply.png
 
 # generate PNG images from the GraphViz diagrams
 %.png: %.dot

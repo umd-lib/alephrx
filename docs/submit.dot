@@ -1,4 +1,4 @@
-// The AlephRx report submission and reply process.
+// The AlephRx user report submission process.
 
 digraph {
     // pages
@@ -11,8 +11,6 @@ digraph {
     EmailErrorPage
     ReportConfirmationPage
     ReplyForm
-    ReplyErrorPage
-    ReportDetailsPage
 
     // processes
     node [
@@ -20,42 +18,33 @@ digraph {
     ]
     insert_report [ label = "insert report into database" ]
     send_email [ label = "send email notifications" ]
-    insert_reply [ label = "insert reply into database" ]
 
     // error checking
     node [
         shape = diamond
         label = ""
     ]
-    report_validation
-    email_validation
-    reply_validation
+    validate_report
+    validate_email
 
     // set the starting page
     start [ shape = point ]
     start -> ReportForm
 
     // application flow
-    ReportForm -> report_validation [ label = "SUBMIT" ]
-    report_validation -> ReportErrorPage [ label = "[invalid]" ]
+    ReportForm -> validate_report [ label = "SUBMIT" ]
+    validate_report -> ReportErrorPage [ label = "[invalid]" ]
     ReportErrorPage -> ReportForm [ label = "Back" ]
-    report_validation -> insert_report [ label = "[valid]" ]
+    validate_report -> insert_report [ label = "[valid]" ]
     insert_report -> EmailConfigForm
 
-    EmailConfigForm -> email_validation [ label = "Confirm Email Configuration" ]
-    email_validation -> EmailErrorPage [ label = "[invalid]" ]
+    EmailConfigForm -> validate_email [ label = "Confirm Email Configuration" ]
+    validate_email -> EmailErrorPage [ label = "[invalid]" ]
     EmailErrorPage -> EmailConfigForm [ label = "Back" ]
-    email_validation -> send_email [ label = "[valid]" ]
+    validate_email -> send_email [ label = "[valid]" ]
     send_email -> ReportConfirmationPage
 
     ReportConfirmationPage -> ReplyForm [ label = "Reply" ]
-
-    ReplyForm -> reply_validation [ label = "Submit Your Reply" ]
-    reply_validation -> ReplyErrorPage [ label = "[invalid]" ]
-    ReplyErrorPage -> ReplyForm [ label = "Back" ]
-    reply_validation -> insert_reply [ label = "[valid]" ]
-    insert_reply -> ReportDetailsPage
-    ReportDetailsPage -> ReplyForm [ label = "Reply to this Report" ]
 
     // group the pages and processes by which script handles them
     subgraph cluster_0 {
@@ -63,12 +52,12 @@ digraph {
         ReportForm
         EmailConfigForm
         ReportErrorPage
-        report_validation
+        validate_report
         insert_report
     }
     subgraph cluster_1 {
         label = "ALEPHemail.cgi"
-        email_validation
+        validate_email
         EmailErrorPage
         send_email
         ReportConfirmationPage
@@ -76,14 +65,6 @@ digraph {
     subgraph cluster_2 {
         label = "ALEPH16/ALEPHreply.cgi"
         labelloc = b
-        id = "ALEPHreply.cgi"
         ReplyForm
-    }
-    subgraph cluster_3 {
-        label = "ALEPH16/xreply.cgi"
-        reply_validation
-        ReplyErrorPage
-        insert_reply
-        ReportDetailsPage
     }
 }
