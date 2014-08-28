@@ -6,9 +6,13 @@ digraph {
         shape = rect
     ]
     StaffSummaryPage
+    // subclass-like relation
+    StaffSummaryPageWithUpdateNotice -> StaffSummaryPage [ arrowhead = empty ]
     ReportUpdateErrorPage
     ReportUpdateForm
     ReplyEditForm
+    // subclass-like relation
+    ReplyEditFormWithUpdateNotice -> ReplyEditForm [ arrowhead = empty ]
     ReplyForm
     ReportDetailsPage
     ReportLookupErrorPage
@@ -19,8 +23,6 @@ digraph {
     ]
     insert_response [ label = "insert response into database" ]
     send_email [ label = "send email notifications" ]
-    generate_report_update_notice [ label = "generate update notice" ]
-    generate_reply_update_notice [ label = "generate update notice" ]
     update_reply [ label = "update reply in database" ]
 
     // error checking
@@ -43,8 +45,7 @@ digraph {
     ReportUpdateErrorPage -> ReportUpdateForm [ label = "Back" ]
     validate_response -> StaffSummaryPage [ label = "[empty name or text]" ]
     insert_response -> send_email
-    send_email -> generate_report_update_notice
-    generate_report_update_notice -> StaffSummaryPage
+    send_email -> StaffSummaryPageWithUpdateNotice
     
     StaffSummaryPage -> ReportDetailsPage [ label = "{report #}" ]
     ReportDetailsPage -> validate_report_number [ label = "Go" ]
@@ -55,19 +56,17 @@ digraph {
 
     ReportUpdateForm -> ReplyEditForm [ label = "edit" ]
     ReplyEditForm -> update_reply [ label = "submit" ]
-    update_reply -> generate_reply_update_notice
-    generate_reply_update_notice -> ReplyEditForm
+    update_reply -> ReplyEditFormWithUpdateNotice
     
     // group the pages and processes by which script handles them
     subgraph cluster_0 {
         label = "ALEPH16/ALEPH/ALEPHform2.cgi"
         // use rank = min to ensure this page is at the top of the diagram
-        { rank = min; StaffSummaryPage }
+        { rank = min; StaffSummaryPage StaffSummaryPageWithUpdateNotice }
         ReportUpdateErrorPage
         validate_response
         insert_response
         send_email
-        generate_report_update_notice
     }
     subgraph cluster_1 {
         label = "ALEPH16/ALEPH/ureport.cgi"
@@ -76,9 +75,8 @@ digraph {
     subgraph cluster_2 {
         label = "ALEPH16/ALEPH/ureply.cgi"
         labelloc = b
-        ReplyEditForm
+        { rank = min; ReplyEditForm ReplyEditFormWithUpdateNotice }
         update_reply
-        generate_reply_update_notice
     }
     subgraph cluster_3 {
         label = "ALEPH16/sum_full.cgi"
