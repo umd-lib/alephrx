@@ -1,14 +1,15 @@
 #!/usr/local/bin/perl 
 
+=head1 NAME
+
+ALEPHsum.cgi - The user display of RxWeb Summaries
+
+=cut
 
 ## Jamie Bush, 2004
 ## RxWeb version 3.1
 ## Name changed to RxWeb from AlephRx on 6/20/06
 ## stats form
-
-#####################################################
-## This is the user display of RxWeb Summaries.
-#####################################################
 
 use DBI;
 use CGI;
@@ -50,6 +51,7 @@ foreach $pair (@input_pairs) {
     $input{$name} = $value;
 }
 
+# assign request parameters to variables
 $CHANGE = $input{'CHANGE'};
 $ACTIVE = $input{'ACTIVE'};
 $CIRC = $input{'CIRC'};
@@ -86,12 +88,8 @@ $id_i = $input{'id_i'};
 $val = $input{'val'};
 $page_number = $input{'page_number'};
 
-
-
 $value = $ENV{'QUERY_STRING'};
 #$sort = $value; 
-
-
 
 if ($NEXT) {
     $sort = $hidden_value;
@@ -106,21 +104,16 @@ if ($FIRST) {
     $sort = $hidden_value;
 }
 
-
 &filter;
 
 if ($filter eq  "") {
     $filter = $hidden_filter;
 }
 
-
-
-
 &sort_submit;
 &val;
 &sort_increment;
 &sort_rules;
-
 
 &record;
 &get_row_count;
@@ -141,17 +134,12 @@ if ($filter eq  "") {
 
 &print_page_end;
 
+=head2 print_fetch()
 
+Print the table of records. Reads data from C<$sth>, which has been executed by
+L<get_sum_record()>.
 
-
-
-
-
-
-
-
-
-
+=cut
 sub print_fetch {
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
     print "<TR>&nbsp;<TD></TD>\n";
@@ -180,15 +168,16 @@ sub print_fetch {
         $count = 0;
         &count_reply;
         print "<TD BGCOLOR=\"#FFFFF0\" ALIGN=\"CENTER\"><FONT SIZE=-1 COLOR=\"#000000\">$reply_count</TD></TR>\n";
-
     }
 }
 
+=head2 fetchreply()
 
-#
-#fetches all replies for printing
-#
+Fetches all replies for printing.
 
+B<XXX: Not called in this script.>
+
+=cut
 sub fetchreply {
 
     $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -211,12 +200,14 @@ sub fetchreply {
     $rc_1 = $dbh_1->disconnect;
 }
 
-#
-#fetches reponse for printing
-#
+=head2 fetchresponse()
+
+Fetches response for printing.
+
+B<XXX: Not called in this script.>
+
+=cut
 sub fetchresponse {
-
-
     $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from reply where parent_id = '$row_id' and itd = 'yes'";
 
@@ -241,11 +232,15 @@ sub fetchresponse {
     }
 }
 
+=head2 count_reply()
 
+Get the number of replies to the report with ID given by C<$row_id>. Replies are
+rows in the C<reply> table that have C<reply.itd> set to "no".
 
+Counts using C<$count> and sets C<$reply_count> to the final value.
+
+=cut
 sub count_reply {
-
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement_7 =   "SELECT name from reply where parent_id = '$row_id' and itd = 'no'";
     $sth_7 = $dbh->prepare($statement_7)
@@ -264,14 +259,17 @@ sub count_reply {
     $rc_7 = $dbh->disconnect;
 }
 
+=head2 count_response()
 
-#################################################
-#creates flag to display when there is a response
-#################################################
+Creates a flag to display when there is an ITD/DSS response to a report. If
+there is at least one reply to the report with ID C<$row_id> with C<reply.itd>
+set to "yes", sets C<$response_count> to the flag "*".
 
+Note that contrary to the name, this does not set or return a number of
+responses.
+
+=cut
 sub count_response {
-
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement_8 =   "SELECT text from reply where parent_id = '$row_id' and itd = 'yes'";
     $sth_8 = $dbh->prepare($statement_8)
@@ -293,17 +291,24 @@ sub count_response {
 }
 
 
-sub response_get {
+=head2 response_get()
 
+B<XXX: Not called in this script.>
+
+=cut
+sub response_get {
     if ($row[7] eq "") {
-    }else{
+    } else {
         $response = "*";
     }
 }
 
+=head2 get_reply()
 
+B<XXX: Not called in this script.>
+
+=cut
 sub get_reply {
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
     $sth_9 = $dbh->prepare($statement_9)
@@ -320,11 +325,12 @@ sub get_reply {
     $rc_9 = $dbh->disconnect;
 }
 
-###############################################################################
-#queries the database to get the total number of records, used to calculate the
-#total number of pages 
-###############################################################################
+=head2 get_row_count()
 
+Queries the database to get the total number of records, used to calculate the
+total number of pages. The total is stored in C<$row_count>.
+
+=cut
 sub get_row_count {
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -342,10 +348,16 @@ sub get_row_count {
     $rc_10 = $dbh->disconnect;
 }
 
-#########################################################################
-#calculates the total number pages that will be used for all the database
-#########################################################################
+=head2 calc_num_pages()
 
+Calculates the total number pages that will be used for all the database.
+Divides the C<$row_count> by 30 records per page. Rounds to the next largest
+integer and stores that value in C<$num_pages>.
+
+Unlike the C<calc_num_pages()> function in ALEPHform2.cgi, this uses a magic
+number of 30 instead of the C<$numrec> variable.
+
+=cut
 sub calc_num_pages {
 
     $num_pages_1 = $row_count / 30;
@@ -357,95 +369,115 @@ sub calc_num_pages {
     } 
 }
 
-############################################################################################
-#increments the page variable, prints the hidden increment value to pass on to the next page
-############################################################################################
+=head2 next_paging()
 
+If this request is the result of the "Next Page" button being clicked (and the
+C<NEXT> POST parameter being submitted), increments the page variable C<$p>, and
+prints the hidden field to pass on to the next page.
+
+=cut
 sub next_paging {
-
     if ($NEXT) {
         $p++;
         print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
     }
 }
 
-#
-#
-sub last_paging {
+=head2 last_paging()
 
+If this request is the result of the "Last Page" button being clicked (and the
+C<LAST> POST parameter being submitted),Sets the page variable C<$p> to one less
+than C<$num_pages>, and prints the hidden field to pass on to the next page.
+
+=cut
+sub last_paging {
     if ($LAST) {
         $p = $num_pages - 1;
         print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
     }
 }
 
+=head2 first_paging()
 
-#
-#
+If this request is the result of the "First Page" button being clicked (and the
+C<FIRST> POST parameter being submitted), sets the page variable C<$p> to 0, and
+prints the hidden field to pass on to the next page.
+
+=cut
 sub first_paging {
-
     if ($FIRST) {
         $p = 0;
         print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
     }
 }
 
+=head2 prev_paging()
 
+If this request is the result of the "Previous Page" button being clicked (and
+the C<PREV> POST parameter being submitted), decrements the page variable C<$p>,
+prints the hidden field to pass on to the next page
 
-############################################################################################
-#decrements the page variable, prints the hidden increment value to pass on to the next page
-############################################################################################
-
+=cut
 sub prev_paging {
-
     if ($PREV) {
         $p--;
         print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
-
     }
 }
 
+=head2 page_rules()
 
+Decides which of the next and previous buttons will display based on the which
+page we are on, and prints the appropriate buttons. Also updates the C<$limit>
+variable used in the SQL query in L<get_sum_record()>.
 
+Unlike the C<page_rules()> function in ALEPHform2.cgi, this uses a magic number
+of 30 instead of the C<$numrec> variable.
 
-##################################################################
-#page_rules decides how the next and previous buttons will display.
-##################################################################
+=cut
 sub page_rules {
-
     print "<table WIDTH=\"70%\" border=0><tr>\n";
 
     if ($p < 1){
-    }else{
-
+        # first page ($p == 0)
+        # do nothing
+    } else {
+        # after the first page
+        # print controls to go back
         print "<TD ALIGN=\"LEFT\"><INPUT TYPE=\"submit\" VALUE=\"<< First Page\" NAME=\"FIRST\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:beige ; color:#000; width:10em\">\n";
         print "<INPUT TYPE=\"submit\"  VALUE=\"< Previous Page\" NAME=\"PREV\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:beige ; color:#000; width:10em\">\n";
-
     }
-    if ($p > $num_pages-2) {
-    }else{
-        if ($value =~ /\d/){
-            end;
-        }elsif($LAST) {
-        }else{
 
+    if ($p > $num_pages - 2) {
+        # past the next to last page
+        # do nothing
+    }else{
+        if ($value =~ /\d/) {
+            end;
+        } elsif ($LAST) {
+            # "Last Page" was clicked
+            # do nothing
+        } else {
+            # before the last page
+            # print controls to go forward
             print "<TD ALIGN=\"RIGHT\"><INPUT TYPE=\"submit\" VALUE=\"Next Page >\" NAME=\"NEXT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:beige ; color:#000; width:10em\">\n";
             print "<INPUT TYPE=\"submit\" VALUE=\"Last Page >>\" NAME=\"LAST\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:beige ; color:#000; width:10em\">\n";
-
-
         }
     }
-    $limit = $p * 30;
+    # update the limit to be used in the SQL query in get_sum_record()
+    $limit = $p * 30; 
+
     print "<BR>\n";
     print "</td></tr></table>\n";
 }
 
+=head2 first_last()
 
+Set the C<$limit> variable used to construct the SQL query based on which page
+we are on.
 
-
-
+=cut
 sub first_last {
-
     if ($LAST) {
         $limit = ($num_pages - 1) * 30;
     }
@@ -454,11 +486,13 @@ sub first_last {
     }
 }
 
+=head2 filter()
 
+Sets the C<$filter> variable used to construct the SQL where clause in
+L<get_sum_record()>, based on which filter submit button was used to POST this
+request.
 
-
-
-
+=cut
 sub filter {
 
     if ($CIRC) {
@@ -524,14 +558,14 @@ sub filter {
     if ($CHANGE) {
         $filter = "and people.grp = 'Change request'";
     }
-
-
 }
 
+=head2 print_page_start()
 
+Prints the HTTP header and HTML page start, filter buttons, and hidden form
+fields.
 
-
-
+=cut
 sub print_page_start {
 
     print "Content-type: text/html\n\n";
@@ -606,8 +640,12 @@ sub print_page_start {
     print "<INPUT TYPE=\"hidden\" name=\"page_number\" VALUE=\"$page_number\">\n";
 }
 
+=head2 print_page_end()
 
+Prints the end of the table, disconnects the C<$dbh>, prints hidden fields, and
+the end of the HTML page.
 
+=cut
 sub print_page_end {
 
     print "</TABLE>\n";
@@ -624,13 +662,16 @@ sub print_page_end {
 
 } 
 
+=head2 record()
 
+If C<$RECORD> is set (i.e., there was a request parameter C<record>) but is the
+empty string, set it to the string "id". Then, if C<$RECORD> contains anything
+that is not a digit, set C<$value> to "id". Otherwise, set C<$value> to
+C<$RECORD>.
 
-
-
+=cut
 sub record {
-
-    if ($RECORD){
+    if ($RECORD) {
         if ($RECORD eq ""){
             $RECORD = "id";
         }
@@ -639,17 +680,23 @@ sub record {
     if ($RECORD) {
         if ($RECORD =~ /\D/) {
             $value = "id";
-        }else{
+        } else {
             $value = $RECORD;
-
         }
     }
 }
 
+=head2 get_sum_record()
 
+Get summary records from the database. This is the main query used to display
+data on this page.
 
+Uses the variables C<$filter>, C<$sort>, C<$option>, and C<$limit>
+to construct the query. Executes the query using the statement handle C<$sth>.
 
+Only queries records where C<report.supress = 'no'>.
 
+=cut
 sub get_sum_record {
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -658,65 +705,60 @@ sub get_sum_record {
 
     $sth = $dbh->prepare($statement)
         or die "Couldn't prepare the query: $sth->errstr";
-
-
     $rv = $sth->execute
         or die "Couldn't execute the query: $dbh->errstr";
-
 }
 
+=head2 sort_submit()
 
+Set C<$sort> based on which sort button was clicked for this submission.
+C<$sort> is used in the C<ORDER BY> clause in the SQL query in
+L<get_sum_record()>. Also increments C<$id_i>.
 
-
+=cut
 sub sort_submit {
-
-
     if ($ID) {
         $sort = "report.id";
         $id_i++;
     }
-
 
     if ($SUMMARY) {
         $sort = "report.summary";
         $id_i++;
     }
 
-
-
     if ($NAME) {
         $sort = "people.name";
         $id_i++;
     }
-
 
     if ($DATE) {
         $sort = "report.date";
         $id_i++;
     }
 
-
     if ($CAMPUS) {
         $sort = "people.campus";
         $id_i++;
     }
-
 
     if ($STATUS) {
         $sort = "report.status";
         $id_i++;
     }
 
-
     if ($FUNC) {
         $sort = "people.grp";
         $id_i++;
     }
-
 }
 
+=head2 sort_rules()
 
+Set C<$otion_value> based on the current search order used in the SQL (as stored
+in the C<$option> variable). Maps "DESC" to "Descending" and "" to "Ascending".
 
+=cut
 sub sort_rules {
 
     if ($option eq "DESC") {
@@ -724,17 +766,17 @@ sub sort_rules {
     }
 
     if ($option eq "") {
-
         $option_value = "Ascending";
-
     }
-
 }
 
+=head2 sort_increment()
 
+Sets the value of C<$option> to "DESC" if C<$id_i> is 1 or "" otherwise.
+C<$option> is used to build the SQL query.
+
+=cut
 sub sort_increment {
-
-
     if ($id_i > 1) {
         $id_i = 0;
     }
@@ -746,25 +788,26 @@ sub sort_increment {
     if ($id_i eq "0") {
         $option = "DESC";
     }
-
 }
 
+=head2 val()
 
+Sets the C<$id_i> variable to 0 each time a new sort key is selected.
 
-
+=cut
 sub val  {
     if ($val ne $sort){
         $id_i = 0;
     }
 }
 
+=head2 filter_display()
 
-#########################################
-## sets the display for filter
-#########################################
+Set the C<$filter_display> variable used on the UI based on the value of the
+C<$filter>.
 
+=cut
 sub filter_display  {
-
     if ($filter eq "and people.grp = 'Circulation'") {
         $filter_display = "Circulation";
     }
@@ -835,16 +878,14 @@ sub filter_display  {
     if ($filter eq "and people.grp = 'Change request'") {
         $filter_display = "Change Request";
     }
-
-
-
 }
 
+=head2 sort_display()
 
-####################################
-## Sets the display for sort
-####################################
+Set the C<$sort_display> variable used in the UI based on the value of
+C<$sort>.
 
+=cut
 sub sort_display  {
 
     if ($sort eq "report.id") {
