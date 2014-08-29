@@ -1,5 +1,11 @@
 #!/usr/local/bin/perl
 
+=head1 NAME
+
+ALEPHsearch.cgi - User basic search page
+
+=cut
+
 ## Jamie Bush, 2004
 ## RxWeb (AlephRx) version 3.1
 ## name changed 6/20/06
@@ -19,19 +25,16 @@ $statement = "";
 $id = "";
 $query = new CGI;
 
-
-
-
 $field = $query->param('field');
 $term = $query->param('term');
 $submitted = $query->param('submitted');
 
-
+# start the page and print the search form
 &print_form;
-
 
 if ($submitted eq "yes") {
     if ($term eq "") {
+        # the search term must be non-empty
         &error;
     }else {
         &do_search;
@@ -41,11 +44,11 @@ if ($submitted eq "yes") {
 
 &print_page_end;
 
+=head2 print_form()
 
-########################################
-## Prints the search page form
-########################################
+Print the HTTP header, the beginning of the HTML page, and the search form.
 
+=cut
 sub print_form {
 
     print "Content-type:  text/html\n\n";
@@ -74,43 +77,40 @@ sub print_form {
     print "</FORM>\n";
 }
 
+=head2 print_page_end()
 
-#########################################
-## Prints the end of the page
-#########################################
+Print the end of the HTML page.
 
+=cut
 sub print_page_end {
     print "</body></html>\n";
 }
 
 
+=head2 do_search()
 
-##########################################
-## Performs the search
-##########################################
+Construct and execute an SQL query to search the database. If C<$field> is
+"reply", then it searches the columns C<reply.text> and C<reply.name>.
+Otherwise, it uses C<$field> as the column name to search. The search term
+(C<$term>) can appear anywhere in the column (i.e., the SQL uses a C<LIKE
+'%$term%'> predicate).
 
+The executed statement handle is in C<$sth>, and the number of rows found is
+stored in C<$nr>.
+
+=cut
 sub do_search {
-
 #escape the single quotes
     $term =~ s/\'/\\\'/g;
     $field =~ s/\'/\\\'/g;
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-
-
     if ($field eq "reply") {
-
         $statement =   "SELECT DISTINCT people.id, report.summary, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, people.grp, report.status from people, report, reply where (reply.text LIKE '%$term%' or reply.name LIKE '%$term%') and reply.parent_id = report.id and report.id = people.id order by people.id"; 
-
     } else {
-
-
         $statement =   "SELECT people.id, report.summary, DATE_FORMAT(date,'%m/%d/%y'), people.name, people.grp, report.status from people, report where $field LIKE '%$term%' and report.id = people.id order by people.id";
     }
-
-
-
 
     $sth = $dbh->prepare($statement)
         or die "Couldn't prepare the query: $sth->errstr";
@@ -119,14 +119,15 @@ sub do_search {
         or die "Couldn't execute the query: $dbh->errstr";
 
     $nr = $sth->rows;
-
 }
 
+=head2 display_results()
 
-#########################################
-## Prints the results of the search
-#########################################
+Print the number of results. Then, if there are 1 or more results, print the
+table of actual results. Within the table, the summary text for each result
+links to the report detail page for that report (ALEPHsum_full.cgi).
 
+=cut
 sub display_results {
 
     print "Your search found <B>$nr</B> records<BR><BR>\n";
@@ -154,18 +155,14 @@ sub display_results {
 
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
-
-
 }
 
 
-#######################################
-## Prints the error message
-#######################################
+=head2 error()
 
+Prints the error message when there is search term given.
+
+=cut
 sub error {
-
-
     print "<b>You must enter a search term!</b>\n";
-
 }
