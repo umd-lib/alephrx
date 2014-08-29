@@ -71,7 +71,7 @@ digraph {
         ReplyForm
     }
     subgraph cluster_3 {
-        label = "ALEPH16/xreply.cgi"
+        label = "ALEPH16/ALEPHxreply.cgi"
         validate_reply
         ReplyErrorPage
         insert_reply

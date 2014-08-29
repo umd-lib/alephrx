@@ -69,17 +69,17 @@ digraph {
         send_email
     }
     subgraph cluster_1 {
-        label = "ALEPH16/ALEPH/ureport.cgi"
+        label = "ALEPH16/ALEPH/ALEPHurecord.cgi"
         ReportUpdateForm
     }
     subgraph cluster_2 {
-        label = "ALEPH16/ALEPH/ureply.cgi"
+        label = "ALEPH16/ALEPH/ALEPHureply.cgi"
         labelloc = b
         { rank = min; ReplyEditForm ReplyEditFormWithUpdateNotice }
         update_reply
     }
     subgraph cluster_3 {
-        label = "ALEPH16/sum_full.cgi"
+        label = "ALEPH16/ALEPHsum_full.cgi"
         ReportDetailsPage
         validate_report_number
         ReportLookupErrorPage
