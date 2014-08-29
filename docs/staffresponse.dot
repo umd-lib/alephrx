@@ -10,6 +10,7 @@ digraph {
     StaffSummaryPageWithUpdateNotice -> StaffSummaryPage [ arrowhead = empty ]
     ReportUpdateErrorPage
     ReportUpdateForm
+    ReportUpdateFormErrorPage
     ReplyEditForm
     // subclass-like relation
     ReplyEditFormWithUpdateNotice -> ReplyEditForm [ arrowhead = empty ]
@@ -32,13 +33,18 @@ digraph {
     ]
     validate_response
     validate_report_number
+    validate_report_number_urecord
 
     // set the starting page
     start [ shape = point ]
     start -> StaffSummaryPage
 
     // application flow
-    StaffSummaryPage -> ReportUpdateForm [ label = "UPDATE" ]
+    StaffSummaryPage -> validate_report_number_urecord [ label = "UPDATE" ]
+    validate_report_number_urecord -> ReportUpdateForm
+        [ label = "[valid report #]" ]
+    validate_report_number_urecord -> ReportUpdateFormErrorPage
+        [ label = "[invalid report #]" ]
     ReportUpdateForm -> validate_response [ label = "submit" ]
     validate_response -> insert_response [ label = "[valid]" ]
     validate_response -> ReportUpdateErrorPage [ label = "[invalid email]" ]
@@ -71,6 +77,8 @@ digraph {
     subgraph cluster_1 {
         label = "ALEPH16/ALEPH/ALEPHurecord.cgi"
         ReportUpdateForm
+        ReportUpdateFormErrorPage
+        validate_report_number_urecord
     }
     subgraph cluster_2 {
         label = "ALEPH16/ALEPH/ALEPHureply.cgi"
