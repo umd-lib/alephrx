@@ -1,4 +1,0 @@
--- vim: filetype=sql
-CREATE DATABASE __DB_NAME__;
-CREATE USER '__DB_USER__'@'localhost' IDENTIFIED BY '__DB_PASS__';
-GRANT ALL ON __DB_NAME__.* TO '__DB_USER__';
