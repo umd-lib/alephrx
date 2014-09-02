@@ -207,11 +207,13 @@ if ($yes) {
     &delete;
 }
 
+my $match_rows = 0;
+
 # was this a form submission request?
 if ($submit) {
     # check for duplicate rows
-    &match;
-    if ($match_rows eq '0'){
+    $match_rows = match($id, $rname, $mresponse);
+    if ($match_rows == 0) {
         # if there are none, set the "Updated record #" banner text
         &updated;
         $updated_value = $updated;
@@ -284,7 +286,7 @@ if ($delete) {
             $mail = "yes";
         }
 
-        if ($match_rows ge '1'){
+        if ($match_rows >= 1){
             # alert the user that the record was not updated; sends no email in
             # this case
             # XXX: this occurs too late to be included in the response page
@@ -1369,24 +1371,32 @@ sub print_page_end_a {
 
 =head2 match()
 
-Check the incoming response for duplicates amongst the current responses for
-this report. Sets C<$match_rows> to the number of rows where the
-C<reply.parent_id>, C<reply.name>, and C<reply.text> match exactly the submitted
-C<record_id> (C<$id>), C<rname> (C<$rname>), and C<response> (C<$mresponse>)
-parameters.
+    my $match_rows = match($id, $reply_name, $reply_text);
+    if ($match_rows) {
+        print "Found duplicate reponse for $id\n";
+        print "(with name $reply_name and text $reply_text)\n";
+    }
+
+Check for duplicates amongst the current responses for a report. Takes report ID
+number, reply name, and reply text arguments. Returns the number of rows in the
+C<reply> table where the C<reply.parent_id>, C<reply.name>, and C<reply.text>
+match those values exactly.
 
 =cut
 sub match {
+    my ($id, $reply_name, $reply_text) = @_;
+
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-    $statement = "SELECT reply.id FROM reply WHERE reply.parent_id = ? AND reply.name = ? AND reply.text = ?";
+    $statement = "SELECT COUNT(*) FROM reply WHERE reply.parent_id = ? AND reply.name = ? AND reply.text = ?";
 
     $sth = $dbh->prepare($statement)
         or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute($id, $rname, $mresponse)
+    $rv = $sth->execute($id, $reply_name, $reply_text)
         or die "Couldn't execute the query: $dbh->errstr";
 
-    $match_rows = $sth->rows;
+    my ($count) = $sth->fetchrow_array;
+    return $count;
 }
 
 =head2 Check_Email()
