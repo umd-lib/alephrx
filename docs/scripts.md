@@ -147,7 +147,16 @@ These scripts are all in the **ALEPH16/ALEPH** directory.
 **ALEPHsearch.cgi**
 
 - Search form that is almost identical to the user search form.
-- See *ALEPHsearch.cgi* in the _User Access_ section.
+- Displays a form to search the issue reports and replies. Available columns
+  to search are:
+    - summary => report.summary
+    - text => report.text
+    - name => people.name
+    - reply => reply.text or reply.name (searches both)
+- Searches are of the form `column LIKE '%$term%'`.
+- Displays an error page if the search term is empty.
+- POSTs to itself, queries the database, and displays results. Each result
+  links to the *ALEPHurecord.cgi* page for that issue.
 
 **ALEPHform2.cgi**
 
