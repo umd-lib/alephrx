@@ -221,8 +221,8 @@ if ($submit) {
         # if this is a duplicate, clear the $rname to prevent the response from
         # being inserted
         $rname = "";
-        # set the updated banner to "duplicate, not updated"
-        $updated_value = qq{<span style="background-color: white"><P><FONT COLOR="#FF0000">Duplicate response detected. Record $id not updated!</span></FONT></P>}
+        # set the updated banner to indicate this was a duplicate response
+        $updated_value = qq{<span style="background-color: white"><P><FONT COLOR="#FF0000">Duplicate response detected. No response added to record $id</span></FONT></P>};
     }
 }
 
