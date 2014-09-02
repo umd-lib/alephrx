@@ -4,14 +4,23 @@ AlephRx CGI Scripts
 General Notes
 -------------
 
-Uses global variables.
+Uses global variables. Each script is completely independent. Where there is
+common functionality across scripts, that code has been duplicated instead of
+being factored out into a common module.
 
-Linear control structure.
+All forms are submitted via POST requests.
 
-Uses `CGI::Carp 'fatalsToBrowser'` to automatically generate error pages when
-dying.
+Most of the scripts use `CGI::Carp 'fatalsToBrowser'` to automatically generate
+error pages when dying. About half of the scripts use CGI.pm to parse the
+request parameters, but the rest parse the POST request body manually into an
+`%input` hash.
 
-All of the scripts assume that the URL path starts with **/cgi-bin** and that
+The scripts all use the DBI and the `DBD::mysql` driver for connecting to the
+database. While the scripts do make use of the `DBI::prepare()` to create
+prepared statements, none of the scripts use placeholder variables in these
+prepared statements.
+
+Many of the scripts assume that the URL path starts with **/cgi-bin** and that
 static images are stored in **/IMG**. No other static resources besides images
 are used.
 
@@ -43,7 +52,7 @@ Several of the scripts have `use lib '/lims/lib/perl'`, but that location does
 not exist on the server.
 
 DBD::mysql 2.0416 is from the Msql-Mysql-modules distribution. See
-http://search.cpan.org/~jwied/Msql-Mysql-modules-1.2216/mysql/lib/DBD/mysql.pm
+<http://search.cpan.org/~jwied/Msql-Mysql-modules-1.2216/mysql/lib/DBD/mysql.pm>
 on CPAN.
 
 The application appears to run successfully on a CentOS 5.1 VM (intended as a
@@ -73,8 +82,8 @@ Public Access Scripts
 **ALEPHemail.cgi**
 
 - Displays a form to confirm email settings.
-- Always sends to usmaialeph, defaults to sending to the reporter. The form
-  provides 2 additional email text box inputs and a single choice dropdown
+- Always sends to usmaialeph@umd.edu, defaults to sending to the reporter. The
+  form provides 2 additional email text box inputs and a single choice dropdown
   to select up to 1 listserv/reflector address. This list of listservs is
   hardcoded into the form.
 - When submitted, validates email addresses and sends email(s).
@@ -147,7 +156,16 @@ These scripts are all in the **ALEPH16/ALEPH** directory.
 **ALEPHsearch.cgi**
 
 - Search form that is almost identical to the user search form.
-- See *ALEPHsearch.cgi* in the _User Access_ section.
+- Displays a form to search the issue reports and replies. Available columns
+  to search are:
+    - summary => report.summary
+    - text => report.text
+    - name => people.name
+    - reply => reply.text or reply.name (searches both)
+- Searches are of the form `column LIKE '%$term%'`.
+- Displays an error page if the search term is empty.
+- POSTs to itself, queries the database, and displays results. Each result
+  links to the *ALEPHurecord.cgi* page for that issue.
 
 **ALEPHform2.cgi**
 

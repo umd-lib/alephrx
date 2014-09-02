@@ -1,5 +1,11 @@
 #!/usr/local/bin/perl
 
+=head1 NAME
+
+ALEPHureply.cgi - Staff form for editing a reply
+
+=cut
+
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
@@ -21,13 +27,9 @@ $error = "  ";
 
 $reply_id = $ENV{'QUERY_STRING'};
 
-
-
-
 $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
 @input_pairs = split (/[&;]/, $form_info);
-
 
 %input = ();
 
@@ -44,35 +46,35 @@ foreach $pair (@input_pairs) {
 
     #Escape the single quotes
     $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-#  $value =~ s/\\/\\\\/g;
 
     #Copy the name and value into the hash
     $input{$name} = $value;
 }
 
-
 $text = $query->param('text');
 $id = $query->param('id');
 
-
-
 if ($query->param('submitted')) {
-
+    # if the form has been submitted
+    # get the reply ID from the request parameter "id"
     $reply_id = $id;
+    # update the reply in the database
     &insert;
+    # redisplay the form
     &print_form;
-
-}else {
-
+} else {
+    # get the reply ID form the query string
     $reply_id = $ENV{'QUERY_STRING'};
+    # display the form
     &print_form;
-
 }
 
+=head2 print_form()
 
+Print the HTTP header and the HTML for the page. Queries the database for the
+reply with the ID C<$reply_id>.
 
-
+=cut
 sub print_form {
 
     print "Content-type: text/html\n\n";
@@ -80,25 +82,18 @@ sub print_form {
     print "<FORM ACTION=\"ALEPHureply.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
     print "<H1>RxWeb Reply Edit Test</H1>\n";
-#print "id=$id<br>\n";
-#print "reply_id=$reply_id<br>\n";
-#print "text=$text<br>\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Update\" onClick=\"parent.location='ALEPHform2.cgi'\">\n";
 
     print "<br><br>\n";
     print "<TABLE BORDER=0 width=\"60%\" CELLPADDING=2>\n";
 
-
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
 
     $statement =   "SELECT text, name, DATE_FORMAT(date,'%b %e, %Y      %r'), id, parent_id, DATE_FORMAT(timestamp,'%b %e, %Y    %r') from reply where id = $reply_id";
 
     $sth = $dbh->prepare($statement)
         or die "Couldn't prepare the query: $sth->errstr";
     $rv = $sth->execute
-
         or die "Couldn't execute the query: $dbh->errstr";
 
     while (@row = $sth->fetchrow_array) {
@@ -107,13 +102,11 @@ sub print_form {
         print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Created:</font>&nbsp;&nbsp;$row[2]</TD>\n";
         print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Updated:&nbsp;&nbsp;&nbsp;$row[5]</FONT></TD>\n";
         print "<TR><TD COLSPAN=3 ><textarea wrap=\"soft\" name=text cols=100 rows=8>$row[0]</textarea></TD>\n";
-#        print "<TR><TD COLSPAN=4 BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[0]</TD>\n";
         print "</TR>\n";
         $reply_id = $row[3];
         $record = $row[4];
         $updated = $row[5];
     }
-
 
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
@@ -134,20 +127,20 @@ sub print_form {
 
 }
 
+=head2 insert()
 
+Update the reply with ID C<$reply_id> in the database. Sets the C<reply.text>
+column to the value of C<$text> and the C<reply.timestamp> column to C<NOW()>.
+
+Sets the C<$error> flag to "Reply has been updated.". This is used by the
+L<print_form()> function to indicate to the user that the database has been
+updated.
+
+=cut
 sub insert {
-
-#print "<html><body>\n";
-#print "submitted=$submitted\n";
-#print "</body></html>\n";
-
-#Escape the single quotes & back slashes
-
+    # Escape the single quotes & back slashes
     $text =~ s/\\/\\\\/g;
     $text =~ s/\'/\\\'/g;
-
-
-
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement =   "UPDATE reply SET text = '$text', timestamp = NOW() WHERE id = $reply_id";
@@ -159,13 +152,4 @@ sub insert {
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
     $error = "Reply has been updated.";
-}
-
-
-sub display_temp {
-
-    print "<html><body>\n";
-    print "$text\n";
-    print "</body></html>\n";
-
 }

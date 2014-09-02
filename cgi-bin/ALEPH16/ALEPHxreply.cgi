@@ -2,6 +2,11 @@
 
 ## 2010/09/07  Hans  Replace aleph@itd.umd.edu with usmaialeph@umd.edu
 
+=head1 NAME
+
+ALEPHxreply.cgi - Receives and processes replies to reports.
+
+=cut
 
 use DBI;
 use CGI;
@@ -25,7 +30,6 @@ $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
 @input_pairs = split (/[&;]/, $form_info);
 
-
 %input = ();
 
 foreach $pair (@input_pairs) {
@@ -39,17 +43,9 @@ foreach $pair (@input_pairs) {
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
 
-    #Escape the single quotes
-#  $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-#  $value =~ s/\\/\\\\/g;
-
     #Copy the name and value into the hash
     $input{$name} = $value;
 }
-
-
-
 
 $parent_id = $input{'record_id'};
 $name = $input{'name'};
@@ -63,56 +59,44 @@ $email3 = $input{'email3'};
 $email4 = $input{'email4'};
 $email5 = $input{'email5'};
 
-
 if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
 if ($email_check > 0) {
+    # if there are invalid email addresses submitted, display an error page
     &bad_email_display;
-
 } else {
 
     if ($text eq "") {
-
+        # reply text must not be empty
+        # display an error page
         &validate_reply();
-
     } else {
-
-
         $name =~ s/\\/\\\\/g;
         $name =~ s/\'/\\\'/g;
         $text =~ s/\\/\\\\/g;
         $text =~ s/\'/\\\'/g;
 
-
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
+        # insert the reply into the database
         $statement =   "INSERT INTO reply (parent_id, name, date, text, itd) VALUES
         ('$parent_id','$name', NOW(), '$text', 'no')";
 
-#$query1 = $statement;
-#&mail_query;
-
-
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
 
         $rv = $sth->execute
             or die "Couldn't execute the query: $dbh->errstr";
 
-
-
+        # set the parent report's last updated value
         $statement =   "UPDATE report set updated = NOW() where id = '$parent_id'";
 
-
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
 
         $rv = $sth->execute
             or die "Couldn't execute the query: $dbh->errstr";
-
-
-
 
         print "Content-type: text/html\n\n";
         print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
@@ -123,10 +107,9 @@ if ($email_check > 0) {
         print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
         print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
-
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-
+        # fetch and print the full details for the report
         $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text, people.email FROM people, report WHERE people.id = $parent_id and people.id = report.id";
 
         $sth = $dbh->prepare($statement)
@@ -166,13 +149,12 @@ if ($email_check > 0) {
             $stext = $row[8];
             $email = $row[9];
 
-#        &fetchresponse(); # fetch the response
             print "</TR>\n";
-            &fetchreply();    # fetch the replies
+            # fetch the replies
+            &fetchreply();
             print "</TR>\n";
             print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
         }
-
 
         $rc = $sth->finish;
         $rc = $dbh->disconnect;
@@ -180,24 +162,30 @@ if ($email_check > 0) {
         print "</TABLE>\n";
         print "<BR><BR>\n";
         print "</FORM>\n";
+
+        # set email recipient and slug based on functional area
         &recipient;
         &slug;
         print "$email_check<br>\n";
+        # assemble the final list of email addresses
         &email_options;
-#print "$final_list\n";
         print "</BODY>\n</HTML>\n";
+        # get the most recent reply date
         &reply_date;
+        # send email if there is at least one address in the final list
         if ($email_count > 0) {
             &mail;
         }
     }
 }
 
+=head2 fetchreply()
 
+Retrieve and print all of the replies to the report with ID C<$row_id> in
+reverse chronological order. Calls L<reply_type()> for each reply to set the
+C<$reply_type> and C<$font_color> variables.
 
-
-
-
+=cut
 sub fetchreply {
 
     $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -225,10 +213,11 @@ sub fetchreply {
 }
 
 
+=head2 validate_reply()
 
+Prints the reply error page, using the error message in C<$error_message>.
 
-
-
+=cut
 sub validate_reply {
 
     print "Content-type:  text/html\n\n";
@@ -250,7 +239,12 @@ sub validate_reply {
 
 }
 
+=head2 bad_email_display()
 
+Displays error message when a bad email address is submitted. Prints all the
+items in the C<@store> array.
+
+=cut
 sub bad_email_display {
 
     print "Content-type:  text/html\n\n";
@@ -278,6 +272,15 @@ sub bad_email_display {
 }
 
 
+=head2 mail()
+
+Formats and submits the confirmatione mail to the mailer prog. This function
+retireves the path to the mailer form the C<$mailprog> variable, but it is
+ultimately set via the C<ALEPHRX_MAILER> environment variable.
+
+Only sends email if C<$emailx> is "yes".
+
+=cut
 sub mail {
 
 #removes the escape from single quote
@@ -349,8 +352,12 @@ END
     }
 }
 
+=head2 reply_date()
 
+Set C<$rdate> to the date of the most recent reply to the report with ID
+C<$parent_id>.
 
+=cut
 sub reply_date {
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -368,27 +375,13 @@ sub reply_date {
     $rc_6 = $dbh->disconnect;
 }
 
+=head2 reply_type()
 
+Determines if a reply is from ITD or not and sets the display color
+(C<$font_color>) and the text (C<$reply_type>).
 
-sub mail_query {
-
-    open (MAIL,"|$mailprog -t");
-    print MAIL "To: jamieb\@kitabu.umd.edu\n";
-    print MAIL "From: $from\n";
-    print MAIL "Subject: #query\n";
-    print MAIL "$query1\n";
-    print MAIL "$query2\n";
-    print MAIL "$query3\n";
-    close (MAIL);
-}
-
-
-
-
-
-
+=cut
 sub reply_type {
-
     if ($itd eq "yes") {
         $reply_type = "ITD Response";
         $font_color = "DarkRed";
@@ -398,53 +391,26 @@ sub reply_type {
     }
 }
 
+=head2 email_options()
 
+Assembles the the final list of email addresses and places it into the
+C<$final_list> variable.
 
-###########################################
+If C<$email1> is set, include the C<$recipient> set by L<recipient()>.
 
-sub email_config {
+If C<$email2> is set, include the C<$email>, which comes from the C<email>
+request parameter.
 
+If C<$email3> is set, include the value of C<$email3a>, which comes from a
+request parameter.
 
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Email Configuration</title>\n";
-    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-    print "</head>\n<body bgcolor=\"#98AFC7\">\n";
-    print "<center>\n";
-    print "<h1>RxWeb Email Configuration</h1>\n";
-    print "<h3>Please confirm the Email configuration for your report </h3>\n";
-    print "<table>\n";
+If C<$email4> is set, include the value of C<$email4a>, which comes from a
+request parameter.
 
-    &email_display;
+If C<$email5> is set, include it in the list.
 
-    print "<tr><td align=\"left\">\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPHform.cgi\" METHOD=\"post\">\n";
-    print "<p><input TYPE=\"submit\" VALUE=\"Confirm Email Configuration\"></p>\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"name\" VALUE=\"$name\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$text\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$summary\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"phone\" VALUE=\"$phone\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"campus\" VALUE=\"$campus\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"status\" VALUE=\"$status\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"grp\" VALUE=\"$grp\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email\" VALUE=\"$email\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"cataloger\" VALUE=\"$cataloger\">\n";
-    print "</form>\n";
-    print "</td></tr></table>\n";
-    print "</body>\n</html>\n";
-
-
-}
-
-
-
-
-
+=cut
 sub email_options {
-
 
     if ($email1) {
         $email_count++;
@@ -484,41 +450,27 @@ sub email_options {
     $final_list = $rec1 . $rec2 . $rec3 . $rec4 . $rec5;
 }
 
+=head2 Check_Email()
 
-sub Check_Email
+Checks if its first argument is a valid email address. If it is not, it
+increments the C<$email_check> counter, and pushes the bad string onto the
+C<@store> array.
 
-{
-    #removes whitespace before validation
-#    $email =~ s/\s+//g;
-#    $email3a =~ s/\s+//g;
-#    $email4a =~ s/\s+//g;
-#    (\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})
-#    ^[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,4}$
-
-#    if ($_[0] =~ /(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})/) { $email_check++; push @store, $_[0]; }
-#    else { }
-# }
-
-
-#    if ($_[0] =~ /(\d+)/) { $email_check++; push @store, $_[0]; }
-#    else { }
-#    }
-
-    if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)|(^\d+)|(\d+$)/ || ($_[0] !~ /^.+\@localhost$/ && $_[0] !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/))             { $email_check++; push @store, $_[0]; }
-    else { }
+=cut
+sub Check_Email {
+    if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)|(^\d+)|(\d+$)/ || ($_[0] !~ /^.+\@localhost$/ && $_[0] !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
+        $email_check++;
+        push @store, $_[0];
+    } else {
+    }
 }
 
+=head2 recipient()
 
+Set C<$recipient> based on the report's functional area (C<$grp>).
 
-#     if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/)             { $email_check++; push @store, $_[0]; }
-#	else { }
-#    }
-
-
-
-
+=cut
 sub recipient {
-
     if ($grp eq "Circulation") {
         $recipient = "usmaicoicircresill\@umd.edu";
     }
@@ -528,36 +480,27 @@ sub recipient {
     if ($grp eq "Web OPAC") {
         $recipient = "usmaicoiuserinter\@umd.edu";
     }
-
     if ($grp eq "Cataloging") {
         $recipient = "usmaicoicatdbmaint\@umd.edu";
     }
-
     if ($grp eq "Serials") {
         $recipient = "usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Acquisitions") {
         $recipient = "usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Item Maintenance") {
         $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
     }
-
     if ($grp eq "Reserves") {
         $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
     }
-
     if ($grp eq "ILL") {
         $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
     }
-
-
     if ($grp eq "other") {
         $recipient = "usmaialeph\@umd.edu";
     }
-
     if ($grp eq "Report request") {
         $recipient = "usmaialeph\@umd.edu";
     }
@@ -566,8 +509,12 @@ sub recipient {
     }
 }
 
+=head2 slug()
 
+Determines the slug (prefix for email) from the report's functional area
+(C<$grp>) and sets the C<$slug> variable.
 
+=cut
 sub slug {
 
     if ($grp eq "Circulation") {

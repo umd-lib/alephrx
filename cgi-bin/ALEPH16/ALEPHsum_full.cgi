@@ -1,14 +1,21 @@
 #!/usr/local/bin/perl 
 
+=head1 NAME
+
+ALEPHsum_full.cgi - Report details page
+
+=head1 DESCRIPTION
+
+This script displays the full record for a given report: all the report data as
+well as all of the replies. It also contains a link to the form to reply to the
+report.
+
+=cut
 
 ## Jamie Bush, 2004
 ## RxWeb (AlephRx) version 3.1
 ## name changed 6/20/06
 ## stats form
-
-#####################################################
-## This script displays the full record when selected
-#####################################################
 
 use DBI;
 use CGI;
@@ -24,7 +31,6 @@ $statement = "";
 $value = "";
 $count = 0;
 $limit = 0;
-#$reply_type = "Reply";
 
 $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
@@ -51,32 +57,36 @@ $p = $input{'page_increment'};
 
 $value = $ENV{'QUERY_STRING'};
 
-
 &record;
 &validate;
 &print_page_start;
 
 if ($error_message eq "")  {
+    # there was no problem with the report ID
     &get_full_record;
 } else {
     print "<B>$error_message</B>\n";
 }
 
-
 &print_page_end;
 
+=head2 fetchreply()
 
-#####################################
-## fetches all replies for printing
-#####################################
+Fetch and print all replies and responses to the report with ID C<$row_id>.
 
+Calls L<reply_type()> to alter the UI to distinguish between user replies and
+staff responses.
+
+Calls L<escapeXML()> to entity-escape the C<reply.text> column.
+
+=cut
 sub fetchreply {
 
     $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
     $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
+
     $sth_1 = $dbh_1->prepare($statement_1)
         or die "Couldn't prepare the query: $sth_1->errstr";
-
     $rv_1 = $sth_1->execute
         or die "Couldn't execute the query: $dbh_1->errstr";
 
@@ -97,84 +107,12 @@ sub fetchreply {
     $rc_1 = $dbh_1->disconnect;
 }
 
+=head2 print_page_start()
 
-#################################
-## fetches reponse for printing
-#################################
+Prints start of page
 
-sub fetchresponse {
-
-
-    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
-
-    $sth_2 = $dbh_2->prepare($statement_2)
-        or die "Couldn't prepare the query: $sth_2->errstr";
-
-    $rv_2 = $sth_2->execute
-        or die "Couldn't execute the query: $dbh_2->errstr";
-
-    while (@row = $sth_2->fetchrow_array) {
-        if ($row[0] eq "") {
-        }else{
-
-            $row[2] = &escapeXml($row[2]);
-            $row[2] =~ s/\n/<BR>/g;
-
-            print "<TR>\n";
-            print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-            print "$row[0]</TD>\n";
-            print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-            print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-            print "</TR>\n";
-        }
-        $rc_2 = $sth_2->finish;
-        $rc_2 = $dbh_2->disconnect;
-    }
-}
-
-
-################################################
-## gets response if there is one to display "*"
-################################################
-
-sub response_get {
-
-    if ($row[6] eq "") {
-    }else{
-        $response = "*";
-    }
-}
-
-####################################################
-## gets and counts the number of replies for display
-####################################################
-
-sub get_reply {
-
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
-    $sth_9 = $dbh->prepare($statement_9)
-        or die "Couldn't prepare the query: $sth_9->errstr";
-
-    $rv_9 = $sth_9->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    while (@srow = $sth_1->fetchrow_array) {
-        $count++;
-        $reply_count = '* ' x $count;
-    }
-    $rc_9 = $sth_9->finish;
-    $rc_9 = $dbh->disconnect;
-}
-
-
-################################################
-## prints start of page
-################################################
-
+=cut
 sub print_page_start {
-
     print "Content-type: text/html\n\n";
     print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
@@ -190,30 +128,27 @@ sub print_page_start {
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
     print "</FORM>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
-
 }
 
 
-################################################
-## prints end of page
-################################################
+=head2 print_page_end()
 
+Prints end of page
+
+=cut
 sub print_page_end {
-
     print "</TABLE>\n";
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
     print "</BODY>\n</HTML>\n";
-
 } 
 
+=head2 record()
 
-########################################
-## This sets the value of &value to "id" 
-## if it is blank. $value is used in the
-## url to display a record
-########################################
+This sets the value of C<$value> to "id" if it is blank. C<$value> is used in
+the url to display a record.
 
+=cut
 sub record {
 
     if ($RECORD){
@@ -232,11 +167,15 @@ sub record {
     }
 }
 
+=head2 get_full_record()
 
-############################################
-## selects full record for display  
-############################################
+Queries the database for the full record for display. The report ID is taken
+from C<$value>. Prints the report fields, then calls L<fetchreply()> to fetch
+and print the replies and responses to this report.
 
+Calls L<escapeXml()> to do entity-escaping of the C<report.text> column.
+
+=cut
 sub get_full_record {
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -248,16 +187,12 @@ sub get_full_record {
     $rv = $sth->execute
         or die "Couldn't execute the query: $dbh->errstr";
 
-
-
     while (@row = $sth->fetchrow_array) {
         print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
         print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
 
         $row[8] = &escapeXml($row[8]);
-#    $row[8] =~ s!\n!<BR>!g;
         $row[8] =~ s/\n/<BR>/g;
-
 
         print "<TR>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
@@ -267,9 +202,6 @@ sub get_full_record {
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
-#        print "<TR><TD COLSPAN=8><FONT SIZE=-1><B><i>&nbsp;</TD></TR>\n";
-
-
 
         print "<TR>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[2]</TD>\n";
@@ -279,23 +211,22 @@ sub get_full_record {
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[6]</TD>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[7]</TD>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[8]</TD>\n";
-#        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-1><a href=\"ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
         $row_id = $row[0];
-#        &fetchresponse(); # fetch the response
         print "</TR>\n";
-        &fetchreply();    # fetch the replies
+        # fetch the replies
+        &fetchreply();
         print "</TR>\n";
         print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
         print "<TR><TD>$reply_count</TD></TR>\n";
     }
 }
 
+=head2 validate()
 
+Validates whether a record number has been submitted in the "go to report" box
+and sets the C<$error_message>.
 
-#######################################################
-## validates whether a record number has been submitted
-## in the "go to report" box and sets the error message
-#######################################################
+=cut
 sub validate {
 
     if ($RECORD =~ /\d/) {
@@ -311,12 +242,12 @@ sub validate {
 
 }
 
+=head2 reply_type()
 
-#######################################################
-## Determines if a reply is from ITD or not and sets 
-## the display color and the text
-#######################################################
+Determines if a reply is from ITD or not and sets the display color
+(C<$font_color>) and the text (C<$reply_type>).
 
+=cut
 sub reply_type {
 
     if ($itd eq "yes") {
@@ -328,7 +259,12 @@ sub reply_type {
     } 
 }
 
+=head2 escapeXml()
 
+Takes a single string argument, replaces "&", "<", and ">" with the appropriate
+XML character entities, and returns the modified string.
+
+=cut
 sub escapeXml {
     my $text = shift;
 
