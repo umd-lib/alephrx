@@ -42,7 +42,6 @@ $statement = "";
 $id = "";
 $rname = "";
 $response = "";
-#$recipient = "jamieb\@itd.umd.edu";
 $from = "usmaialeph\@umd.edu (RxWeb)";
 $mailprog = $ENV{ALEPHRX_MAILER};
 $query = new CGI;
@@ -64,11 +63,6 @@ foreach $pair (@input_pairs) {
     #Decode the URL encoded name and value
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
-
-    #Escape the single quotes
-#    $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-#  $value =~ s/\\/\\\\/g;
 
     #Copy the name and value into the hash
     $input{$name} = $value;
@@ -101,20 +95,6 @@ $summary_mail = $summary;
 $name_mail = $name;
 $text_mail = $text;
 
-#escape the single quotes
-#$summary =~ s/\'/\\\'/g;
-#$name =~ s/\'/\\\'/g;
-#$text =~ s/\'/\\\'/g;
-#$cataloger =~ s/\'/\\\'/g;
-#$email =~ s/\'/\\\'/g;
-#$phone =~ s/\'/\\\'/g;
-#&recipient;
-
-#escape the backslashes
-#$summary =~ s/\\/\\\\/g;
-#$name =~ s/\\/\\\\/g;
-#$text =~ s/\\/\\\\/g;
-
 if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
@@ -131,39 +111,6 @@ if ($email_config = "yes") {
             &mail;
         }
     }
-}
-
-
-=head2 print_page_start()
-
-Print the HTTP header and the start of the HTML page.
-
-B<XXX: Not called on this page>
-
-=cut
-sub print_page_start {
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Form</title>\n";
-    print "</head>\n<body>\n";
-    print "<center>\n";
-    print "<h1>RxWeb Form</h1>\n";
-    print "</body>\n</html>\n";
-}
-
-=head2 print_page_end()
-
-Print the end of the HTML page, from the close of the body onward.
-
-B<XXX: Not called on this page>
-
-=cut
-sub print_page_end {
-    print "</body>\n";
-    print "<HEAD>\n";
-    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-    print "</HEAD></HTML>\n";
 }
 
 =head2 display_record()
@@ -202,7 +149,6 @@ sub display_record {
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
-#        print "<TR><TD COLSPAN=8><FONT SIZE=-1><B><i>&nbsp;</TD></TR>\n";
 
         print "<TR>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[2]</TD>\n";
@@ -240,13 +186,6 @@ Calls C<bcc_create()> to create a Bcc header (stored in C<$bcc>), if needed.
 sub mail {
 
     &bcc_create;
-
-#removes the escape from single quote
-#$text =~ s/\\'/\'/g;
-#$name =~ s/\\'/\'/g;
-#$stext =~ s/\\'/\'/g;
-#$sname =~ s/\\'/\'/g;
-#$ssummary =~ s/\\'/\'/g;
 
     open (MAIL,"|$mailprog -t");
     print MAIL "To: $final_email_list\n";

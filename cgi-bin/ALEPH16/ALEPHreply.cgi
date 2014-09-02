@@ -70,9 +70,9 @@ while (@row = $sth->fetchrow_array) {
     $grp = $row[5];
     $email = $row[9];
     $row_id = $row[0];
-#        &fetchresponse(); # fetch the response
     print "</TR>\n";
-    &fetchreply();    # fetch the replies
+    # fetch the replies
+    &fetchreply();
     print "</TR>\n";
     print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
 }
@@ -86,9 +86,6 @@ print "<P>Name:&nbsp;&nbsp;<INPUT TYPE=\"text\" NAME=name SIZE=20 MAXSIZE=30></P
 print "<P>Reply:&nbsp;&nbsp;<textarea wrap=\"physical\" name=reply cols=60 rows=5></textarea></P>\n";
 
 print "<INPUT TYPE=\"hidden\" name=\"record_id\" VALUE=\"$value\">\n";
-#print "&nbsp;&nbsp;<B>Email Reply?</B>\n";
-#print "<INPUT TYPE=\"radio\" NAME=\"email\" VALUE=\"yes\" checked>Yes\n";
-#print "<INPUT TYPE=\"radio\" NAME=\"email\" VALUE=\"no\">No<br><br>\n";
 print "<input type=submit value=\"Submit Your Reply\">\n";
 print "<br><br>\n";
 &recipient;
@@ -102,8 +99,6 @@ Fetch and print all replies and responses to the report with ID C<$row_id>.
 
 Calls L<reply_type()> to alter the UI to distinguish between user replies and
 staff responses.
-
-Calls L<escapeXML()> to entity-escape the C<reply.text> column.
 
 =cut
 sub fetchreply {
@@ -132,38 +127,6 @@ sub fetchreply {
     $rc_1 = $dbh_1->disconnect;
 }
 
-=head2 fetchresponse()
-
-Fetches reponse for printing.
-
-B<XXX: Not called in the script.> Appears to have been superceded by L<fetchreply()>
-
-=cut
-sub fetchresponse {
-    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
-
-    $sth_2 = $dbh_2->prepare($statement_2)
-        or die "Couldn't prepare the query: $sth_2->errstr";
-
-    $rv_2 = $sth_2->execute
-        or die "Couldn't execute the query: $dbh_2->errstr";
-
-    while (@row = $sth_2->fetchrow_array) {
-        if ($row[0] eq "") {
-        }else{
-            print "<TR>\n";
-            print "<TD COLSPAN=2 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-            print "$row[0]</TD>\n";
-            print "<TD COLSPAN=4 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-            print "<TD COLSPAN=1 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-            print "</TR>\n";
-        }
-        $rc_2 = $sth_2->finish;
-        $rc_2 = $dbh_2->disconnect;
-    }
-}
-
 =head2 reply_type()
 
 Determines if a reply is from ITD or not and sets the display color
@@ -179,72 +142,6 @@ sub reply_type {
         $reply_type = "Reply";
         $font_color = "DarkBlue";
     }
-}
-
-=head2 email_config()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub email_config {
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Email Configuration</title>\n";
-    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-    print "</head>\n<body bgcolor=\"#98AFC7\">\n";
-    print "<center>\n";
-    print "<h1>RxWeb Email Configuration</h1>\n";
-    print "<h3>Please confirm the Email configuration for your report </h3>\n";
-    print "<table>\n";
-
-#    print "<tr><td>Community of interest: $grp</td></tr>\n";
-#    print "<tr><td>     Individual email: $email</td></tr>\n";
-    print "<tr><td align=\"left\">\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPHform.cgi\" METHOD=\"post\">\n";
-    print "<p><input TYPE=\"submit\" VALUE=\"Confirm Email Configuration\"></p>\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"name\" VALUE=\"$name\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$text\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$summary\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"phone\" VALUE=\"$phone\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"campus\" VALUE=\"$campus\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"status\" VALUE=\"$status\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"grp\" VALUE=\"$grp\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email\" VALUE=\"$email\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"recipient\" VALUE=\"$recipient\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"cataloger\" VALUE=\"$cataloger\">\n";
-    print "</form>\n";
-    print "</td></tr></table>\n";
-    print "</body>\n</html>\n";
-}
-
-=head2 email_options()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub email_options {
-
-    if ($email1) {
-        $rec1 = "$recipient";
-    }
-
-    if ($email2) {
-        $rec2 = ",$email";
-    }
-
-    if ($email3) {
-        $rec3 = ",$email3a";
-    }
-
-    if ($email4) {
-        $rec4 = ",$email4a";
-    }
-
-#    $final_email_list = $rec1 . $rec2 . $rec3 . $rec4;
-
 }
 
 =head2 recipient()
@@ -330,7 +227,6 @@ sub email_display {
     print "<option>usmaicoiuserinter\@umd.edu\n";
     print "<option>usmaicoiall\@umd.edu\n";
     print "<option>usmaialeph\@umd.edu\n";
-#    print "<option>jamieb\@kitabu.umd.edu\n";
     print "</select></td>\n";
     print "</tr>\n";
 

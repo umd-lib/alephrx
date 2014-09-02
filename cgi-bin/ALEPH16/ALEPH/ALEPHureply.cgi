@@ -46,8 +46,6 @@ foreach $pair (@input_pairs) {
 
     #Escape the single quotes
     $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-#  $value =~ s/\\/\\\\/g;
 
     #Copy the name and value into the hash
     $input{$name} = $value;
@@ -84,9 +82,6 @@ sub print_form {
     print "<FORM ACTION=\"ALEPHureply.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
     print "<H1>RxWeb Reply Edit Test</H1>\n";
-#print "id=$id<br>\n";
-#print "reply_id=$reply_id<br>\n";
-#print "text=$text<br>\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Update\" onClick=\"parent.location='ALEPHform2.cgi'\">\n";
 
     print "<br><br>\n";
@@ -107,7 +102,6 @@ sub print_form {
         print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Created:</font>&nbsp;&nbsp;$row[2]</TD>\n";
         print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Updated:&nbsp;&nbsp;&nbsp;$row[5]</FONT></TD>\n";
         print "<TR><TD COLSPAN=3 ><textarea wrap=\"soft\" name=text cols=100 rows=8>$row[0]</textarea></TD>\n";
-#        print "<TR><TD COLSPAN=4 BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[0]</TD>\n";
         print "</TR>\n";
         $reply_id = $row[3];
         $record = $row[4];
@@ -144,13 +138,7 @@ updated.
 
 =cut
 sub insert {
-
-#print "<html><body>\n";
-#print "submitted=$submitted\n";
-#print "</body></html>\n";
-
-#Escape the single quotes & back slashes
-
+    # Escape the single quotes & back slashes
     $text =~ s/\\/\\\\/g;
     $text =~ s/\'/\\\'/g;
 
@@ -164,17 +152,4 @@ sub insert {
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
     $error = "Reply has been updated.";
-}
-
-=head2 display_temp()
-
-B<XXX: Not called by this script.>
-
-=cut
-sub display_temp {
-
-    print "<html><body>\n";
-    print "$text\n";
-    print "</body></html>\n";
-
 }

@@ -17,7 +17,6 @@ ALEPHurecord.cgi - Staff report update form
 
 use DBI;
 use CGI;
-#use CGI::Carp qw(fatalsToBrowser);
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -58,7 +57,6 @@ $limit = $input{'limit'};
 $p = $input{'page_increment'};
 $filter_value = $input{'filter_value'};
 $sort_value = $input{'sort_value'};
-#$sort = $input{'sort'};
 $id_i = $input{'id_i'};
 $id_t = $input{'id_t'};
 
@@ -251,7 +249,6 @@ sub print_form {
             print "<option>assigned (HB)\n";
             print "<option>assigned (HH)\n";
             print "<option>assigned (DW)\n";
-# print "<option>assigned (YQ)\n";
             print "<option>assigned (MH)\n";
             print "<option>assigned (LS)\n";
             print "<option>assigned (US)\n";
@@ -302,24 +299,18 @@ sub print_form {
             print "\n";
             print "<b>Report:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=-1>$report_timestamp</font><br>\n";
             print "<textarea cols=\"140\" rows=\"10\" name=\"text\" wrap=\"virtual\">$text</textarea>\n";
-#print "<input type=text wrap=\"virtual\" name=text size=80 value=\"$text\">\n";
-#print "$text\n";
             print "</table>\n";
-#############################
+            #############################
             &fetchreply;
-#############################
+            #############################
             print "<BR><BR>\n";
-#print "Enter your name and response below. Select \"Yes\" or \"No\" to email.<BR><BR>\n";
             print "<table border=\"0\" width=\"70%\">\n";
             print "<tr><td width=\"15\"><B><font size=\"-1\">Name:</B></font></td>\n";
             print "<td><INPUT TYPE=\"text\" NAME=\"rname\"  cols=50 maxlength=50 tabindex=\"1\"></td>\n";
-#print "<td><textarea wrap=\"physical\" name=rname cols=30 maxlength=30></textarea></td>\n";
             print "<td><font size=\"-1\">Check email configuration below and select submit:</font></td>\n";
             print "<td><INPUT TYPE=submit VALUE=submit tabindex=\"5\"></td></tr>\n";
-#print "<BR><BR>\n";
             print "<tr><td width=\"15\"><B><font size=\"-1\">Response:</B></font></td>\n";
             print "<td colspan=\"3\"><textarea wrap=\"soft\" name=response cols=100 rows=5 tabindex=\"2\"></textarea></td></tr>\n";
-#print "</table>\n";
 
             &email_display;
 
@@ -376,11 +367,11 @@ sub fetchreply {
 
     while (@rrow = $sth_1->fetchrow_array) {
 
-###################################
+        ###################################
         $rrow[2] = &escapeXml($rrow[2]);
-###################################
-## Added by Ben 10/17/07
-###################################
+        ###################################
+        ## Added by Ben 10/17/07
+        ###################################
 
         $rrow[2] =~ s/\n/<BR>/g;
 
@@ -433,91 +424,6 @@ sub Check_Email {
         push @store, $_[0];
     } else {
     }
-}
-
-=head2 email_options()
-
-Assemble a list of email address to send notification to, and store in
-C<$final_email_list>. Also, for each email address, increment C<$email_count>.
-If there are any email addresses, set C<$emailx> to "yes".
-
-B<XXX: Not called in this script.>
-
-=cut
-sub email_options {
-
-    if ($email1) {
-        $email_count++;
-        $recipient =~ s/\s+//g;
-#        $recipient =~ s/,//g;
-        $rec1 = "$recipient";
-
-        $emailx = 'yes';
-    }
-
-    if ($email2) {
-        $email_count++;
-        $email =~ s/\s+//g;
-#       $email =~ s/,//g;
-        $rec2 = ",$email";
-        $emailx = 'yes';
-    }
-
-    if ($email3) {
-        $email_count++;
-        $email3a =~ s/\s+//g;
-#       $email3a =~ s/,//g;
-        $rec3 = ",$email3a";
-        $emailx = 'yes';
-    }
-
-    if ($email4) {
-        $email_count++;
-        $email4a =~ s/\s+//g;
-#       $email4a =~ s/,//g;
-        $rec4 = ",$email4a";
-        $emailx = 'yes';
-    }
-
-    if ($email5) {
-        $rec5 = ",$email5";
-        $email_count++;
-    }
-
-    $final_list = $rec1 . $rec2 . $rec3 . $rec4 . $rec5;
-}
-
-=head2 bad_email_display()
-
-Displays error message when a bad email address is submitted. Prints all the
-items in the C<@store> array.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub bad_email_display {
-
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
-    print "</head>\n<body>\n";
-    print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
-    print "<h3>Not a valid email address.</h3>\n";
-    print "<table>\n";
-    print "<tr><td><cite><font size=+1>\n";
-
-    foreach $store (@store) {
-        print "$store<br>\n";
-    }
-
-    print "</cite></font></td></tr></table>\n";
-    print "<SCRIPT=\"Javascript\">\n";
-    print "<form>\n";
-    print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
-    print "</form>\n";
-    print "</body>\n</html>\n";
-
 }
 
 =head2 recipient()
@@ -606,9 +512,7 @@ sub email_display {
     print "<option>usmaicoiuserinter\@umd.edu\n";
     print "<option>usmaicoiall\@umd.edu\n";
     print "<option>usmaialeph\@umd.edu\n";
-#    print "<option>helpdesk\@itd.umd.edu\n";
     print "<option>libitstaff\@umd.edu\n";
-#    print "<option>jamieb\@kitabu.umd.edu\n";
     print "</select></td>\n";
     print "</tr>\n";
 

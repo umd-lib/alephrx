@@ -31,7 +31,6 @@ $statement = "";
 $value = "";
 $count = 0;
 $limit = 0;
-#$reply_type = "Reply";
 
 $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
@@ -106,85 +105,6 @@ sub fetchreply {
     }
     $rc_1 = $sth_1->finish;
     $rc_1 = $dbh_1->disconnect;
-}
-
-=head2 fetchresponse()
-
-Fetches reponse for printing.
-
-B<XXX: Not called in the script.> Appears to have been superceded by L<fetchreply()>
-
-=cut
-sub fetchresponse {
-
-
-    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
-
-    $sth_2 = $dbh_2->prepare($statement_2)
-        or die "Couldn't prepare the query: $sth_2->errstr";
-
-    $rv_2 = $sth_2->execute
-        or die "Couldn't execute the query: $dbh_2->errstr";
-
-    while (@row = $sth_2->fetchrow_array) {
-        if ($row[0] eq "") {
-        }else{
-
-            $row[2] = &escapeXml($row[2]);
-            $row[2] =~ s/\n/<BR>/g;
-
-            print "<TR>\n";
-            print "<TD COLSPAN=2 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-            print "$row[0]</TD>\n";
-            print "<TD COLSPAN=4 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-            print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-            print "</TR>\n";
-        }
-        $rc_2 = $sth_2->finish;
-        $rc_2 = $dbh_2->disconnect;
-    }
-}
-
-
-=head2 response_get()
-
-Gets response if there is one to display "*".
-
-B<XXX: Not called in the script.>
-
-=cut
-sub response_get {
-
-    if ($row[6] eq "") {
-    }else{
-        $response = "*";
-    }
-}
-
-=head2 get_reply()
-
-Gets and counts the number of replies for display.
-
-B<XXX: Not called in the script.>
-
-=cut
-sub get_reply {
-
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
-    $sth_9 = $dbh->prepare($statement_9)
-        or die "Couldn't prepare the query: $sth_9->errstr";
-
-    $rv_9 = $sth_9->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    while (@srow = $sth_1->fetchrow_array) {
-        $count++;
-        $reply_count = '* ' x $count;
-    }
-    $rc_9 = $sth_9->finish;
-    $rc_9 = $dbh->disconnect;
 }
 
 =head2 print_page_start()
@@ -272,7 +192,6 @@ sub get_full_record {
         print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
 
         $row[8] = &escapeXml($row[8]);
-#    $row[8] =~ s!\n!<BR>!g;
         $row[8] =~ s/\n/<BR>/g;
 
         print "<TR>\n
@@ -283,7 +202,6 @@ sub get_full_record {
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Campus</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Status</I></TH>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Text</I></TH>\n";
-#        print "<TR><TD COLSPAN=8><FONT SIZE=-1><B><i>&nbsp;</TD></TR>\n";
 
         print "<TR>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[2]</TD>\n";
@@ -293,11 +211,10 @@ sub get_full_record {
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[6]</TD>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[7]</TD>\n";
         print "<TD BGCOLOR=\"#FFFFF0\" VALIGN=TOP>$row[8]</TD>\n";
-#        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-1><a href=\"ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
         $row_id = $row[0];
-#        &fetchresponse(); # fetch the response
         print "</TR>\n";
-        &fetchreply();    # fetch the replies
+        # fetch the replies
+        &fetchreply();
         print "</TR>\n";
         print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
         print "<TR><TD>$reply_count</TD></TR>\n";

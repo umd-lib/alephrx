@@ -26,7 +26,6 @@ $statement = "";
 $value = "";
 $count = 0;
 $limit = 0;
-#$filter = "";
 $val = "";
 $sort = "id";
 
@@ -89,7 +88,6 @@ $val = $input{'val'};
 $page_number = $input{'page_number'};
 
 $value = $ENV{'QUERY_STRING'};
-#$sort = $value; 
 
 if ($NEXT) {
     $sort = $hidden_value;
@@ -119,7 +117,6 @@ if ($filter eq  "") {
 &get_row_count;
 &calc_num_pages;
 
-#&page_number;
 &filter_display;
 &sort_display;
 &print_page_start;
@@ -168,67 +165,6 @@ sub print_fetch {
         $count = 0;
         &count_reply;
         print "<TD BGCOLOR=\"#FFFFF0\" ALIGN=\"CENTER\"><FONT SIZE=-1 COLOR=\"#000000\">$reply_count</TD></TR>\n";
-    }
-}
-
-=head2 fetchreply()
-
-Fetches all replies for printing.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub fetchreply {
-
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from reply where parent_id = '$row_id' ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1)
-        or die "Couldn't prepare the query: $sth_1->errstr";
-
-    $rv_1 = $sth_1->execute
-        or die "Couldn't execute the query: $dbh_1->errstr";
-
-    while (@rrow = $sth_1->fetchrow_array) {
-        print "<TR>\n";
-        print "<TD COLSPAN=2 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"3333CC\">&nbsp;Reply from:&nbsp;\n";
-        print "$rrow[0]</TD>\n";
-        print "<TD COLSPAN=4 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"3333CC\"><i>Date:&nbsp;$rrow[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-        print "<TD COLSPAN=1 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"3333CC\"><i>&nbsp;$rrow[2]</TD>\n";
-        print "</TR>\n";
-    }
-    $rc_1 = $sth_1->finish;
-    $rc_1 = $dbh_1->disconnect;
-}
-
-=head2 fetchresponse()
-
-Fetches response for printing.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub fetchresponse {
-    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from reply where parent_id = '$row_id' and itd = 'yes'";
-
-    $sth_2 = $dbh_2->prepare($statement_2)
-        or die "Couldn't prepare the query: $sth_2->errstr";
-
-    $rv_2 = $sth_2->execute
-        or die "Couldn't execute the query: $dbh_2->errstr";
-
-    while (@row = $sth_2->fetchrow_array) {
-        if ($row[0] eq "") {
-        }else{
-            print "<TR>\n";
-            print "<TD COLSPAN=2 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-            print "$row[0]</TD>\n";
-            print "<TD COLSPAN=4 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-            print "<TD COLSPAN=1 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-            print "</TR>\n";
-        }
-        $rc_2 = $sth_2->finish;
-        $rc_2 = $dbh_2->disconnect;
     }
 }
 
@@ -288,41 +224,6 @@ sub count_response {
 
     $rc_8 = $sth_8->finish;
     $rc_8 = $dbh->disconnect;
-}
-
-
-=head2 response_get()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub response_get {
-    if ($row[7] eq "") {
-    } else {
-        $response = "*";
-    }
-}
-
-=head2 get_reply()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub get_reply {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
-    $sth_9 = $dbh->prepare($statement_9)
-        or die "Couldn't prepare the query: $sth_9->errstr";
-
-    $rv_9 = $sth_9->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    while (@srow = $sth_1->fetchrow_array) {
-        $count++;
-        $reply_count = '* ' x $count;
-    }
-    $rc_9 = $sth_9->finish;
-    $rc_9 = $dbh->disconnect;
 }
 
 =head2 get_row_count()
@@ -625,7 +526,6 @@ sub print_page_start {
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
     print "<FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates an ITD response has been made.&nbsp;</FONT>\n";
-#print "<FONT SIZE=+1 COLOR=\"#0000FF\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates a User reply.</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";

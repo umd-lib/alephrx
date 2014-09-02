@@ -76,8 +76,6 @@ Fetch and print the number of reports by campus (C<people.campus>).
 
 =cut
 sub query_two {
-#$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
     $statement =   "SELECT people.campus, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.campus";
 
     $sth = $dbh->prepare($statement)
@@ -108,8 +106,6 @@ Fetch and print the number of reports by functional area (C<people.grp>).
 
 =cut
 sub query_three {
-#$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
     $statement =   "SELECT people.grp, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.grp";
 
     $sth = $dbh->prepare($statement)
@@ -140,8 +136,6 @@ Fetch and print the number of reports by name of the user (C<people.name>).
 
 =cut
 sub query_four {
-#$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
     $statement =   "SELECT people.name, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.name";
 
     $sth = $dbh->prepare($statement)
@@ -172,8 +166,6 @@ Fetch and print the number of reports by status (C<report.status>).
 
 =cut
 sub query_five {
-#$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
     $statement =   "SELECT report.status, count(*) from report, people where people.id = report.id and report.supress = 'no' group by report.status";
 
     $sth = $dbh->prepare($statement)
@@ -232,7 +224,6 @@ sub page_start {
     print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
     print "</FORM>\n";
-#print "</center>\n";
     print "<h2>Total Reports = $row_count</h2>\n";
     print "<TABLE CELLPADDING=20>\n";
 }

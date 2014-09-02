@@ -43,11 +43,6 @@ foreach $pair (@input_pairs) {
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
 
-    #Escape the single quotes
-#  $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-#  $value =~ s/\\/\\\\/g;
-
     #Copy the name and value into the hash
     $input{$name} = $value;
 }
@@ -87,9 +82,6 @@ if ($email_check > 0) {
         # insert the reply into the database
         $statement =   "INSERT INTO reply (parent_id, name, date, text, itd) VALUES
         ('$parent_id','$name', NOW(), '$text', 'no')";
-
-#$query1 = $statement;
-#&mail_query;
 
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -157,7 +149,6 @@ if ($email_check > 0) {
             $stext = $row[8];
             $email = $row[9];
 
-#        &fetchresponse(); # fetch the response
             print "</TR>\n";
             # fetch the replies
             &fetchreply();
@@ -178,7 +169,6 @@ if ($email_check > 0) {
         print "$email_check<br>\n";
         # assemble the final list of email addresses
         &email_options;
-#print "$final_list\n";
         print "</BODY>\n</HTML>\n";
         # get the most recent reply date
         &reply_date;
@@ -385,22 +375,6 @@ sub reply_date {
     $rc_6 = $dbh->disconnect;
 }
 
-=head2 mail_query()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub mail_query {
-    open (MAIL,"|$mailprog -t");
-    print MAIL "To: jamieb\@kitabu.umd.edu\n";
-    print MAIL "From: $from\n";
-    print MAIL "Subject: #query\n";
-    print MAIL "$query1\n";
-    print MAIL "$query2\n";
-    print MAIL "$query3\n";
-    close (MAIL);
-}
-
 =head2 reply_type()
 
 Determines if a reply is from ITD or not and sets the display color
@@ -415,44 +389,6 @@ sub reply_type {
         $reply_type = "       Reply";
         $font_color = "DarkBlue";
     }
-}
-
-=head2 email_config()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub email_config {
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Email Configuration</title>\n";
-    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-    print "</head>\n<body bgcolor=\"#98AFC7\">\n";
-    print "<center>\n";
-    print "<h1>RxWeb Email Configuration</h1>\n";
-    print "<h3>Please confirm the Email configuration for your report </h3>\n";
-    print "<table>\n";
-
-    &email_display;
-
-    print "<tr><td align=\"left\">\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPHform.cgi\" METHOD=\"post\">\n";
-    print "<p><input TYPE=\"submit\" VALUE=\"Confirm Email Configuration\"></p>\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"name\" VALUE=\"$name\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$text\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$summary\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"phone\" VALUE=\"$phone\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"campus\" VALUE=\"$campus\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"status\" VALUE=\"$status\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"grp\" VALUE=\"$grp\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"email\" VALUE=\"$email\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"cataloger\" VALUE=\"$cataloger\">\n";
-    print "</form>\n";
-    print "</td></tr></table>\n";
-    print "</body>\n</html>\n";
 }
 
 =head2 email_options()
@@ -522,33 +458,12 @@ C<@store> array.
 
 =cut
 sub Check_Email {
-    #removes whitespace before validation
-#    $email =~ s/\s+//g;
-#    $email3a =~ s/\s+//g;
-#    $email4a =~ s/\s+//g;
-#    (\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})
-#    ^[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,4}$
-
-#    if ($_[0] =~ /(\w[-._\w]*\w@\w[-._\w]*\w\.\w{2,3})/) { $email_check++; push @store, $_[0]; }
-#    else { }
-# }
-
-
-#    if ($_[0] =~ /(\d+)/) { $email_check++; push @store, $_[0]; }
-#    else { }
-#    }
-
     if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)|(^\d+)|(\d+$)/ || ($_[0] !~ /^.+\@localhost$/ && $_[0] !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
         $email_check++;
         push @store, $_[0];
     } else {
     }
 }
-
-#     if ($_[0] =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/)             { $email_check++; push @store, $_[0]; }
-#	else { }
-#    }
-
 
 =head2 recipient()
 

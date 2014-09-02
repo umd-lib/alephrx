@@ -44,7 +44,8 @@ $mailprog = $ENV{ALEPHRX_MAILER};
 $from = "usmaialeph\@umd.edu (RxWeb)";
 $id = "";
 $sort = "id";
-$numrec = "30"; #records per page
+# records per page
+$numrec = "30";
 
 $input_size = $ENV { 'CONTENT_LENGTH' };
 read ( STDIN, $form_info, $input_size );
@@ -62,10 +63,6 @@ foreach $pair (@input_pairs) {
     #Decode the URL encoded name and value
     $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
     $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
-
-    #Escape the single quotes and backslashes
-#  $value =~ s/\'/\\\'/g;
-#  $value =~ s/\\/\\\\/g;
 
     #Copy the name and value into the hash
     $input{$name} = $value;
@@ -164,20 +161,10 @@ $phone =~ s/\'/\\\'/g;
 $rname =~ s/\'/\\\'/g;
 $mresponse =~ s/\'/\\\'/g;
 
-#$email1 =~ s/\'/\\\'/g;
-#$email2 =~ s/\'/\\\'/g;
-#$email3 =~ s/\'/\\\'/g;
-#$email4 =~ s/\'/\\\'/g;
-#$email3a =~ s/\'/\\\'/g;
-#$email4a =~ s/\'/\\\'/g;
-#$email5 =~ s/\'/\\\'/g;
-
 $value = $ENV{'QUERY_STRING'};
-#$sort = $value;
 
-#does not allow the insert of response when there is a name but no text
-# sets the name to blank which prevents the insert.
-
+# does not allow the insert of response when there is a name but no text sets
+# the name to blank which prevents the insert.
 if ($mresponse eq "") {
     $rname = "";
 }
@@ -278,7 +265,6 @@ if ($delete) {
         # sets $filter_display and $sort_display
         &filter_display;
         &sort_display;
-#&page_number;
 
         # renders the page
         &print_page_start_a;
@@ -310,7 +296,6 @@ if ($delete) {
         }
     }
 }
-
 
 =head2 print_fetch()
 
@@ -362,161 +347,6 @@ sub print_fetch {
         print "<TD BGCOLOR=\"#F0F8FF\" ALIGN=\"CENTER\"><FONT SIZE=-1>$reply_count</TD></TR>\n";
 
     }
-}
-
-
-=head2 fetchreply()
-
-Fetches all replies for printing.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub fetchreply {
-
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from reply where parent_id = '$row_id'";
-    $sth_1 = $dbh_1->prepare($statement_1)
-        or die "Couldn't prepare the query: $sth_1->errstr";
-
-    $rv_1 = $sth_1->execute
-        or die "Couldn't execute the query: $dbh_1->errstr";
-
-    while (@rrow = $sth_1->fetchrow_array) {
-        print "<TR>\n";
-        print "<TD COLSPAN=2 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"3333CC\">&nbsp;Reply from:&nbsp;\n";
-        print "$rrow[0]</TD>\n";
-        print "<TD COLSPAN=4 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"3333CC\"><i>Date:&nbsp;$rrow[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-        print "<TD COLSPAN=1 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"3333CC\"><i>&nbsp;$rrow[2]</TD>\n";
-        print "</TR>\n";
-    }
-    $rc_1 = $sth_1->finish;
-    $rc_1 = $dbh_1->disconnect;
-}
-
-=head2 fetchresponse()
-
-Fetches reponse for printing.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub fetchresponse {
-
-
-    $dbh_2 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_2 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text from response where parent_id = '$row_id'";
-
-    $sth_2 = $dbh_2->prepare($statement_2)
-        or die "Couldn't prepare the query: $sth_2->errstr";
-
-    $rv_2 = $sth_2->execute
-        or die "Couldn't execute the query: $dbh_2->errstr";
-
-    while (@row = $sth_2->fetchrow_array) {
-        if ($row[0] eq "") {
-        }else{
-            print "<TR>\n";
-            print "<TD COLSPAN=2 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><i><FONT SIZE=-1 COLOR=\"#A52A2A\">&nbsp;ITD Response from:&nbsp;\n";
-            print "$row[0]</TD>\n";
-            print "<TD COLSPAN=4 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>Date:&nbsp;$row[1]&nbsp;&nbsp;&nbsp;</TD>\n";
-            print "<TD COLSPAN=1 BGCOLOR=\"#BEE4BE\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"#A52A2A\"><i>&nbsp;$row[2]</TD>\n";
-            print "</TR>\n";
-        }
-        $rc_2 = $sth_2->finish;
-        $rc_2 = $dbh_2->disconnect;
-    }
-}
-
-=head2 count_reply()
-
-Counts and creates flag to display when there is a reply.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub count_reply {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_7 =   "SELECT id from reply where parent_id = '$row_id' and itd = 'no' ";
-    $sth_7 = $dbh->prepare($statement_7)
-        or die "Couldn't prepare the query: $sth_7->errstr";
-
-    $rv_7 = $sth_7->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-
-    while (@row = $sth_7->fetchrow_array) {
-        $count++;
-        $reply_count = $count;
-    }
-
-    $rc_7 = $sth_7->finish;
-    $rc_7 = $dbh->disconnect;
-}
-
-
-=head2 count_response()
-
-Creates flag to display when there is a response.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub count_response {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_8 =   "SELECT id from reply where parent_id = '$row_id' and itd = 'yes'";
-    $sth_8 = $dbh->prepare($statement_8)
-        or die "Couldn't prepare the query: $sth_8->errstr";
-
-    $rv_8 = $sth_8->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-
-    while (@rrow = $sth_8->fetchrow_array) {
-        if ($rrow[0] eq ""){
-        }else{
-            $response_count = "*";
-        }
-    }
-
-    $rc_8 = $sth_8->finish;
-    $rc_8 = $dbh->disconnect;
-}
-
-
-=head2 response_get()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub response_get {
-    if ($row[6] eq "") {
-    }else{
-        $response = "*";
-    }
-}
-
-=head2 get_reply()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub get_reply {
-
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_9 =   "SELECT name from reply where parent_id = '$row_id'";
-    $sth_9 = $dbh->prepare($statement_9)
-        or die "Couldn't prepare the query: $sth_9->errstr";
-
-    $rv_9 = $sth_9->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    while (@srow = $sth_1->fetchrow_array) {
-        $count++;
-        $reply_count = '* ' x $count;
-    }
-    $rc_9 = $sth_9->finish;
-    $rc_9 = $dbh->disconnect;
 }
 
 =head2 get_row_count()
@@ -774,7 +604,6 @@ sub filter {
     }
 
     if ($PURPLE) {
-#    &reply_query;
         $filter = "and report.status = 'user input needed'";
     }
 
@@ -782,56 +611,6 @@ sub filter {
         $filter = "and report.status != 'closed'";
     }
 
-}
-
-=head2 print_page_start()
-
-Prints the HTTP header and HTML page start and hidden form fields.
-
-B<XXX: Not called in this script.>
-
-=cut
-sub print_page_start {
-
-    print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD><BR>\n";
-    print "<TITLE>RxWeb Reports Maintenance- TEST</TITLE>\n</HEAD>\n<BODY BACKGROUND=\"\/IMG\/bk2.gif\">\n";
-
-    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
-
-    print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
-    print "<a NAME=\"top\"></a>\n";
-    print "<center>\n";
-    print "<H1>RxWeb Reports Staff</H1>\n";
-#print "<P>Filter by:&nbsp;<INPUT TYPE=\"submit\" VALUE=\"CIRC\" NAME=\"CIRC\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"SRQ\" NAME=\"SRQ\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"PAC\" NAME=\"PAC\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"DLM\" NAME=\"DLM\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"PURPLE\" NAME=\"PURPLE\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"New\" NAME=\"NEW\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"Pending\" NAME=\"PENDING\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"Postponed\" NAME=\"POSTPONED\">\n";
-#print "<INPUT TYPE=\"submit\" VALUE=\"Closed\" NAME=\"CLOSED\">\n";
-#print "<INPUT TYPE=\"button\" VALUE=\"All Summaries\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
-    print "<P><FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates an ITD response has been made.&nbsp;</FONT>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"Report Statistics\" onClick=\"parent.location ='\/cgi-bin\/XALEPH\/ALEPHstats.cgi'\">\n";
-#print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsort.cgi?id'\">\n";
-#print "<FONT SIZE=+1 COLOR=\"#0000FF\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates a User reply.</FONT></p>\n";
-    print "</FORM>\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPH\/ALEPHurecord.cgi\" METHOD=\"post\">\n";
-    print "<B>Go to report # :</B>\n";
-    print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=4>\n";
-    print "<INPUT TYPE=\"submit\" VALUE=\"GO\">&nbsp;&nbsp;\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"Search\" onClick=\"parent.location='ALEPHsearch.cgi'\"></p>\n";
-    print "</FORM>\n";
-    print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"filter_value\" VALUE=\"$filter\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"sort_value\" VALUE=\"$sort\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"numrec\" VALUE=\"$numrec\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
-    print "<FONT COLOR=\"#FF0000\">$message</FONT>\n";
 }
 
 =head2 record()
@@ -923,7 +702,6 @@ sub insert {
 
     if ($grp) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $grp = $dbh->quote($grp);
         $statement =   "UPDATE people SET people.grp = '$grp' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -933,7 +711,6 @@ sub insert {
 
     if ($status) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $status = $dbh->quote($status);
         $statement =   "UPDATE report SET report.status = '$status' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -950,10 +727,6 @@ sub insert {
 
     if ($text) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $text = $dbh->quote("$text");
-
-#	$text =~ s/\'/\\\'/g;
-#	$text =~ s/\\/\\\\/g;
 
         $statement =   "UPDATE report SET report.text = '$text' WHERE id = $id";
         $sth = $dbh->prepare($statement)
@@ -964,10 +737,6 @@ sub insert {
 
     if ($summary) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $summary = $dbh->quote("$summary");
-
-#	$summary =~ s/\'/\\\'/g;
-#	$summary =~ s/\\/\\\\/g;
 
         $statement =   "UPDATE report SET report.summary = '$summary' WHERE id = $id";
         $sth = $dbh->prepare($statement)
@@ -978,7 +747,6 @@ sub insert {
 
     if ($campus) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $campus = $dbh->quote($campus);
         $statement =   "UPDATE people SET people.campus = '$campus' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -988,7 +756,6 @@ sub insert {
 
     if ($date) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $date = $dbh->quote("$date");
         $statement =   "UPDATE report SET report.date = '$date' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -998,7 +765,6 @@ sub insert {
 
     if ($name) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $name = $dbh->quote("$name");
         $statement =   "UPDATE people SET people.name = '$name' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -1008,7 +774,6 @@ sub insert {
 
     if ($phone) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $phone = $dbh->quote("$phone");
         $statement =   "UPDATE people SET people.phone = '$phone' WHERE id = $id";
         $sth = $dbh->prepare($statement)
             or die "Couldn't prepare the query: $sth->errstr";
@@ -1018,7 +783,6 @@ sub insert {
 
     if ($rname) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $rname = $dbh->quote("$rname");
         $statement =   "INSERT into reply (parent_id, name, date, text, itd) VALUES ($id,'$rname',NOW(),'$mresponse','yes')";
 
         $sth = $dbh->prepare($statement)
@@ -1037,7 +801,6 @@ sub insert {
     if ($suppress) {
 
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#	$suppress = $dbh->quote($suppress);
         $statement =   "UPDATE report SET report.supress = '$suppress' where report.id = $id";
 
         $sth = $dbh->prepare($statement)
@@ -1049,7 +812,6 @@ sub insert {
 
     if ($email) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#         $email = $dbh->quote("$email");
         $statement =   "UPDATE people SET people.email = '$email' where people.id = $id";
 
         $sth = $dbh->prepare($statement)
@@ -1060,7 +822,6 @@ sub insert {
 
     if ($cataloger) {
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-#        $cataloger = $dbh->quote($cataloger);
         $statement =   "UPDATE report SET report.cataloger = '$cataloger' where report.id = $id";
 
         $sth = $dbh->prepare($statement)
@@ -1106,9 +867,6 @@ sub updated {
         $updated = "<span style=\"background-color : white\"><P><FONT COLOR=\"#FF0000\"> Record $id has been updated!</span></FONT></P>"
     }
 }
-
-
-
 
 =head2 sort_value()
 
@@ -1469,34 +1227,6 @@ sub sort_display  {
     }
 }
 
-=head2 page_number()
-
-Sets C<$page_number> based on which paging button was used to submit this
-request. The initial value of C<$page_number> comes from the C<page_number>
-request parameter.
-
-If C<LAST>, set C<$page_number> to C<$num_pages>. If C<FIRST>, set
-C<$page_number> to 1. If C<NEXT>, increment C<$page_number>. If C<PEV>,
-decrement C<$page_number>. Otherwise (i.e., no paging button was used for this
-request), set C<$page_number> to 1.
-
-B<XXX: Not called in this script. Only reference is commented out.>
-
-=cut
-sub page_number {
-    if ($LAST) {
-        $page_number = $num_pages;
-    } elsif ($FIRST) {
-        $page_number = 1;
-    } elsif ($NEXT)  {
-        $page_number++;
-    } elsif ($PREV) {
-        $page_number--; 
-    } else {
-        $page_number = 1;
-    }
-}
-
 =head2 print_page_start_a()
 
 Prints the HTTP header and HTML page start, filter buttons, and hidden form
@@ -1616,7 +1346,6 @@ the end of the HTML page.
 sub print_page_end_a {
 
     print "</TABLE>\n";
-#print "$final_email_list\n<br>";
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
     print "<BR>\n";
@@ -1630,7 +1359,6 @@ sub print_page_end_a {
     print "<INPUT TYPE=\"hidden\" name=\"id_i\" VALUE=\"$id_i\">\n";
     &page_rules;
     print "</FORM>\n";
-#print ">>$final_email_list\n";
     print "<CENTER><a href=\"#top\"><FONT SIZE=-1>TOP</a>\n";
     print "<BR><BR>\n";
     print "</BODY>\n</HTML>\n";
@@ -1647,13 +1375,6 @@ matching rows.
 =cut
 sub match {
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
-#     $summary =~ s/\'/\\\'/g;
-#    $summary = $dbh->quote("$summary");
-#    $phone = $dbh->quote("$phone");
-#    $name = $dbh->quote("$name");
-#    $mresponse = $dbh->quote("$mresponse");
-#    $rname = $dbh->quote("$rname");
 
     $statement = "select report.summary, people.phone, people.name, reply.text, reply.name from report, people, reply WHERE people.id = report.id and report.id = reply.parent_id and report.summary = '$summary' and reply.name = '$rname' and reply.text = '$mresponse'";
 
@@ -1692,7 +1413,6 @@ sub email_options {
     if ($email1) {
         $email_count++;
         $recipient =~ s/\s+//g;
-#       $recipient =~ s/,//g;
         $rec1 = "$recipient";
         $emailx = 'yes';
     }
@@ -1700,7 +1420,6 @@ sub email_options {
     if ($email2) {
         $email_count++;
         $email =~ s/\s+//g;
-#       $email =~ s/,//g;
         $rec2 = ",$email";
         $emailx = 'yes';
     }
@@ -1708,7 +1427,6 @@ sub email_options {
     if ($email3) {
         $email_count++;
         $email3a =~ s/\s+//g;
-#       $email3a =~ s/,//g;
         $rec3 = ",$email3a";
         $emailx = 'yes';
     }
@@ -1716,7 +1434,6 @@ sub email_options {
     if ($email4) {
         $email_count++;
         $email4a =~ s/\s+//g;
-#       $email4a =~ s/,//g;
         $rec4 = ",$email4a";
         $emailx = 'yes';
     }
@@ -1780,13 +1497,12 @@ Calls L<bcc_create()> to assemble a Bcc list in C<$bcc>.
 =cut
 sub mail {
 
-    #removes the escape from single quote
+    # removes the escape from single quote
     $text =~ s/\\'/\'/g;
     $name =~ s/\\'/\'/g;
     $stext =~ s/\\'/\'/g;
     $sname =~ s/\\'/\'/g;
     $summary =~ s/\\'/\'/g;
-    #$final_email_list =~ s/\\'/\'/g;
 
     &bcc_create;
 
@@ -1849,7 +1565,6 @@ Original Report by: $original_name
 View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
 END
         close (MAIL);
-#	 $row_id = "";
     } else {}
 }
 
@@ -1957,28 +1672,6 @@ sub recipient {
     }
 }
 
-=head2 no_name_text_display()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub no_name_text_display {
-
-    print "Content-type:  text/html\n\n";
-    print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
-    print "</head>\n<body>\n";
-    print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
-    print "Error Messages will go in here\n";
-    print "<SCRIPT=\"Javascript\">\n";
-    print "<form>\n";
-    print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
-    print "</form>\n";
-    print "</body>\n</html>\n";
-
-}
-
 =head2 cell_background()
 
 Sets C<$cellbk> to the background color of the summary cell based on the status
@@ -2027,7 +1720,6 @@ sub reply_query {
             $maxstamp = $rrow[0];
             $maxstampunix = $rrow[6];
         } else {
-#$reply_count = "";
             $response_count = "*";
             $maxstamp = "";
             $maxstampunix = 0;

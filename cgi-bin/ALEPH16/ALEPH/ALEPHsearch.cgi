@@ -50,8 +50,6 @@ sub print_form {
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
     print "<title>RxWeb Basic Search</title>\n";
-#    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-#    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
     print "</head>\n<body BGCOLOR=\"#98AFC7\">\n";
     print "<center>\n";
     print "<h1>RxWeb Maintenance Basic Search</h1>\n";
@@ -96,7 +94,7 @@ stored in C<$nr>.
 
 =cut
 sub do_search {
-#escape the single quotes
+    # escape the single quotes
     $term =~ s/\'/\\\'/g;
     $field =~ s/\'/\\\'/g;
 
@@ -151,14 +149,4 @@ sub display_results {
 
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
-}
-
-=head2 print_fields()
-
-B<XXX: Not called in this script.>
-
-=cut
-sub print_fields {
-    print "$field<BR>\n";
-    print "$term<BR>\n";
 }

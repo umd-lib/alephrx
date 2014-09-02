@@ -54,8 +54,6 @@ sub print_form {
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
     print "<title>RxWeb Search</title>\n";
-#    print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-#    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
     print "</head>\n<body BGCOLOR=\"#98AFC7\">\n";
     print "<center>\n";
     print "<h1>RxWeb Basic Search</h1>\n";
@@ -69,8 +67,6 @@ sub print_form {
     print "<option>name\n";
     print "<option>reply\n";
     print "</select>\n";
-#    print "<BR><BR>\n";
-#    print "Enter your single search term and submit\n";
     print "<input type=text name=term size=20>\n";
     print "<input type=submit>\n";
     print "<BR>\n";
@@ -86,7 +82,6 @@ sub print_page_end {
     print "</body></html>\n";
 }
 
-
 =head2 do_search()
 
 Construct and execute an SQL query to search the database. If C<$field> is
@@ -100,7 +95,7 @@ stored in C<$nr>.
 
 =cut
 sub do_search {
-#escape the single quotes
+    # escape the single quotes
     $term =~ s/\'/\\\'/g;
     $field =~ s/\'/\\\'/g;
 

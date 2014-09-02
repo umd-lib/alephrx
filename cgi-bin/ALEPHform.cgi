@@ -94,13 +94,9 @@ $text =~ s/\'/\\\'/g;
 $cataloger =~ s/\'/\\\'/g;
 $email =~ s/\'/\\\'/g;
 $phone =~ s/\'/\\\'/g;
-&recipient;
 
-#the following was removed temporarily
-#escape the backslashes
-#$summary =~ s/\\/\\\\/g;
-#$name =~ s/\\/\\\\/g;
-#$text =~ s/\\/\\\\/g;
+# set the email recipient
+&recipient;
 
 if ($query->param('submitted')) {
 
@@ -202,7 +198,6 @@ sub print_form {
     print "<FORM ACTION=\"ALEPHform.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='\/cgi-bin\/ALEPH16\/ALEPHsum.cgi?id'\"></P>\n";
-#    print "<h3>August 16, 2006: Aleph is currently unavailable due to a hardware failure!</h3> Due to this failure you will not be able to access the catalog or use the clients.  We will provide updates of the status of Aleph via the community email reflectors.  \n";
     print "<table width=\"640\" border=\"0\"><tr><td>\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"no\">\n";
@@ -271,7 +266,6 @@ sub print_form {
     print "<th bgcolor=\"#FFFF00\"  align=\"right\" ><FONT SIZE=-1>Report Status:</FONT>&nbsp;</td>\n"; 
     print "<td bgcolor=\"#CCCCCC\"> <select name=status size=1</td>\n";
     print "<option>new \n";
-#    print "<option>change request\n";
     print "</select>\n";
     print "</td>\n";
     print "</tr>\n";
@@ -282,7 +276,6 @@ sub print_form {
     print "<tr valign=\"top\">\n";
     print "<td colspan=4><CENTER><p><FONT SIZE=-1>Please report only one problem at a time. Your report should include a complete description of the problem.\n";
     print "Please remember to include any barcodes, user names or id's you are using if applicable to the problem.<br> \n";
-#    print "Please select the \"Report Request\" link above for details on requesting a report.\n";
     print "</P>\n";
     print "</td>\n";
     print "</tr>\n";
@@ -297,7 +290,6 @@ sub print_form {
     print "<td colspan=2 align=\"center\"><input type=submit value=\"SUBMIT\"></td>\n";
     print "<td colspan=2 align=\"center\"><input type=reset value=\"CLEAR\"></td>\n";
     print "</tr>\n";
-#    print "<tr><td colspan=4><center><a href=\"\/LIMS3\/ALEPH_Help.html\">Help</a></td></tr>\n";
     print "</table>\n";
     print "</form>\n";
     print "</table>\n";
@@ -463,7 +455,6 @@ sub email_config {
     print "<html>\n<head>\n";
     print "<title>RxWeb Email Configuration</title>\n";
     print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
-#    print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
     print "</head>\n<body bgcolor=\"#98AFC7\">\n";
     print "<center>\n";
     print "<h1>RxWeb Email Configuration</h1>\n";
@@ -534,7 +525,6 @@ sub email_display {
     print "<tr><td colspan=\"2\"><hr></td></tr>\n";
     print "<tr><td colspan=\"2\">Community:&nbsp;&nbsp;<cite><b>$recipient</b></cite></td></tr>\n";
     print "<INPUT TYPE=\"hidden\" name=\"email1\" VALUE=\"email1\">\n";
-#    print "<tr><td colspan=\"2\"><INPUT TYPE=\"checkbox\" NAME=\"email1\" VALUE=\"email1\" checked>Community:&nbsp;&nbsp;<cite><b>$recipient</b></cite></td></tr>\n";
     print "<tr><td colspan=\"2\"><INPUT TYPE=\"checkbox\" NAME=\"email2\" VALUE=\"email2\" checked>Reported by:&nbsp;&nbsp;<b><cite>$email</b></cite></td></tr>\n";
     print "<tr><td><INPUT TYPE=\"checkbox\" NAME=\"email3\" VALUE=\"yes\">Additional email</td>\n";
     print"<td><INPUT TYPE=\"text\" NAME=\"email3a\"  cols=80 maxlength=80></td></tr>\n";
