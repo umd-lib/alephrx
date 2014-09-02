@@ -230,8 +230,8 @@ sub display_record {
 
 =head2 mail()
 
-Formats and submits the confirmatione mail to the mailer prog. This function
-retireves the path to the mailer formt he C<$mailprog> variable, but it is
+Formats and submits the confirmation email to the mailer prog. This function
+retireves the path to the mailer form the C<$mailprog> variable, but it is
 ultimately set via the C<ALEPHRX_MAILER> environment variable.
 
 Calls C<bcc_create()> to create a Bcc header (stored in C<$bcc>), if needed.
