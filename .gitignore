@@ -9,6 +9,3 @@ passwd
 t/mails
 # ignore Vagrant's housekeeping data
 .vagrant
-# generated images in the documentation directory
-docs/*.png
-docs/*.svg
