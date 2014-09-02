@@ -67,3 +67,12 @@ VM. From your working copy directory:
     $ cd vm
     $ vagrant destroy
     $ vagrant up
+
+Now that you have everything set up, you can go to the following URLs in your
+workstation browser to start testing the application:
+
+- Report form: <http://alephrx.local/cgi-bin/ALEPHform.cgi>
+- User summary page: <http://alephrx.local/cgi-bin/ALEPH16/ALEPHsum.cgi>
+  (username: usmai, password: usmai)
+- Staff summary page: <http://alephrx.local/cgi-bin/ALEPH16/ALEPH/ALEPHform2.cgi>
+  (username: itdstaff, password: itdstaff)
