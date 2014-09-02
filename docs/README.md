@@ -119,6 +119,7 @@ functionality. For more technical information, please see the following:
 - [CGI Scripts](scripts.md)
 - [All Script Interconnections](pageflow.png)
 - [Database Schema](database.md)
+- [Codebase Cleanup Ideas](codefixes.md)
 
 ### Diagram Source Code ###
 
