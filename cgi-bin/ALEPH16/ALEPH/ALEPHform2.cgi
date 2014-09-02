@@ -218,8 +218,9 @@ if ($submit) {
     } else {
         # if this is a duplicate, clear the $rname to prevent the response from
         # being inserted
-        $updated_value = "";
         $rname = "";
+        # set the updated banner to "duplicate, not updated"
+        $updated_value = qq{<span style="background-color: white"><P><FONT COLOR="#FF0000">Duplicate response detected. Record $id not updated!</span></FONT></P>}
     }
 }
 
@@ -286,6 +287,7 @@ if ($delete) {
         if ($match_rows ge '1'){
             # alert the user that the record was not updated; sends no email in
             # this case
+            # XXX: this occurs too late to be included in the response page
             $updated = "<span style=\"background-color : white\"><P><FONT COLOR=\"#FF0000\"> Record $id not updated!</span></FONT></P>"
         } else {
             if ($mail eq "yes") {
@@ -1367,20 +1369,21 @@ sub print_page_end_a {
 
 =head2 match()
 
-If incoming record matches existing record, sets C<$match_rows> to the number of
-matching rows.
-
-2007/07/22: currently only matching in summary
+Check the incoming response for duplicates amongst the current responses for
+this report. Sets C<$match_rows> to the number of rows where the
+C<reply.parent_id>, C<reply.name>, and C<reply.text> match exactly the submitted
+C<record_id> (C<$id>), C<rname> (C<$rname>), and C<response> (C<$mresponse>)
+parameters.
 
 =cut
 sub match {
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
-    $statement = "select report.summary, people.phone, people.name, reply.text, reply.name from report, people, reply WHERE people.id = report.id and report.id = reply.parent_id and report.summary = '$summary' and reply.name = '$rname' and reply.text = '$mresponse'";
+    $statement = "SELECT reply.id FROM reply WHERE reply.parent_id = ? AND reply.name = ? AND reply.text = ?";
 
     $sth = $dbh->prepare($statement)
         or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
+    $rv = $sth->execute($id, $rname, $mresponse)
         or die "Couldn't execute the query: $dbh->errstr";
 
     $match_rows = $sth->rows;
