@@ -1529,7 +1529,7 @@ Subject: RESPONSE:$slug#$id:$summary
 
 --------------------------------------------------------------------------------
 Please do not reply directly to this e-mail. 
-To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+To REPLY to this Rx: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
@@ -1575,7 +1575,7 @@ Original Report by: $original_name
 -----------------------------------------------
 
 ===================================================================================
-View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
+View this Rx online: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
 END
         close (MAIL);
     } else {}
