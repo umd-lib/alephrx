@@ -28,8 +28,7 @@ This file and F<ALEPHform.cgi> must be in the same directory
 use CGI;
 use DBI;
 use CGI::Carp qw(fatalsToBrowser);
-use IO::Handle;
-use lib "/lims/lib/perl";
+use URI;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -187,6 +186,13 @@ sub mail {
 
     &bcc_create;
 
+    # construct the URLs relative to the request, so the hostname and the path
+    # to the script gets adjusted for whatever server this is running on
+    my $reply_url = URI->new_abs('ALEPH16/ALEPHreply.cgi', $query->url);
+    $reply_url->query($id);
+    my $details_url = URI->new_abs('ALEPH16/ALEPHsum_full.cgi', $query->url);
+    $details_url->query($id);
+
     open (MAIL,"|$mailprog -t");
     print MAIL "To: $final_email_list\n";
     print MAIL "Bcc: $bcc\n" if $bcc;
@@ -196,7 +202,7 @@ Subject: NEW:$slug#$id:$ssummary
 
 --------------------------------------------------------------------------------
 Please do not reply directly to this e-mail. 
-To REPLY to this Rx: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
@@ -210,7 +216,7 @@ Report Submitted by: $name_mail
      Problem Report: $stext 
 
 ===================================================================================
-View this Rx online: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id     
+View this Rx online: $details_url
 END
     close (MAIL);
 }

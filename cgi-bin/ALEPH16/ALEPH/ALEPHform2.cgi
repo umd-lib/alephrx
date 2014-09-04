@@ -29,6 +29,7 @@ emails when it successfully processes one of those requests.
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+use URI;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -162,6 +163,8 @@ $rname =~ s/\'/\\\'/g;
 $mresponse =~ s/\'/\\\'/g;
 
 $value = $ENV{'QUERY_STRING'};
+
+my $query = CGI->new;
 
 # does not allow the insert of response when there is a name but no text sets
 # the name to blank which prevents the insert.
@@ -1519,6 +1522,13 @@ sub mail {
 
     &bcc_create;
 
+    # construct the URLs relative to the request, so the hostname and the path
+    # to the script gets adjusted for whatever server this is running on
+    my $reply_url = URI->new_abs('../ALEPHreply.cgi', $query->url);
+    $reply_url->query($id);
+    my $details_url = URI->new_abs('../ALEPHsum_full.cgi', $query->url);
+    $details_url->query($id);
+
     if ($emailx eq "yes") {
         open (MAIL,"|$mailprog -t");
         print MAIL "To: $final_email_list\n";
@@ -1529,7 +1539,7 @@ Subject: RESPONSE:$slug#$id:$summary
 
 --------------------------------------------------------------------------------
 Please do not reply directly to this e-mail. 
-To REPLY to this Rx: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
@@ -1575,7 +1585,7 @@ Original Report by: $original_name
 -----------------------------------------------
 
 ===================================================================================
-View this Rx online: http://$ENV{SERVER_NAME}/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
+View this Rx online: $details_url
 END
         close (MAIL);
     } else {}
