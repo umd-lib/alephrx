@@ -106,7 +106,7 @@ if ($email_check > 0) {
         print "<FORM ACTION=\"XREPLY.cgi\" METHOD=\"post\">\n";
         print "<center>\n";
         print "<H1>RxWeb Reply</H1>\n";
-        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='\/cgi-bin\/ALEPHform.cgi'\">\n";
+        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
         print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
         print "<TABLE BORDER=0 CELLPADDING=2>\n";
 

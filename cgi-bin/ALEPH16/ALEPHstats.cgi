@@ -221,7 +221,7 @@ sub page_start {
     print "<FORM>\n";
     print "<center>\n";
     print "<H1>RxWeb Statistics</H1>\n";
-    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
     print "</FORM>\n";
     print "<h2>Total Reports = $row_count</h2>\n";

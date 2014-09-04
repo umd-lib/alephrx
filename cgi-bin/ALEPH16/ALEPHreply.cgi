@@ -28,7 +28,7 @@ print "<HTML>\n<HEAD>\n<TITLE>RxWeb Reports</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#9
 print "<FORM ACTION=\"ALEPHxreply.cgi\" METHOD=\"post\">\n";
 print "<center>\n";
 print "<H1>RxWeb Reply</H1>\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='\/cgi-bin\/ALEPHform.cgi'\">\n";
+print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
 print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
 print "<br><br>\n";
 print "<TABLE BORDER=0 CELLPADDING=2>\n";

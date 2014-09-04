@@ -121,12 +121,12 @@ email is sent.
 sub display_record {
     print "Content-type: text/html\n\n";
     print "<HTML>\n<HEAD>\n<TITLE>RxWeb  Reports Summaries</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPH16\/ALEPHsum.cgi\" METHOD=\"post\">\n";
+    print "<FORM ACTION=\"ALEPH16/ALEPHsum.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
     print "<H1>ALEPH Reports</H1>\n";
     print "<FONT SIZE=+1 COLOR=\"#FF0000\">You have submitted report number #$id</FONT>\n";
-    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='\/cgi-bin\/ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -157,7 +157,7 @@ sub display_record {
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[6]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[7]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[8]</TD>\n";
-        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"\/cgi-bin\/ALEPH16\/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
+        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
         $row_id = $row[0];
         $date = $row[4];
         $stext = $row[8];

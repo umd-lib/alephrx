@@ -344,7 +344,7 @@ sub print_fetch {
         print "<INPUT TYPE=\"hidden\" name=\"id_t\" VALUE=\"$id_i\">\n";
         print "<INPUT TYPE=\"hidden\" name=\"numrec\" VALUE=\"$numrec\">\n";
         print "</FORM>\n";
-        print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>#&nbsp;<a href=\"\/cgi-bin\/ALEPH16\/ALEPHsum_full.cgi?$row[0]\">$row[0]</TD>\n";
+        print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>#&nbsp;<a href=\"../ALEPHsum_full.cgi?$row[0]\">$row[0]</TD>\n";
         print "<TD BGCOLOR=\"$cellbk\"><FONT SIZE=-1>&nbsp;$row[3]</TD>\n";
         print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>&nbsp;$row[1]</TD>\n";
         print "<TD BGCOLOR=\"#F0F8FF\"><FONT SIZE=-1>&nbsp;$row[6]</TD>\n";
@@ -1247,9 +1247,9 @@ sub print_page_start_a {
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
     print "<FONT SIZE=\"+3\"><STRONG>RxWeb Update</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='\/cgi-bin\/ALEPH16\/ALEPHstats.cgi'\"></FONT><br><br>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='../ALEPHstats.cgi'\"></FONT><br><br>\n";
 
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
 
@@ -1329,7 +1329,7 @@ sub print_page_start_a {
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
-    print "&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Basic Search\" onClick=\"parent.location ='\/cgi-bin\/ALEPH16\/ALEPH\/ALEPHsearch.cgi'\"></FONT><br><br>\n";
+    print "&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Basic Search\" onClick=\"parent.location ='ALEPHsearch.cgi'\"></FONT><br><br>\n";
     print "</FORM>\n";
 
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";

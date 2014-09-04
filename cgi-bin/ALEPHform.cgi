@@ -197,7 +197,7 @@ sub print_form {
     print "<h1>RxWeb Form</h1>\n";
     print "<FORM ACTION=\"ALEPHform.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='\/cgi-bin\/ALEPH16\/ALEPHsum.cgi?id'\"></P>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></P>\n";
     print "<table width=\"640\" border=\"0\"><tr><td>\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"no\">\n";
@@ -459,7 +459,7 @@ sub email_config {
     print "<center>\n";
     print "<h1>RxWeb Email Configuration</h1>\n";
     print "<h3>Please confirm the Email configuration for your report </h3>\n";
-    print "<FORM ACTION=\"\/cgi-bin\/ALEPHemail.cgi\" METHOD=\"post\">\n";
+    print "<FORM ACTION=\"ALEPHemail.cgi\" METHOD=\"post\">\n";
     print "<table>\n";
     &email_display;
     print "<tr><td align=\"left\">\n";
