@@ -308,12 +308,12 @@ sub print_form {
             print "<tr><td width=\"15\"><B><font size=\"-1\">Name:</B></font></td>\n";
             print "<td><INPUT TYPE=\"text\" NAME=\"rname\"  cols=50 maxlength=50 tabindex=\"1\"></td>\n";
             print "<td><font size=\"-1\">Check email configuration below and select submit:</font></td>\n";
-            print "<td><INPUT TYPE=submit VALUE=submit tabindex=\"5\"></td></tr>\n";
             print "<tr><td width=\"15\"><B><font size=\"-1\">Response:</B></font></td>\n";
             print "<td colspan=\"3\"><textarea wrap=\"soft\" name=response cols=100 rows=5 tabindex=\"2\"></textarea></td></tr>\n";
 
             &email_display;
 
+            print "<td><INPUT TYPE=submit VALUE=submit tabindex=\"5\"></td></tr>\n";
             print "<INPUT TYPE=\"hidden\" NAME=\"filter_value\" VALUE=\"$filter_value\">\n";
             print "</FORM>\n";
         }

@@ -86,10 +86,10 @@ print "<P>Name:&nbsp;&nbsp;<INPUT TYPE=\"text\" NAME=name SIZE=20 MAXSIZE=30></P
 print "<P>Reply:&nbsp;&nbsp;<textarea wrap=\"physical\" name=reply cols=60 rows=5></textarea></P>\n";
 
 print "<INPUT TYPE=\"hidden\" name=\"record_id\" VALUE=\"$value\">\n";
-print "<input type=submit value=\"Submit Your Reply\">\n";
 print "<br><br>\n";
 &recipient;
 &email_display;
+print "<input type=submit value=\"Submit Your Reply\">\n";
 print "</FORM>\n";
 print "</BODY>\n</HTML>\n";
 

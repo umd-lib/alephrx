@@ -139,6 +139,7 @@ sub display_record {
         or die "Couldn't execute the query: $dbh->errstr";
 
     while (@row = $sth->fetchrow_array) {
+        print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
         print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
         print "<TR>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
@@ -157,7 +158,7 @@ sub display_record {
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[6]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[7]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[8]</TD>\n";
-        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
+        print "<TD VALIGN=TOP>$row[9]</TD>\n";
         $row_id = $row[0];
         $date = $row[4];
         $stext = $row[8];
