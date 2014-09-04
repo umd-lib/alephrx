@@ -225,10 +225,10 @@ sub validate_reply {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Report Reply</title>\n";
+    print "<title>Error Replying to AlephRx Report #$parent_id</title>\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
+    print "<h1>Error Replying to AlephRx Report #$parent_id</h1>\n";
     print "<h3>Please enter a reply.</h3>\n";
     print "<table>\n";
     print "<tr><td align=\"left\">\n";
@@ -252,10 +252,10 @@ sub bad_email_display {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
+    print "<title>Error Replying to AlephRx Report #$parent_id</title>\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
+    print "<h1>Error Replying to AlephRx Report #$parent_id</h1>\n";
     print "<h3>Not a valid email address.</h3>\n";
     print "$final_list\n";
     print "<table>\n";

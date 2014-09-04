@@ -120,13 +120,13 @@ email is sent.
 =cut
 sub display_record {
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb  Reports Summaries</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-    print "<FORM ACTION=\"ALEPH16/ALEPHsum.cgi\" METHOD=\"post\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Report #$id - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<FORM ACTION=\"ALEPH16\/ALEPHsum.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
-    print "<H1>ALEPH Reports</H1>\n";
+    print "<H1>AlephRx Report #$id</H1>\n";
     print "<FONT SIZE=+1 COLOR=\"#FF0000\">You have submitted report number #$id</FONT>\n";
-    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></p>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -321,10 +321,10 @@ sub bad_email_display {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
+    print "<title>Error Confirming AlephRx Email Notifications</title>\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
+    print "<h1>Error Confirming AlephRx Email Notifications</h1>\n";
     print "<h3>Not a valid email address.</h3>\n";
     print "<table>\n";
     print "<tr><td><cite><font size=+1>\n";

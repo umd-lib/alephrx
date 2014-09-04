@@ -113,14 +113,15 @@ Prints start of page
 
 =cut
 sub print_page_start {
+    my $number = $error_message ? "Not Found" : "#$value";
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Report $number - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<H1>RxWeb</H1>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
+    print "<H1>AlephRx Report $number</H1>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
     print "<B>Go to report # :</B>\n";

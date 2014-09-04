@@ -217,12 +217,12 @@ Print the HTTP header and the beginning of the HTML page.
 =cut
 sub page_start {
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb Statistics</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Report Statistics - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM>\n";
     print "<center>\n";
-    print "<H1>RxWeb Statistics</H1>\n";
-    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
+    print "<H1>AlephRx Report Statistics</H1>\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
     print "</FORM>\n";
     print "<h2>Total Reports = $row_count</h2>\n";
     print "<TABLE CELLPADDING=20>\n";

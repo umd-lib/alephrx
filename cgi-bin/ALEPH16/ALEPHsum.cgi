@@ -470,13 +470,13 @@ fields.
 sub print_page_start {
 
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY bgcolor=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Reports - AlephRx</TITLE>\n</HEAD>\n<BODY bgcolor=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
-    print "<FONT SIZE=\"+3\"><STRONG>RxWeb</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='ALEPHstats.cgi'\"></FONT><br><br>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
+    print "<FONT SIZE=\"+3\"><STRONG>AlephRx Reports</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"View Statistics\" onClick=\"parent.location ='ALEPHstats.cgi'\"></FONT><br><br>\n";
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
     print "<table border=\"0\" width=\"60%\" bgcolor=\"#98AFC7\">\n";
     print "<tr>\n";

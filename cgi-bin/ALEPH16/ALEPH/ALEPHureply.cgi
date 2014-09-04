@@ -77,16 +77,6 @@ reply with the ID C<$reply_id>.
 =cut
 sub print_form {
 
-    print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb Reply Edit</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-    print "<FORM ACTION=\"ALEPHureply.cgi\" METHOD=\"post\">\n";
-    print "<center>\n";
-    print "<H1>RxWeb Reply Edit Test</H1>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Update\" onClick=\"parent.location='ALEPHform2.cgi'\">\n";
-
-    print "<br><br>\n";
-    print "<TABLE BORDER=0 width=\"60%\" CELLPADDING=2>\n";
-
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
 
     $statement =   "SELECT text, name, DATE_FORMAT(date,'%b %e, %Y      %r'), id, parent_id, DATE_FORMAT(timestamp,'%b %e, %Y    %r') from reply where id = $reply_id";
@@ -96,27 +86,36 @@ sub print_form {
     $rv = $sth->execute
         or die "Couldn't execute the query: $dbh->errstr";
 
-    while (@row = $sth->fetchrow_array) {
-        print "<TR>\n";
-        print "<TD WIDTH=\"20%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP>$row[1]</TD>\n";
-        print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Created:</font>&nbsp;&nbsp;$row[2]</TD>\n";
-        print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Updated:&nbsp;&nbsp;&nbsp;$row[5]</FONT></TD>\n";
-        print "<TR><TD COLSPAN=3 ><textarea wrap=\"soft\" name=text cols=100 rows=8>$row[0]</textarea></TD>\n";
-        print "</TR>\n";
-        $reply_id = $row[3];
-        $record = $row[4];
-        $updated = $row[5];
-    }
+    my ($text, $name, $date, $reply_id, $record, $updated) = $sth->fetchrow_array;
+
+    print "Content-type: text/html\n\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Edit Reply for Report #$record - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<FORM ACTION=\"ALEPHureply.cgi\" METHOD=\"post\">\n";
+    print "<center>\n";
+    print "<H1>Edit Reply for AlephRx Report #$record</H1>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports (Staff)\" onClick=\"parent.location='ALEPHform2.cgi'\">\n";
+
+    print "<br><br>\n";
+    print "<TABLE BORDER=0 width=\"60%\" CELLPADDING=2>\n";
+
+    print "<TR>\n";
+    print "<TD WIDTH=\"20%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP>$name</TD>\n";
+    print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Created:</font>&nbsp;&nbsp;$date</TD>\n";
+    print "<TD WIDTH=\"30%\" BGCOLOR=\"#FFFF99\" VALIGN=TOP><FONT SIZE=-1>Updated:&nbsp;&nbsp;&nbsp;$updated</FONT></TD>\n";
+    print "<TR><TD COLSPAN=3 ><textarea wrap=\"soft\" name=text cols=100 rows=8>$text</textarea></TD>\n";
+    print "</TR>\n";
 
     $rc = $sth->finish;
     $rc = $dbh->disconnect;
+
     print "</TABLE>\n";
     print "<br><br>\n";
     print "<INPUT TYPE=\"hidden\" name=\"id\" VALUE=\"$reply_id\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "<td><INPUT TYPE=submit VALUE=submit></td></tr>\n";
     print "</FORM>\n";
-    print "<a href=\"ALEPHurecord.cgi?$record\">RxWeb Update Record $record<\/a>\n";
+    print "<br><br>\n";
+    print "<a href=\"ALEPHurecord.cgi?$record\">Update AlephRx Report #$record<\/a>\n";
     print "<h3>$error</h3>\n";
     print "<P><h2>This function is still in development</h2>\n";
     print "You can now update the text of the reply<br>\n";

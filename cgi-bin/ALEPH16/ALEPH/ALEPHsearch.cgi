@@ -49,12 +49,12 @@ sub print_form {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Basic Search</title>\n";
+    print "<title>Search - AlephRx</title>\n";
     print "</head>\n<body BGCOLOR=\"#98AFC7\">\n";
     print "<center>\n";
-    print "<h1>RxWeb Maintenance Basic Search</h1>\n";
+    print "<h1>AlephRx Search</h1>\n";
     print "<FORM method=\"POST\" action=\"ALEPHsearch.cgi\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Maintenance Summaries\" onClick=\"parent.location='ALEPHform2.cgi?id'\"><BR><BR>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports for Staff\" onClick=\"parent.location='ALEPHform2.cgi?id'\"><BR><BR>\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "Select the field to search:&nbsp;\n";
     print "<select name=\"field\" size=1>\n";

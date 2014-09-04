@@ -191,13 +191,13 @@ sub print_form {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Form</title>\n";
+    print "<title>Submit a Report to AlephRx</title>\n";
     print "</head>\n<body bgcolor=\"#98AFC7\">\n";
     print "<center>\n";
-    print "<h1>RxWeb Form</h1>\n";
+    print "<h1>Submit a Report to AlephRx</h1>\n";
     print "<FORM ACTION=\"ALEPHform.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></P>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></P>\n";
     print "<table width=\"640\" border=\"0\"><tr><td>\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"no\">\n";
@@ -453,11 +453,11 @@ sub email_config {
     $display = "yes";
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Email Configuration</title>\n";
+    print "<title>Confirm AlephRx Email Notifications</title>\n";
     print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
     print "</head>\n<body bgcolor=\"#98AFC7\">\n";
     print "<center>\n";
-    print "<h1>RxWeb Email Configuration</h1>\n";
+    print "<h1>Confirm AlephRx Email Notifications</h1>\n";
     print "<h3>Please confirm the Email configuration for your report </h3>\n";
     print "<FORM ACTION=\"ALEPHemail.cgi\" METHOD=\"post\">\n";
     print "<table>\n";
@@ -493,12 +493,12 @@ sub display_error {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Web Report</title>\n";
+    print "<title>Error Submitting a Report to AlephRx</title>\n";
     print "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\">\n";
     print "<META HTTP-EQUIV=\"Expires\" CONTENT=\"-1\">\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Web Report</h1>\n";
+    print "<h1>Error Submitting a Report to AlephRx</h1>\n";
     print "<h3>You must complete the form</h3>\n";
     print "<table>\n";
     print "<tr><td align=\"left\">\n";

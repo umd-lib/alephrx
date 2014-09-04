@@ -1243,13 +1243,13 @@ fields.
 sub print_page_start_a {
 
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb Update</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Reports (Staff View) - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
-    print "<FONT SIZE=\"+3\"><STRONG>RxWeb Update</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='../ALEPHstats.cgi'\"></FONT><br><br>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='../../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
+    print "<FONT SIZE=\"+3\"><STRONG>AlephRx Reports (Staff View)</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"View Statistics\" onClick=\"parent.location ='../ALEPHstats.cgi'\"></FONT><br><br>\n";
 
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
 
@@ -1481,10 +1481,10 @@ sub bad_email_display {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
+    print "<title>Error Updating AlephRx Report #$id</title>\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
+    print "<h1>Error Updating AlephRx Report #$id</h1>\n";
     print "<h3>Not a valid email address.</h3>\n";
     print "<table>\n";
     print "<tr><td><cite><font size=+1>\n";

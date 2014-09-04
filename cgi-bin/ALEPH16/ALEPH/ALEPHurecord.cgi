@@ -110,22 +110,8 @@ sub print_form {
 
     if ($id) {
 
-        if ($id =~ /\D/){
-            print "<HTML>\n<HEAD>\n<TITLE>RxWeb Update</TITLE>\n</HEAD>\n<BODY>\n";
-            print "<CENTER><H3>You must enter a valid report #</H3>\n";
-            print "<form>\n";
-            print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
-            print "</form>\n";
-            print "</CENTER>\n";
-        } elsif ($id eq ""){
-            print "<HTML>\n<HEAD>\n<TITLE>RxWeb Update</TITLE>\n</HEAD>\n<BODY>\n";
-            print "<CENTER><H3>You must enter a valid report #</H3>\n";
-            print "<form>\n";
-            print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
-            print "</form>\n";
-            print "</CENTER>\n";
-        } elsif ($id > $max_id){
-            print "<HTML>\n<HEAD>\n<TITLE>RxWeb Update</TITLE>\n</HEAD>\n<BODY>\n";
+        if ($id =~ /\D/ || $id eq "" || $id > $max_id){
+            print "<HTML>\n<HEAD>\n<TITLE>Report Not Found - AlephRx</TITLE>\n</HEAD>\n<BODY>\n";
             print "<CENTER><H3>You must enter a valid report #</H3>\n";
             print "<form>\n";
             print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
@@ -133,14 +119,14 @@ sub print_form {
             print "</CENTER>\n";
         }else {
 
-            print "<HTML>\n<HEAD>\n<TITLE>RxWeb Update - Record $id</TITLE>\n <STYLE type=\"text\/css\">
+            print "<HTML>\n<HEAD>\n<TITLE>Update Report #$id - AlephRx</TITLE>\n <STYLE type=\"text\/css\">
             <!-- input, textarea, select { font-family: Times, serif; font-size: 12pt; color: #000000; background-color: #ff66ff\"; } -->
             </STYLE></HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
             print "<center>\n";
-            print "<H1>RxWeb Update - Record $id</H1>\n";
-            print "<FORM ACTION=\"ALEPHform2.cgi\" METHOD=post>\n";
-            print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='..\/ALEPHsum.cgi?id'\">\n";
-            print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Update\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
+            print "<H1>Update AlephRx Record #$id</H1>\n";
+            print "<FORM ACTION=\"\/cgi-bin\/ALEPH16\/ALEPH\/ALEPHform2.cgi\" METHOD=post>\n";
+            print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='../ALEPHsum.cgi?id'\">\n";
+            print "<INPUT TYPE=\"button\" VALUE=\"View Reports for Staff\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
             $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
             $statement =   "SELECT people.grp, people.campus, people.phone, people.name, report.date, report.status, report.summary, report.text, report.supress, report.cataloger, people.email, DATE_FORMAT(report.timestamp,'%m/%d/%y     %l:%i %p') FROM people, report WHERE people.id = report.id and people.id = $id";
 

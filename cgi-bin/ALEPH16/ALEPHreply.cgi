@@ -22,19 +22,19 @@ $password  = $ENV{ALEPHRX_DATABASE_PASS};
 $statement = "";
 $id = "";
 
-# print the HTTP header and the beginning of the page
-print "Content-type: text/html\n\n";
-print "<HTML>\n<HEAD>\n<TITLE>RxWeb Reports</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-print "<FORM ACTION=\"ALEPHxreply.cgi\" METHOD=\"post\">\n";
-print "<center>\n";
-print "<H1>RxWeb Reply</H1>\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
-print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
-print "<br><br>\n";
-print "<TABLE BORDER=0 CELLPADDING=2>\n";
-
 # the report ID is given by the query string
 $value = $ENV{'QUERY_STRING'};
+
+# print the HTTP header and the beginning of the page
+print "Content-type: text/html\n\n";
+print "<HTML>\n<HEAD>\n<TITLE>Reply to Report #$value - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+print "<FORM ACTION=\"ALEPHxreply.cgi\" METHOD=\"post\">\n";
+print "<center>\n";
+print "<H1>AlephRx Reply to Report #$value</H1>\n";
+print "<INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
+print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
+print "<br><br>\n";
+print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
 # get the full record for this report
 $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
