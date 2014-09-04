@@ -119,7 +119,7 @@ sub print_page_start {
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
     print "<H1>RxWeb</H1>\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\">\n";
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";

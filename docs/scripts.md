@@ -20,9 +20,8 @@ database. While the scripts do make use of the `DBI::prepare()` to create
 prepared statements, none of the scripts use placeholder variables in these
 prepared statements.
 
-Many of the scripts assume that the URL path starts with **/cgi-bin** and that
-static images are stored in **/IMG**. No other static resources besides images
-are used.
+Static images are assumed to be stored in **/IMG**. No other static resources
+besides images are used.
 
 The database connection information and location of the mailer program is passed
 to the scripts via environment variables that are set in the Apache httpd.conf

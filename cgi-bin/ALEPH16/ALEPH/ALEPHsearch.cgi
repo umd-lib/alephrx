@@ -53,7 +53,7 @@ sub print_form {
     print "</head>\n<body BGCOLOR=\"#98AFC7\">\n";
     print "<center>\n";
     print "<h1>RxWeb Maintenance Basic Search</h1>\n";
-    print "<FORM method=\"POST\" action=\"\/cgi-bin\/ALEPH16\/ALEPH\/ALEPHsearch.cgi\">\n";
+    print "<FORM method=\"POST\" action=\"ALEPHsearch.cgi\">\n";
     print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Maintenance Summaries\" onClick=\"parent.location='ALEPHform2.cgi?id'\"><BR><BR>\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "Select the field to search:&nbsp;\n";

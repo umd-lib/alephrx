@@ -11,6 +11,7 @@ ALEPHxreply.cgi - Receives and processes replies to reports.
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+use URI;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -59,6 +60,8 @@ $email3 = $input{'email3'};
 $email4 = $input{'email4'};
 $email5 = $input{'email5'};
 
+my $query = CGI->new;
+
 if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
@@ -103,7 +106,7 @@ if ($email_check > 0) {
         print "<FORM ACTION=\"XREPLY.cgi\" METHOD=\"post\">\n";
         print "<center>\n";
         print "<H1>RxWeb Reply</H1>\n";
-        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='\/cgi-bin\/ALEPHform.cgi'\">\n";
+        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
         print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
         print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
@@ -293,6 +296,13 @@ sub mail {
 
 
     if ($emailx eq "yes") {
+        # construct the URLs relative to the request, so the hostname and the path
+        # to the script gets adjusted for whatever server this is running on
+        my $reply_url = URI->new_abs('ALEPHreply.cgi', $query->url);
+        $reply_url->query($row_id);
+        my $details_url = URI->new_abs('ALEPHsum_full.cgi', $query->url);
+        $details_url->query($row_id);
+
         open (MAIL,"|$mailprog -t");
         print MAIL <<END;
 To: $final_list
@@ -302,7 +312,7 @@ Subject: REPLY:$slug#$row_id:$ssummary
 
 --------------------------------------------------------------------------------
 Please do not reply directly to this e-mail. 
-To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$row_id
+To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
@@ -345,7 +355,7 @@ Original Report by: $sname
 -----------------------------------------------
 
 ===================================================================================
-View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$row_id
+View this Rx online: $details_url
 END
         close (MAIL);
         $row_id = "";

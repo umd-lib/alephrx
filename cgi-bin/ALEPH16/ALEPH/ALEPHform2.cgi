@@ -29,6 +29,7 @@ emails when it successfully processes one of those requests.
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+use URI;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -162,6 +163,8 @@ $rname =~ s/\'/\\\'/g;
 $mresponse =~ s/\'/\\\'/g;
 
 $value = $ENV{'QUERY_STRING'};
+
+my $query = CGI->new;
 
 # does not allow the insert of response when there is a name but no text sets
 # the name to blank which prevents the insert.
@@ -341,7 +344,7 @@ sub print_fetch {
         print "<INPUT TYPE=\"hidden\" name=\"id_t\" VALUE=\"$id_i\">\n";
         print "<INPUT TYPE=\"hidden\" name=\"numrec\" VALUE=\"$numrec\">\n";
         print "</FORM>\n";
-        print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>#&nbsp;<a href=\"\/cgi-bin\/ALEPH16\/ALEPHsum_full.cgi?$row[0]\">$row[0]</TD>\n";
+        print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>#&nbsp;<a href=\"../ALEPHsum_full.cgi?$row[0]\">$row[0]</TD>\n";
         print "<TD BGCOLOR=\"$cellbk\"><FONT SIZE=-1>&nbsp;$row[3]</TD>\n";
         print "<TD BGCOLOR=\"#FFFF99\"><FONT SIZE=-1>&nbsp;$row[1]</TD>\n";
         print "<TD BGCOLOR=\"#F0F8FF\"><FONT SIZE=-1>&nbsp;$row[6]</TD>\n";
@@ -1244,9 +1247,9 @@ sub print_page_start_a {
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
     print "<FONT SIZE=\"+3\"><STRONG>RxWeb Update</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='\/cgi-bin\/ALEPH16\/ALEPHstats.cgi'\"></FONT><br><br>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='../ALEPHstats.cgi'\"></FONT><br><br>\n";
 
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
 
@@ -1326,7 +1329,7 @@ sub print_page_start_a {
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
-    print "&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Basic Search\" onClick=\"parent.location ='\/cgi-bin\/ALEPH16\/ALEPH\/ALEPHsearch.cgi'\"></FONT><br><br>\n";
+    print "&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Basic Search\" onClick=\"parent.location ='ALEPHsearch.cgi'\"></FONT><br><br>\n";
     print "</FORM>\n";
 
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
@@ -1519,6 +1522,13 @@ sub mail {
 
     &bcc_create;
 
+    # construct the URLs relative to the request, so the hostname and the path
+    # to the script gets adjusted for whatever server this is running on
+    my $reply_url = URI->new_abs('../ALEPHreply.cgi', $query->url);
+    $reply_url->query($id);
+    my $details_url = URI->new_abs('../ALEPHsum_full.cgi', $query->url);
+    $details_url->query($id);
+
     if ($emailx eq "yes") {
         open (MAIL,"|$mailprog -t");
         print MAIL "To: $final_email_list\n";
@@ -1529,7 +1539,7 @@ Subject: RESPONSE:$slug#$id:$summary
 
 --------------------------------------------------------------------------------
 Please do not reply directly to this e-mail. 
-To REPLY to this Rx: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHreply.cgi?$id
+To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
@@ -1575,7 +1585,7 @@ Original Report by: $original_name
 -----------------------------------------------
 
 ===================================================================================
-View this Rx online: http://www.itd.umd.edu/cgi-bin/ALEPH16/ALEPHsum_full.cgi?$id
+View this Rx online: $details_url
 END
         close (MAIL);
     } else {}

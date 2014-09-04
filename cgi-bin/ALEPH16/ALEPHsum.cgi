@@ -474,7 +474,7 @@ sub print_page_start {
     print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
-    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='\/cgi-bin\/ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
+    print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='../ALEPHform.cgi'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>\n";
     print "<FONT SIZE=\"+3\"><STRONG>RxWeb</STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
     print "<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"RxWeb Statistics\" onClick=\"parent.location ='ALEPHstats.cgi'\"></FONT><br><br>\n";
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
