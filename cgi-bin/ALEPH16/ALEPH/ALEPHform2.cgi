@@ -1253,72 +1253,72 @@ sub print_page_start_a {
 
     print "<FONT SIZE=\"-1\">Select one of the following to filter reports.</font>\n";
 
-    print "<table border=\"0\" width=\"60%\" bgcolor=\"#98AFC7\">\n";
+    print "<table border=\"0\" bgcolor=\"#98AFC7\">\n";
     print "<tr>\n";
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Acquisitions\" NAME=\"ACQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Acquisitions\" NAME=\"ACQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Circulation\" NAME=\"CIRC\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Circulation\" NAME=\"CIRC\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Cataloging\" NAME=\"CAT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Cataloging\" NAME=\"CAT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Item Maintenance\" NAME=\"ITM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Item Maintenance\" NAME=\"ITM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Reserves\" NAME=\"RES\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Reserves\" NAME=\"RES\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"ILL\" NAME=\"ILL\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"ILL\" NAME=\"ILL\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Serials\" NAME=\"SRQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Web OPAC\" NAME=\"PAC\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Technical\" NAME=\"TECH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Serials\" NAME=\"SRQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
 
 
-    print "<tr>\n";
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"All Assigned\" NAME=\"ASSN\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Web OPAC\" NAME=\"PAC\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (HB)\" NAME=\"ASSNHB\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (HH)\" NAME=\"ASSNHH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DW)\" NAME=\"ASSNDW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (YQ)\" NAME=\"ASSNYQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (MH)\" NAME=\"ASSNMH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n"; 
-
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (US)\" NAME=\"ASSNUS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
-
-
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Technical\" NAME=\"TECH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
 
 
     print "<tr>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"All Assigned\" NAME=\"ASSN\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"New\" NAME=\"NEW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (HB)\" NAME=\"ASSNHB\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Pending\" NAME=\"PENDING\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (HH)\" NAME=\"ASSNHH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"PURPLE\" NAME=\"PURPLE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DW)\" NAME=\"ASSNDW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (YQ)\" NAME=\"ASSNYQ\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (MH)\" NAME=\"ASSNMH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n"; 
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (US)\" NAME=\"ASSNUS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Change Request\" NAME=\"CHANGE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"RECENT\" NAME=\"PRESTP\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Deferred\" NAME=\"DEFR\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Report Request\" NAME=\"REPORT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"All Summaries\" NAME=\"ALL\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<tr>\n";
 
-    print "<td width=\"100%\" align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Not Closed\" NAME=\"NOTCLOSED\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"New\" NAME=\"NEW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Pending\" NAME=\"PENDING\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"PURPLE\" NAME=\"PURPLE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Change Request\" NAME=\"CHANGE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"RECENT\" NAME=\"PRESTP\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Deferred\" NAME=\"DEFR\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Report Request\" NAME=\"REPORT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"All Summaries\" NAME=\"ALL\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Not Closed\" NAME=\"NOTCLOSED\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<tr><td colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;FILTER = <b>$filter_display</b></font></td><td cellpadding=\"2\" colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;SORT = <b>$sort_display</b></font></td><td cellpadding=\"2\" colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;ORDER = <b>$option_value</b></font></td><td cellpadding=\"2\" colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;Records per page = <b>$numrec</b></font></td>\n";
 
