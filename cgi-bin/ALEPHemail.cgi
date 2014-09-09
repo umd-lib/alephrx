@@ -120,13 +120,13 @@ email is sent.
 =cut
 sub display_record {
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>RxWeb  Reports Summaries</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
-    print "<FORM ACTION=\"ALEPH16/ALEPHsum.cgi\" METHOD=\"post\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Report #$id - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<FORM ACTION=\"ALEPH16\/ALEPHsum.cgi\" METHOD=\"post\">\n";
     print "<center>\n";
-    print "<H1>ALEPH Reports</H1>\n";
+    print "<H1>AlephRx Report #$id</H1>\n";
     print "<FONT SIZE=+1 COLOR=\"#FF0000\">You have submitted report number #$id</FONT>\n";
-    print "<P><INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPH16\/ALEPHsum.cgi?id'\"></p>\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></p>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
@@ -139,6 +139,7 @@ sub display_record {
         or die "Couldn't execute the query: $dbh->errstr";
 
     while (@row = $sth->fetchrow_array) {
+        print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
         print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
         print "<TR>\n
         <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
@@ -157,7 +158,7 @@ sub display_record {
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[6]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[7]</TD>\n";
         print "<TD BGCOLOR=\"#E8E8E8\" VALIGN=TOP>$row[8]</TD>\n";
-        print "<TD VALIGN=TOP>$row[9]<FONT SIZE=-2><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply</a></FONT></TD>\n";
+        print "<TD VALIGN=TOP>$row[9]</TD>\n";
         $row_id = $row[0];
         $date = $row[4];
         $stext = $row[8];
@@ -320,10 +321,10 @@ sub bad_email_display {
 
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Reply</title>\n";
+    print "<title>Error Confirming AlephRx Email Notifications</title>\n";
     print "</head>\n<body>\n";
     print "<center>\n";
-    print "<h1>RxWeb Reply</h1>\n";
+    print "<h1>Error Confirming AlephRx Email Notifications</h1>\n";
     print "<h3>Not a valid email address.</h3>\n";
     print "<table>\n";
     print "<tr><td><cite><font size=+1>\n";

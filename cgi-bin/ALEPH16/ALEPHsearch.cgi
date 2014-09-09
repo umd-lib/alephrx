@@ -51,15 +51,17 @@ Print the HTTP header, the beginning of the HTML page, and the search form.
 =cut
 sub print_form {
 
+    my $search_query = $term && $field ? qq{ for "$term" in field $field} : '';
+
     print "Content-type:  text/html\n\n";
     print "<html>\n<head>\n";
-    print "<title>RxWeb Search</title>\n";
+    print "<title>Search$search_query - AlephRx</title>\n";
     print "</head>\n<body BGCOLOR=\"#98AFC7\">\n";
     print "<center>\n";
-    print "<h1>RxWeb Basic Search</h1>\n";
+    print "<h1>AlephRx Search</h1>\n";
     print "<FORM method=\"POST\" action=\"ALEPHsearch.cgi\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></P>\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></P>\n";
     print "Select the field to search:&nbsp;\n";
     print "<select name=\"field\" size=1>\n";
     print "<option>summary\n";
@@ -125,7 +127,9 @@ links to the report detail page for that report (ALEPHsum_full.cgi).
 =cut
 sub display_results {
 
-    print "Your search found <B>$nr</B> records<BR><BR>\n";
+
+    my $s = $nr != 1 ? 's' : '';
+    print qq{Your search for "$term" in field $field found <B>$nr</B> record$s<BR><BR>\n};
 
     if ($nr gt "0") {
         print "<table border=\"0\" cellpadding=\"4\">\n";
