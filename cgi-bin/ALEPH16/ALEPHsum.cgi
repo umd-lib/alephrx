@@ -529,7 +529,7 @@ sub print_page_start {
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
-    print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Basic Search\" onClick=\"parent.location ='ALEPHsearch.cgi'\"></FONT><br><br>\n";
+    print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=\"-1\"><INPUT TYPE=\"button\" VALUE=\"Search\" onClick=\"parent.location ='ALEPHsearch.cgi'\"></FONT><br><br>\n";
     print "</FORM>\n";
 
     print "<FORM ACTION=\"ALEPHsum.cgi?id\" METHOD=\"post\">\n";
