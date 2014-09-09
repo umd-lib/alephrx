@@ -13,20 +13,13 @@ Codebase
 
 - **[cgi-bin](cgi-bin):** CGI scripts making up the bulk of the application
 - **[docs](docs):** Documentation
-    - [aleph16.mwb](docs/aleph16.mwb): MySQL Workbench diagram of the database
-      schema
-    - [aleph16.sql](docs/aleph16.sql): The database schema (table definitions)
-    - [codefixes.md](docs/codefixes.md): Notes on how to generally improve the
-      codebase
-    - [database.md](docs/database.md): List of tables and columns in the
-      database schema
-    - [pageflow.dot](docs/pageflow.dot): Source code for the pageflow.png
-      diagram
-    - [pageflow.png](docs/pageflow.png): Diagram of the navigation and form
-      submission connections between the CGI scripts
-    - [scripts.md](docs/scripts.md): List of all the CGI scripts and their
-      general functionality
 - **[htdocs](htdocs):** Static files used by the application
 - **[t](t):** Test scripts and utilities
 - **[vm](vm):** Vagrantfile and related scripts to create and provision a development
   VM environment
+
+Development Environment
+-----------------------
+
+To set up a fresh development environment, clone this repository and then follow
+the instructions in [vm/README.md](vm/README.md).
