@@ -449,7 +449,7 @@ sub filter {
     }
 
     if ($ACTIVE) {
-        $filter = "and report.status in ('change request','new','pending','assigned','user input needed','sent to functional group')";
+        $filter = "and report.status != 'closed'";
     }
 
     if ($REPORT) {
@@ -760,7 +760,7 @@ sub filter_display  {
         $filter_display = "Pending";
     }
 
-    if ($filter eq "and report.status in ('change request','new','pending','assigned','user input needed','sent to functional group')") {
+    if ($filter eq "and report.status != 'closed'") {
         $filter_display = "Active";
     }
     if ($filter eq "and report.status = 'postponed'") {
