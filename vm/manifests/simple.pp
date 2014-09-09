@@ -19,3 +19,8 @@ package { 'mysql-server':
 package { 'mysql':
     ensure => present,
 }
+
+# LIBILS-38 added a dependency on the URI module
+package { 'perl-URI':
+    ensure => present,
+}

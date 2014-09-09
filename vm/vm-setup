@@ -37,8 +37,3 @@ htpasswd -b /apps/git/alephrx/passwd 3ALL 3ALL
 htpasswd -b /apps/git/alephrx/passwd maryland maryland
 
 # mailing works out of the box, so no need to set anything up
-
-# get additional Perl modules
-curl -L http://cpanmin.us | perl - App::cpanminus
-
-cpanm URI
