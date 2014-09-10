@@ -335,7 +335,7 @@ sub print_fetch {
         &cell_background;
         print "<TR><TD><FONT SIZE=+1 COLOR=\"#FF0000\">$response_count</FONT>\n</TD>";
         print "<FORM ACTION=\"ALEPHurecord.cgi\" METHOD=\"post\">\n";
-        print "<TD><FONT SIZE=-1><INPUT TYPE=\"image\" SRC=\"/IMG\/up.gif\" VALUE=\"Update\"></TD>\n";
+        print "<TD><FONT SIZE=-1><INPUT TYPE=\"image\" SRC=\"../../../IMG\/up.gif\" VALUE=\"Update\"></TD>\n";
         print "<INPUT TYPE=\"hidden\" name=\"record\" VALUE=\"$row[0]\">\n";
         print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
         print "<INPUT TYPE=\"hidden\" name=\"filter_value\" VALUE=\"$filter\">\n";
