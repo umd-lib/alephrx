@@ -102,12 +102,12 @@ if ($email_check > 0) {
             or die "Couldn't execute the query: $dbh->errstr";
 
         print "Content-type: text/html\n\n";
-        print "<HTML>\n<HEAD>\n<TITLE>RxWeb</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+        print "<HTML>\n<HEAD>\n<TITLE>Report #$parent_id - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
         print "<FORM ACTION=\"XREPLY.cgi\" METHOD=\"post\">\n";
         print "<center>\n";
-        print "<H1>RxWeb Reply</H1>\n";
-        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb Form\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
-        print "<INPUT TYPE=\"button\" VALUE=\"RxWeb\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
+        print "<H1>AlephRx Report #$parent_id</H1>\n";
+        print "<INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location='../ALEPHform.cgi'\">\n";
+        print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPHsum.cgi?id'\"></p>\n";
         print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
         $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
