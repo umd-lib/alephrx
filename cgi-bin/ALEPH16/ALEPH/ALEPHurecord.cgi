@@ -17,6 +17,7 @@ ALEPHurecord.cgi - Staff report update form
 
 use DBI;
 use CGI;
+use HTML::Entities;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -134,18 +135,20 @@ sub print_form {
             $sth->execute($id);
 
             @row = $sth->fetchrow_array;
-            $grp = $row[0];
-            $campus = $row[1];
-            $phone = $row[2];
-            $name = $row[3];
-            $date = $row[4];
-            $status = $row[5];
-            $summary = $row[6];
-            $text = $row[7];
-            $suppress = $row[8];
-            $cataloger = $row[9];
-            $email = $row[10];
-            $report_timestamp = $row[11];
+            # HTML entity-encode before placing in the output
+            # prevents truncation seen in LIBILS-43
+            $grp = encode_entities($row[0]);
+            $campus = encode_entities($row[1]);
+            $phone = encode_entities($row[2]);
+            $name = encode_entities($row[3]);
+            $date = encode_entities($row[4]);
+            $status = encode_entities($row[5]);
+            $summary = encode_entities($row[6]);
+            $text = encode_entities($row[7]);
+            $suppress = encode_entities($row[8]);
+            $cataloger = encode_entities($row[9]);
+            $email = encode_entities($row[10]);
+            $report_timestamp = encode_entities($row[11]);
 
             &recipient;
 
