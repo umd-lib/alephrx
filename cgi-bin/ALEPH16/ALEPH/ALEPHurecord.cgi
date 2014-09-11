@@ -125,7 +125,7 @@ sub print_form {
             </STYLE></HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
             print "<center>\n";
             print "<H1>Update AlephRx Record #$id</H1>\n";
-            print "<FORM ACTION=\"\/cgi-bin\/ALEPH16\/ALEPH\/ALEPHform2.cgi\" METHOD=post>\n";
+            print "<FORM ACTION=\"ALEPHform2.cgi\" METHOD=post>\n";
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='../ALEPHsum.cgi?id'\">\n";
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports for Staff\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
 
