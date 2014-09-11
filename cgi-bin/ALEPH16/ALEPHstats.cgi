@@ -44,14 +44,13 @@ reports submitted after 2005-12-31.
 
 =cut
 sub query_one {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
     $statement =   "SELECT report.date, count(*) from report, people where people.id = report.id and report.supress = 'no' and report.date > '20051231' group by report.date";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+    
     print "<TR>\n";
     print "<TD VALIGN=TOP>\n";
     print "<H3>Reports by Date</H3>\n";
@@ -78,10 +77,9 @@ Fetch and print the number of reports by campus (C<people.campus>).
 sub query_two {
     $statement =   "SELECT people.campus, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.campus";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+
     print "<TD VALIGN=TOP>\n";
     print "<H3>Reports by Campus</H3>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
@@ -108,10 +106,9 @@ Fetch and print the number of reports by functional area (C<people.grp>).
 sub query_three {
     $statement =   "SELECT people.grp, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.grp";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+
     print "<TD VALIGN=TOP>\n";
     print "<H3>Reports by Group</H3>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
@@ -138,10 +135,9 @@ Fetch and print the number of reports by name of the user (C<people.name>).
 sub query_four {
     $statement =   "SELECT people.name, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.name";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+
     print "<TD VALIGN=TOP>\n";
     print "<H3>Reports by User</H3>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
@@ -168,10 +164,9 @@ Fetch and print the number of reports by status (C<report.status>).
 sub query_five {
     $statement =   "SELECT report.status, count(*) from report, people where people.id = report.id and report.supress = 'no' group by report.status";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+
     print "<TD VALIGN=TOP>\n";
     print "<H3>Reports by Status</H3>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
@@ -197,13 +192,11 @@ Get the total number of reports and store that value in C<$row_count>.
 
 =cut
 sub query_six {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement =   "SELECT COUNT(*) from report, people where report.id = people.id and report.supress = 'no' ";
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
 
-    $rv_10 = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
 
     while (@crow = $sth->fetchrow_array) {
         $row_count = $crow[0];
@@ -234,8 +227,8 @@ Disconnect the C<$dbh> and print the end of the HTML page.
 
 =cut
 sub page_end {
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "</TABLE>\n";
     print "</BODY>\n</HTML>\n";
 }

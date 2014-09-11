@@ -35,32 +35,6 @@ $from = "usmaialeph\@umd.edu (RxWeb)";
 $mailprog = $ENV{ALEPHRX_MAILER};
 $query = new CGI;
 
-$input_size = $ENV { 'CONTENT_LENGTH' };
-read ( STDIN, $form_info, $input_size );
-@input_pairs = split (/[&;]/, $form_info);
-
-%input = ();
-
-foreach $pair (@input_pairs) {
-    #Convert plusses to spaces
-    $pair =~ s/\+/ /g;
-
-    #Split the name and value pair
-    ($name, $value) = split (/=/, $pair);
-
-    #Decode the URL encoded name and value
-    $name =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
-    $value =~ s/%([A-Fa-f0-9]{2})/pack("c",hex($1))/ge;
-
-    #Escape the single quotes
-    $value =~ s/\'/\\\'/g;
-    #Escape the backslashes
-    $value =~ s/\\/\\\\/g;
-
-    #Copy the name and value into the hash
-    $input{$name} = $value;
-}
-
 $name = $query->param('name');
 $id = $query->param('id');
 $campus = $query->param('campus');
@@ -81,19 +55,6 @@ $email4 = $query->param('email4');
 $email4a = $query->param('email4a');
 $cataloger = $query->param('cataloger');
 $email_config = $query->param('email_config');
-
-#to be used in email before single quotes are escaped
-$summary_mail = $summary;
-$name_mail = $name;
-$text_mail = $text;
-
-#escape the single quotes
-$summary =~ s/\'/\\\'/g;
-$name =~ s/\'/\\\'/g;
-$text =~ s/\'/\\\'/g;
-$cataloger =~ s/\'/\\\'/g;
-$email =~ s/\'/\\\'/g;
-$phone =~ s/\'/\\\'/g;
 
 # set the email recipient
 &recipient;
@@ -330,45 +291,26 @@ C<report> tables.
 
 =cut
 sub insert_data {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES 
-    ('$name','$grp','$campus','$phone','$email')";
-
-    $query1 = $statement;
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
+    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES (?, ?, ?, ?, ?)";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($name, $grp, $campus, $phone, $email);
 
     $statement =   "SELECT last_insert_id()";
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rc = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
 
     $last = $sth->fetchrow_array; 
 
-
     $statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
-    (LAST_INSERT_ID(),NOW(),'$status','$summary','$text','$cataloger', NOW(), NOW(), '18.01')";
+    (LAST_INSERT_ID(), NOW(), ?, ?, ?, ?, NOW(), NOW(), '18.01')";
 
-    $query2 = $statement;
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $statement";
-
+    $sth = $dbh->prepare($statement);
+    $sth->execute($status, $summary, $text, $cataloger);
     
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect
+    $sth->finish;
+    $dbh->disconnect
 }
 
 
@@ -424,15 +366,12 @@ C<$match_rows> to the number of matching rows found.
 
 =cut
 sub match {
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $statement = "select report.text, report.date, people.phone, people.name from report, people WHERE people.id = report.id and report.text = ? and report.date = NOW() and people.phone = ? and people.name = ?";
 
-    $statement = "select report.text, report.date, people.phone, people.name from report, people WHERE people.id = report.id and report.text = '$text' and report.date = NOW() and people.phone = '$phone' and people.name = '$name'";
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($text, $phone, $name);
 
     $match_rows = $sth->rows;
 }

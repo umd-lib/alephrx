@@ -82,13 +82,10 @@ Calls L<escapeXML()> to entity-escape the C<reply.text> column.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
-
-    $sth_1 = $dbh_1->prepare($statement_1)
-        or die "Couldn't prepare the query: $sth_1->errstr";
-    $rv_1 = $sth_1->execute
-        or die "Couldn't execute the query: $dbh_1->errstr";
+    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
+    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
 
@@ -103,8 +100,8 @@ sub fetchreply {
         print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>&nbsp;$rrow[2]</TD>\n";
         print "</TR>\n";
     }
-    $rc_1 = $sth_1->finish;
-    $rc_1 = $dbh_1->disconnect;
+    $sth_1->finish;
+    $dbh_1->disconnect;
 }
 
 =head2 print_page_start()
@@ -139,8 +136,8 @@ Prints end of page
 =cut
 sub print_page_end {
     print "</TABLE>\n";
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "</BODY>\n</HTML>\n";
 } 
 
@@ -179,14 +176,11 @@ Calls L<escapeXml()> to do entity-escaping of the C<report.text> column.
 =cut
 sub get_full_record {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = $value and people.id = report.id";
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = ? and people.id = report.id";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($value);
 
     while (@row = $sth->fetchrow_array) {
         print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
