@@ -101,7 +101,7 @@ sub do_search {
     $term =~ s/\'/\\\'/g;
     $field =~ s/\'/\\\'/g;
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
     if ($field eq "reply") {
         $statement =   "SELECT DISTINCT people.id, report.summary, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, people.grp, report.status from people, report, reply where (reply.text LIKE '%$term%' or reply.name LIKE '%$term%') and reply.parent_id = report.id and report.id = people.id order by people.id"; 
@@ -109,11 +109,8 @@ sub do_search {
         $statement =   "SELECT people.id, report.summary, DATE_FORMAT(date,'%m/%d/%y'), people.name, people.grp, report.status from people, report where $field LIKE '%$term%' and report.id = people.id order by people.id";
     }
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
 
     $nr = $sth->rows;
 }

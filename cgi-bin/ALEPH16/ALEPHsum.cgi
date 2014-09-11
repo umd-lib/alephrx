@@ -177,22 +177,18 @@ Counts using C<$count> and sets C<$reply_count> to the final value.
 
 =cut
 sub count_reply {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_7 =   "SELECT name from reply where parent_id = '$row_id' and itd = 'no'";
-    $sth_7 = $dbh->prepare($statement_7)
-        or die "Couldn't prepare the query: $sth_7->errstr";
-
-    $rv_7 = $sth_7->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement_7 =   "SELECT name from reply where parent_id = ? and itd = 'no'";
+    $sth_7 = $dbh->prepare($statement_7);
+    $sth_7->execute($row_id);
 
     while (@row = $sth_7->fetchrow_array) {
         $count++;
         $reply_count = $count;
     }
 
-    $rc_7 = $sth_7->finish;
-    $rc_7 = $dbh->disconnect;
+    $sth_7->finish;
+    $dbh->disconnect;
 }
 
 =head2 count_response()
@@ -206,14 +202,10 @@ responses.
 
 =cut
 sub count_response {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_8 =   "SELECT text from reply where parent_id = '$row_id' and itd = 'yes'";
-    $sth_8 = $dbh->prepare($statement_8)
-        or die "Couldn't prepare the query: $sth_8->errstr";
-
-    $rv_8 = $sth_8->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement_8 =   "SELECT text from reply where parent_id = ? and itd = 'yes'";
+    $sth_8 = $dbh->prepare($statement_8);
+    $sth_8->execute($row_id);
 
     while (@rrow = $sth_8->fetchrow_array) {
         if ($rrow[0] eq ""){
@@ -222,8 +214,8 @@ sub count_response {
         }
     }
 
-    $rc_8 = $sth_8->finish;
-    $rc_8 = $dbh->disconnect;
+    $sth_8->finish;
+    $dbh->disconnect;
 }
 
 =head2 get_row_count()
@@ -234,19 +226,16 @@ total number of pages. The total is stored in C<$row_count>.
 =cut
 sub get_row_count {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_10 =   "SELECT COUNT(*) from report, people where report.supress = 'no' and report.id = people.id $filter";
-    $sth_10 = $dbh->prepare($statement_10)
-        or die "Couldn't prepare the query: $sth_10->errstr";
-
-    $rv_10 = $sth_10->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth_10 = $dbh->prepare($statement_10);
+    $sth_10->execute;
 
     while (@crow = $sth_10->fetchrow_array) {
         $row_count = $crow[0];
     }
-    $rc_10 = $sth_10->finish;
-    $rc_10 = $dbh->disconnect;
+    $sth_10->finish;
+    $dbh->disconnect;
 }
 
 =head2 calc_num_pages()
@@ -549,8 +538,8 @@ the end of the HTML page.
 sub print_page_end {
 
     print "</TABLE>\n";
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "<BR>\n";
     &page_rules;
     print "<INPUT TYPE=\"hidden\" name=\"val\" VALUE=\"$sort\">\n";
@@ -599,14 +588,12 @@ Only queries records where C<report.supress = 'no'>.
 =cut
 sub get_sum_record {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
     $statement =   "SELECT people.id, people.grp, people.campus, report.summary, report.status, DATE_FORMAT(report.date,'%m/%d/%y'), people.name FROM people, report WHERE report.supress = 'no' and people.id = report.id $filter order by $sort $option LIMIT $limit, 30";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
 }
 
 =head2 sort_submit()

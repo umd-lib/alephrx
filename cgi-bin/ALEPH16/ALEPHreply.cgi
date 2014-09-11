@@ -37,14 +37,11 @@ print "<br><br>\n";
 print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
 # get the full record for this report
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-$statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/ %d/%y'), people.grp, people.campus, report.status, report.text, people.email FROM people, report WHERE people.id = $value and people.id = report.id";
-
-$sth = $dbh->prepare($statement)
-    or die "Couldn't prepare the query: $sth->errstr";
-$rv = $sth->execute
-    or die "Couldn't execute the query: $dbh->errstr";
+$statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/ %d/%y'), people.grp, people.campus, report.status, report.text, people.email FROM people, report WHERE people.id = ? and people.id = report.id";
+$sth = $dbh->prepare($statement);
+$sth->execute($value);
 
 # display the full record
 while (@row = $sth->fetchrow_array) {
@@ -77,8 +74,8 @@ while (@row = $sth->fetchrow_array) {
     print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
 }
 
-$rc = $sth->finish;
-$rc = $dbh->disconnect;
+$sth->finish;
+$dbh->disconnect;
 print "</TABLE>\n";
 print "<FONT>Complete the form and configure email options below</FONT>\n";
 print "<BR>\n";
@@ -103,13 +100,10 @@ staff responses.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$row_id' ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1)
-        or die "Couldn't prepare the query: $sth_1->errstr";
-
-    $rv_1 = $sth_1->execute
-        or die "Couldn't execute the query: $dbh_1->errstr";
+    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
+    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
 
@@ -123,8 +117,8 @@ sub fetchreply {
         print "<TD COLSPAN=1 BGCOLOR=\"#E8E8E8\" VALIGN=TOP><FONT SIZE=-1 COLOR=\"$font_color\"><i>&nbsp;$rrow[2]</TD>\n";
         print "</TR>\n";
     }
-    $rc_1 = $sth_1->finish;
-    $rc_1 = $dbh_1->disconnect;
+    $sth_1->finish;
+    $dbh_1->disconnect;
 }
 
 =head2 reply_type()

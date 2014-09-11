@@ -152,16 +152,6 @@ $page_number = $input{'page_number'};
 $submit = $input{'submit'};
 $drecord = $input{'drecord'};
 
-#escape the single quotes
-$summary =~ s/\'/\\\'/g;
-$name =~ s/\'/\\\'/g;
-$text =~ s/\'/\\\'/g;
-$cataloger =~ s/\'/\\\'/g;
-$email =~ s/\'/\\\'/g;
-$phone =~ s/\'/\\\'/g;
-$rname =~ s/\'/\\\'/g;
-$mresponse =~ s/\'/\\\'/g;
-
 $value = $ENV{'QUERY_STRING'};
 
 my $query = CGI->new;
@@ -364,19 +354,18 @@ total number of pages. The total is stored in C<$row_count>.
 =cut
 sub get_row_count {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    # this needs the raw interpolation, because $filter is an SQL fragment, not
+    # a value to be substituted in
     $statement_10 =   "SELECT COUNT(*) from report, people where report.supress = 'no' and report.id = people.id $filter";
-    $sth_10 = $dbh->prepare($statement_10)
-        or die "Couldn't prepare the query: $sth_10->errstr";
-
-    $rv_10 = $sth_10->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth_10 = $dbh->prepare($statement_10);
+    $sth_10->execute;
 
     while (@crow = $sth_10->fetchrow_array) {
         $row_count = $crow[0];
     }
-    $rc_10 = $sth_10->finish;
-    $rc_10 = $dbh->disconnect;
+    $sth_10->finish;
+    $dbh->disconnect;
 }
 
 =head2 calc_num_pages()
@@ -658,15 +647,14 @@ Only queries records where C<report.supress = 'no'>.
 =cut
 sub get_sum_record {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
+    # this needs the raw interpolation, because these variables are SQL
+    # fragments, not just values to be substituted in
     $statement =   "SELECT people.id, people.grp, people.campus, report.summary, report.status, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, report.updated FROM people, report WHERE report.supress = 'no' and people.id = report.id $filter ORDER BY $sort $option LIMIT $limit, $numrec";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
 }
 
 =head2 insert()
@@ -701,140 +689,89 @@ table, using the following mapping:
     rname      name
     response   text
 
-If a new reply is created, also updates the C<report.updated> column to
-C<NOW()>.
+If a new reply is created or the C<report.status> is updated, also updates the
+C<report.updated> column to C<NOW()>.
 
 =cut
 sub insert {
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
     if ($grp) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE people SET people.grp = '$grp' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE people SET people.grp = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($grp, $id);
     }
 
     if ($status) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE report SET report.status = '$status' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
-
-        $statement =   "UPDATE report set updated = NOW() where id = '$id'";
-
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        # setting status sets the reported updated timestamp
+        $statement =   "UPDATE report SET report.status = ?, updated = NOW() WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($status, $id);
     }
 
     if ($text) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
-        $statement =   "UPDATE report SET report.text = '$text' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE report SET report.text = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($text, $id);
     }
 
     if ($summary) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-
-        $statement =   "UPDATE report SET report.summary = '$summary' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE report SET report.summary = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($summary, $id);
     }
 
     if ($campus) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE people SET people.campus = '$campus' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE people SET people.campus = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($campus, $id);
     }
 
     if ($date) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE report SET report.date = '$date' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE report SET report.date = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($date, $id);
     }
 
     if ($name) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE people SET people.name = '$name' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE people SET people.name = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($name, $id);
     }
 
     if ($phone) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE people SET people.phone = '$phone' WHERE id = $id";
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE people SET people.phone = ? WHERE id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($phone, $id);
     }
 
+    # the actual response is only inserted if there is a name given
     if ($rname) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "INSERT into reply (parent_id, name, date, text, itd) VALUES ($id,'$rname',NOW(),'$mresponse','yes')";
+        $statement =   "INSERT into reply (parent_id, name, date, text, itd) VALUES (?, ?, NOW(), ?, 'yes')";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($id, $rname, $mresponse);
 
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
-
-        $statement =   "UPDATE report set updated = NOW() where id = $id";
-
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE report set updated = NOW() where id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($id);
     }
 
     if ($suppress) {
-
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE report SET report.supress = '$suppress' where report.id = $id";
-
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
-
+        $statement =   "UPDATE report SET report.supress = ? where report.id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($suppress, $id);
     }
 
     if ($email) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE people SET people.email = '$email' where people.id = $id";
-
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE people SET people.email = ? where people.id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($email, $id);
     }
 
     if ($cataloger) {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement =   "UPDATE report SET report.cataloger = '$cataloger' where report.id = $id";
-
-        $sth = $dbh->prepare($statement)
-            or die "Couldn't prepare the query: $sth->errstr";
-        $rv = $sth->execute
-            or die "Couldn't execute the query: $dbh->errstr";
+        $statement =   "UPDATE report SET report.cataloger = ? where report.id = ?";
+        $sth = $dbh->prepare($statement);
+        $sth->execute($cataloger, $id);
     }
 }
 
@@ -846,19 +783,17 @@ to that date.
 =cut
 sub response_date {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement =   "SELECT date from reply where parent_id = $id and itd = 'yes' ";
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement =   "SELECT date from reply where parent_id = ? and itd = 'yes' ";
 
-    $sth_6 = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth_6->errstr";
-    $rv_6 = $sth_6->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth_6 = $dbh->prepare($statement);
+    $sth_6->execute($id);
 
     while (@row = $sth_6->fetchrow_array) {
         $rdate = $row[0];
     }
-    $rc_6 = $sth_6->finish;
-    $rc_2 = $dbh->disconnect
+    $sth_6->finish;
+    $dbh->disconnect;
 }
 
 =head2 updated()
@@ -908,27 +843,19 @@ Deletes the selected records from the database - not used.
 
 =cut
 sub delete {
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $statement =   "DELETE from people WHERE id = ?";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id);
 
-    $statement =   "DELETE from people WHERE id = $id";
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $statement =   "DELETE from report WHERE id = ?";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id);
 
-
-    $statement =   "DELETE from report WHERE id = $id";
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    $statement =   "DELETE from response WHERE parent_id = $id";
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $statement =   "DELETE from response WHERE parent_id = ?";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id);
 }
 
 =head2 pre_delete()
@@ -940,15 +867,12 @@ B<XXX: No UI is present for getting to this display.>
 
 =cut
 sub pre_delete  {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement =   "SELECT people.id, people.grp, people.campus, people.phone, people.name, report.date, report.status, report.summary, report.text FROM people, report WHERE people.id = report.id AND people.id = $drecord";
+    $statement =   "SELECT people.id, people.grp, people.campus, people.phone, people.name, report.date, report.status, report.summary, report.text FROM people, report WHERE people.id = report.id AND people.id = ?";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($drecord);
 
     print "Content-type: text/html\n\n";
     print "<HTML>\n<HEAD>\n<TITLE>RxWeb Record Maintenance</TITLE>\n</HEAD>\n<BODY BACKGROUND=\"\/IMG\/bk2.gif\">\n";
@@ -993,8 +917,8 @@ sub pre_delete  {
         print "</TR>\n";
     }
 
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "</TABLE>\n";
     print "</FORM>\n";
     print "<BR>\n";
@@ -1353,8 +1277,8 @@ the end of the HTML page.
 sub print_page_end_a {
 
     print "</TABLE>\n";
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "<BR>\n";
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"record\" VALUE=\"$row[0]\">\n";
@@ -1389,14 +1313,11 @@ match those values exactly.
 sub match {
     my ($id, $reply_name, $reply_text) = @_;
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
     $statement = "SELECT COUNT(*) FROM reply WHERE reply.parent_id = ? AND reply.name = ? AND reply.text = ?";
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute($id, $reply_name, $reply_text)
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id, $reply_name, $reply_text);
 
     my ($count) = $sth->fetchrow_array;
     return $count;
@@ -1513,13 +1434,6 @@ Calls L<bcc_create()> to assemble a Bcc list in C<$bcc>.
 =cut
 sub mail {
 
-    # removes the escape from single quote
-    $text =~ s/\\'/\'/g;
-    $name =~ s/\\'/\'/g;
-    $stext =~ s/\\'/\'/g;
-    $sname =~ s/\\'/\'/g;
-    $summary =~ s/\\'/\'/g;
-
     &bcc_create;
 
     # construct the URLs relative to the request, so the hostname and the path
@@ -1552,13 +1466,10 @@ This is a DSS response to the RxWeb listed below
 
 END
 
-        $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-        $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = '$id' ORDER BY date DESC";
-        $sth_1 = $dbh_1->prepare($statement_1)
-            or die "Couldn't prepare the query: $sth_1->errstr";
-
-        $rv_1 = $sth_1->execute
-            or die "Couldn't execute the query: $dbh_1->errstr";
+        $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+        $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
+        $sth_1 = $dbh_1->prepare($statement_1);
+        $sth_1->execute($id);
 
         while (@row = $sth_1->fetchrow_array) {
             $itd = $row[3];
@@ -1572,9 +1483,8 @@ END
 END
         }
 
-
-        $rc_1 = $sth_1->finish;
-        $rc_1 = $dbh_1->disconnect;
+        $sth_1->finish;
+        $dbh_1->disconnect;
 
         &text;
         print MAIL <<END;
@@ -1618,15 +1528,11 @@ C<$original_text> and C<$original_name>.
 =cut
 sub text {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement = "select report.text, people.name from report, people WHERE report.id = '$id' and people.id = report.id";
-
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
+    $statement = "select report.text, people.name from report, people WHERE report.id = ? and people.id = report.id";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id);
 
     while (@row = $sth->fetchrow_array) {
         $original_text = $row[0];
@@ -1721,14 +1627,11 @@ not, it increments C<$reply_count>.
 
 =cut
 sub reply_query {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement_8 =   "SELECT DATE_FORMAT(date,'%Y%m%d'), itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = '$row_id'";
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement_8 =   "SELECT DATE_FORMAT(date,'%Y%m%d'), itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = ?";
 
-    $sth_8 = $dbh->prepare($statement_8)
-        or die "Couldn't prepare the query: $sth_8->errstr";
-
-    $rv_8 = $sth_8->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth_8 = $dbh->prepare($statement_8);
+    $sth_8->execute($row_id);
 
     while (@rrow = $sth_8->fetchrow_array) {
         $now = $rrow[2];
@@ -1749,8 +1652,8 @@ sub reply_query {
         }
     }
 
-    $rc_8 = $sth_8->finish;
-    $rc_8 = $dbh->disconnect;
+    $sth_8->finish;
+    $dbh->disconnect;
 }
 
 

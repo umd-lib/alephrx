@@ -129,14 +129,12 @@ sub display_record {
     print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></p>\n";
     print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = '$id' and people.id = report.id";
+    $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = ? and people.id = report.id";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($id);
 
     while (@row = $sth->fetchrow_array) {
         print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPH16/ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
@@ -168,8 +166,8 @@ sub display_record {
         print "<TR><TD><FONT SIZE=-2>&nbsp;</TD></TR>\n";
     }
     print "</TABLE>\n";
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     print "</FORM>\n";
     print "</BODY>\n</HTML>\n";
 }

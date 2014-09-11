@@ -24,3 +24,9 @@ package { 'mysql':
 package { 'perl-URI':
     ensure => present,
 }
+
+# LIBILS-43 added a dependency on HTML::Entities, which is part of the
+# HTML::Parser package
+package { 'perl-HTML-Parser':
+    ensure => present,
+}

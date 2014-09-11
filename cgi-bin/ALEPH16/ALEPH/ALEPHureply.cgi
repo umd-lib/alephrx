@@ -77,14 +77,12 @@ reply with the ID C<$reply_id>.
 =cut
 sub print_form {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
 
-    $statement =   "SELECT text, name, DATE_FORMAT(date,'%b %e, %Y      %r'), id, parent_id, DATE_FORMAT(timestamp,'%b %e, %Y    %r') from reply where id = $reply_id";
+    $statement =   "SELECT text, name, DATE_FORMAT(date,'%b %e, %Y      %r'), id, parent_id, DATE_FORMAT(timestamp,'%b %e, %Y    %r') from reply where id = ?";
 
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($reply_id);
 
     my ($text, $name, $date, $reply_id, $record, $updated) = $sth->fetchrow_array;
 
@@ -105,8 +103,8 @@ sub print_form {
     print "<TR><TD COLSPAN=3 ><textarea wrap=\"soft\" name=text cols=100 rows=8>$text</textarea></TD>\n";
     print "</TR>\n";
 
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
 
     print "</TABLE>\n";
     print "<br><br>\n";
@@ -137,18 +135,12 @@ updated.
 
 =cut
 sub insert {
-    # Escape the single quotes & back slashes
-    $text =~ s/\\/\\\\/g;
-    $text =~ s/\'/\\\'/g;
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+    $statement =   "UPDATE reply SET text = ?, timestamp = NOW() WHERE id = ?";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($text, $reply_id);
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password);
-    $statement =   "UPDATE reply SET text = '$text', timestamp = NOW() WHERE id = $reply_id";
-    $sth = $dbh->prepare($statement)
-        or die "Couldn't prepare the query: $sth->errstr";
-    $rv = $sth->execute
-        or die "Couldn't execute the query: $dbh->errstr";
-
-    $rc = $sth->finish;
-    $rc = $dbh->disconnect;
+    $sth->finish;
+    $dbh->disconnect;
     $error = "Reply has been updated.";
 }
