@@ -124,7 +124,7 @@ sub print_form {
             <!-- input, textarea, select { font-family: Times, serif; font-size: 12pt; color: #000000; background-color: #ff66ff\"; } -->
             </STYLE></HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
             print "<center>\n";
-            print "<H1>Update AlephRx Record #$id</H1>\n";
+            print "<H1>Update AlephRx Report #$id</H1>\n";
             print "<FORM ACTION=\"ALEPHform2.cgi\" METHOD=post>\n";
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='../ALEPHsum.cgi?id'\">\n";
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports for Staff\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
