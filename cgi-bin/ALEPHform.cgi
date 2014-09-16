@@ -82,46 +82,25 @@ if ($query->param('submitted')) {
 
 =head2 validate_form()
 
-Validates the data submitted to the form. If there are any matching rows, as
-determined by calling C<AlephRx::Database::report_exists()>, or any problems
-with the data, this function places an HTML-formatted error message into
-C<$error_message>.
+Validates the submitted data by calling L<AlephRx::Database::validate_data()>.
+If there are any errors, this function places an HTML-formatted error message
+into C<$error_message>.
 
 =cut
 sub validate_form {
+    my @errors = $db->validate_data({
+        name => $name,
+        functional_area => $grp,
+        campus => $campus,
+        phone => $phone,
+        email => $email,
+        status => $status,
+        summary => $summary,
+        text => $text,
+        submitter_name => $cataloger,
+    });
 
-    if ($db->report_exists($text, $phone, $name)) {
-        $error_message .= "<LI>This is a duplicate record. <B>Procedure not allowed.</B> Clear the form and enter a new report. \n";
-    }
-
-    if ($grp eq "") {
-        $error_message .= "<LI>Please select a functional area.\n";
-    }
-
-    if ($campus eq "") {
-        $error_message .= "<LI>Please select a campus.\n";
-    }
-
-    if ($name eq "") {
-        $error_message .= "<LI>Please enter a name.\n";
-    }
-
-    if ($phone =~ /\d\d\d-\d\d\d-\d\d\d\d/) {
-    } else {
-        $error_message .= "<LI> Please enter a valid phone number.\n";
-    }
-
-    if ($summary eq "") {
-        $error_message .= "<LI>Please enter a summary.\n";
-    }
-
-    if ($text eq "") {
-        $error_message .= "<LI>Please enter the text for your report.\n";
-    }
-
-    if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
-        $error_message .= "<LI>Please enter a valid email address.\n";
-    }
+    $error_message = join "\n", map { "<LI>$_" } @errors;
 }						       						      
 
 =head2 set_initial_values()

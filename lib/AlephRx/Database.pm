@@ -34,6 +34,56 @@ sub report_exists {
     return scalar $sth->fetchrow_array;
 }
 
+=head2 validate_data()
+
+    my $data = { ... };
+    my @errors = $db->validate_data($data);
+
+Validates the given data. If there are any matching rows, as determined by
+calling L<report_exists()>, or any problems with the data, returns an array of
+error messages.
+
+=cut
+sub validate_data {
+    my ($self, $data) = @_;
+
+    my @errors;
+
+    if ($self->report_exists(@{ $data }{qw{text phone name}})) {
+        push @errors, "This is a duplicate record. Procedure not allowed. Clear the form and enter a new report.";
+    }
+
+    if ($data->{functional_area} eq "") {
+        push @errors, "Please select a functional area.";
+    }
+
+    if ($data->{campus} eq "") {
+        push @errors, "Please select a campus.";
+    }
+
+    if ($data->{name} eq "") {
+        push @errors, "Please enter a name.";
+    }
+
+    if ($data->{phone} !~ /\d\d\d-\d\d\d-\d\d\d\d/) {
+        push @errors, "Please enter a valid phone number.";
+    }
+
+    if ($data->{summary} eq "") {
+        push @errors, "Please enter a summary.";
+    }
+
+    if ($data->{text} eq "") {
+        push @errors, "Please enter the text for your report.";
+    }
+
+    if ($data->{email} =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($data->{email} !~ /^.+\@localhost$/ && $data->{email} !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
+        push @errors, "Please enter a valid email address.";
+    }
+
+    return @errors;
+}
+
 =head2 submit_report($data)
 
 Creates a new report in the database, and returns a new AlephRx::Report object

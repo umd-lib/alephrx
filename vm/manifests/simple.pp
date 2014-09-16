@@ -30,3 +30,8 @@ package { 'perl-URI':
 package { 'perl-HTML-Parser':
     ensure => present,
 }
+
+# LIBILS-45 added a dependency on XML::Simple
+package { 'perl-XML-Simple':
+    ensure => present,
+}
