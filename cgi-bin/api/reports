@@ -2,7 +2,7 @@
 use strict;
 
 use FindBin qw{$Bin};
-use lib "$Bin/../lib";
+use lib "$Bin/../../lib";
 
 use CGI;
 use URI;
@@ -54,7 +54,7 @@ if (@errors) {
         # if successful, respond with the URL for the report details page of the
         # newly created report
         print $q->header('text/plain');
-        my $url = URI->new_abs('ALEPH16/ALEPHsum_full.cgi', $q->url);
+        my $url = URI->new_abs('../ALEPH16/ALEPHsum_full.cgi', $q->url);
         $url->query($report->id);
         print "$url\n";
     } else {
