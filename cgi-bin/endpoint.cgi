@@ -20,7 +20,7 @@ if ($q->request_method ne 'POST') {
 }
 # must be an XML content type
 if ($q->content_type !~ m{^(application|text)/xml\b}) {
-    print $q->header('text/plain', 400);
+    print $q->header('text/plain', 415);
     printf "Expecting XML data (text/xml or application/xml); got '%s'\n",
         $q->content_type;
     exit;
