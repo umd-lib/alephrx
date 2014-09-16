@@ -1,11 +1,79 @@
 package AlephRx::Database;
 
+=head1 NAME
+
+AlephRx::Database
+
+=head1 SYNOPSIS
+
+    # connect with explicit DBI info in the script
+    my $db = AlephRx::Database->new(
+        "DBI:mysql:$name:$host",
+        $user,
+        $password,
+    );
+
+    # or use values from the ALEPHRX_DATABASE_* environent variables
+    my $db = AlephRx::Database->new_from_env;
+
+    # check some incoming data for errors
+    my $data = { ... };
+    my @errors = $db->validate_data($data);
+
+    # and submit the report if there are no errors
+    if (!@errors) {
+        my $report = $db->submit_report($data);
+        print "New report created with id #" . $report->id;
+    } else {
+        warn "Problems with the data:\n" . join("\n", @errors);
+    }
+
+=head1 DESCRIPTION
+
+A database of AlephRx reports.
+
+=cut
+
 use Moose;
 use DBI;
 use AlephRx::Report;
 
 has dbh => (is => 'ro', isa => 'DBI::db');
 
+=head2 new_from_env()
+
+Create a new C<AlephRx::Database> object using the following environment
+variables to set up the database connection:
+
+    ALEPHRX_DATABASE_NAME
+    ALEPHRX_DATABASE_HOST
+    ALEPHRX_DATABASE_USER
+    ALEPHRX_DATABASE_PASS
+
+The database is assumed to be MySQL (i.e., the DSN starts with "DBI:mysql:").
+
+=cut
+sub new_from_env {
+    my $class = shift;
+    
+    # get db connection info from the environment
+    my $database  = $ENV{ALEPHRX_DATABASE_NAME};
+    my $db_server = $ENV{ALEPHRX_DATABASE_HOST};
+    my $user      = $ENV{ALEPHRX_DATABASE_USER};
+    my $password  = $ENV{ALEPHRX_DATABASE_PASS};
+
+    return $class->new(
+        "DBI:mysql:$database:$db_server",
+        $user,
+        $password
+    );
+}
+
+=head2 new($database, $host, $username, $password)
+
+Create a new C<AlephRx::Database> object.
+
+=cut
 sub BUILDARGS {
     my ($self, @dbi_args) = @_;
     return {

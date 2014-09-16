@@ -39,17 +39,7 @@ if ($@) {
 }
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-my $database  = $ENV{ALEPHRX_DATABASE_NAME};
-my $db_server = $ENV{ALEPHRX_DATABASE_HOST};
-my $user      = $ENV{ALEPHRX_DATABASE_USER};
-my $password  = $ENV{ALEPHRX_DATABASE_PASS};
-
-my $db = AlephRx::Database->new(
-    "DBI:mysql:$database:$db_server",
-    $user,
-    $password
-);
+my $db = AlephRx::Database->new_from_env;
 
 # check the submitted data for errors
 my @errors = $db->validate_data($data);
