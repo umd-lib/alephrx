@@ -196,7 +196,7 @@ sub print_form {
     print "<option>UMES\n";
     print "<option>UMLL\n";
     print "<option>UMUC\n";
-    print "<option>ITD\n";
+    print "<option>DSS\n";
     print "</select></td>\n";
     print "</tr>\n";
     print "<tr valign=\"top\">\n";

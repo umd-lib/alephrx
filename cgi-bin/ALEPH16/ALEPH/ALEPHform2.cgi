@@ -1249,7 +1249,8 @@ sub print_page_start_a {
     print "</table>\n";
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHurecord.cgi\" METHOD=\"post\">\n";
-    print "<FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates an ITD response has been made.&nbsp;</FONT>\n";
+    print "<FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT
+SIZE=-1>&nbsp;&nbsp;Indicates a DSS response has been made.&nbsp;</FONT>\n";
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
@@ -1622,7 +1623,7 @@ sub cell_background  {
 
 Queries the reply to collect information for display. Sets the variables
 C<$now>, C<$twoweeksago>, C<$oneweekago>, C<$onedayago>, C<$maxstamp>, and
-C<$maxstampunix>. If the reply is an ITD response, sets C<$response_count>. If
+C<$maxstampunix>. If the reply is a DSS response, sets C<$response_count>. If
 not, it increments C<$reply_count>.
 
 =cut

@@ -213,7 +213,7 @@ sub print_form {
             print "<option>UMES\n";
             print "<option>UMLL\n";
             print "<option>UMUC\n";
-            print "<option>ITD\n";
+            print "<option>DSS\n";
             print "</select>\n";
             print "</TD>\n";
             print "<TD ALIGN=RIGHT WIDTH=\"5%\">\n";
@@ -383,7 +383,7 @@ formatted with extra padding to align correctly in the email.
 =cut
 sub reply_type {
     if ($itd eq "yes") {
-        $reply_type = "ITD Response";
+        $reply_type = "DSS Response";
         $font_color = "DarkRed";
         $bgcolor = "bgcolor=#FFFF99";
     } else {

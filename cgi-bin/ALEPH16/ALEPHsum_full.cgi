@@ -239,14 +239,14 @@ sub validate {
 
 =head2 reply_type()
 
-Determines if a reply is from ITD or not and sets the display color
+Determines if a reply is from DSS or not and sets the display color
 (C<$font_color>) and the text (C<$reply_type>).
 
 =cut
 sub reply_type {
 
     if ($itd eq "yes") {
-        $reply_type = "ITD Response";
+        $reply_type = "DSS Response";
         $font_color = "DarkRed";
     } else {
         $reply_type = "Reply";

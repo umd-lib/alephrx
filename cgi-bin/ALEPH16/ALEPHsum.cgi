@@ -193,9 +193,9 @@ sub count_reply {
 
 =head2 count_response()
 
-Creates a flag to display when there is an ITD/DSS response to a report. If
-there is at least one reply to the report with ID C<$row_id> with C<reply.itd>
-set to "yes", sets C<$response_count> to the flag "*".
+Creates a flag to display when there is a DSS response to a report. If there is
+at least one reply to the report with ID C<$row_id> with C<reply.itd> set to
+"yes", sets C<$response_count> to the flag "*".
 
 Note that contrary to the name, this does not set or return a number of
 responses.
@@ -514,7 +514,8 @@ sub print_page_start {
     print "</table>\n";
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
-    print "<FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT SIZE=-1>&nbsp;&nbsp;Indicates an ITD response has been made.&nbsp;</FONT>\n";
+    print "<FONT SIZE=+1 COLOR=\"#FF0000\">&nbsp;&nbsp;*</FONT><FONT
+SIZE=-1>&nbsp;&nbsp;Indicates a DSS response has been made.&nbsp;</FONT>\n";
     print "<B>Go to report # :</B>\n";
     print "<INPUT TYPE=\"text\" NAME=\"record\" SIZE=3>\n";
     print "<INPUT TYPE=\"submit\" VALUE=\"GO\">\n";
