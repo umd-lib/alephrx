@@ -239,6 +239,7 @@ sub print_form {
             print "<option>assigned (MH)\n";
             print "<option>assigned (LS)\n";
             print "<option>assigned (US)\n";
+            print "<option>assigned (DS)\n";
             print "<option>user input needed\n";
             print "<option>sent to func.group\n";
             print "<option>marked for enhancement\n";
