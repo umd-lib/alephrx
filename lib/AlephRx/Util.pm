@@ -2,6 +2,11 @@ package AlephRx::Util;
 
 our @FUNCTIONAL_AREAS = (
     {
+        name => 'Password reset',
+        recipient => 'usmaialeph@umd.edu',
+        slug => 'PSWD:',
+    },
+    {
         name => 'Report request',
         recipient => 'usmaialeph@umd.edu',
         slug => 'RQST:',
