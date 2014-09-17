@@ -119,6 +119,7 @@ $ASSNDS = $input{'ASSNDS'};
 $ASSNUS = $input{'ASSNUS'};
 $ASSNMH = $input{'ASSNMH'};
 $ASSNLS = $input{'ASSNLS'};
+$PASSWORD = $input{'PASSWORD'};
 $CHANGE = $input{'CHANGE'};
 $URGENT = $input{'URGENT'};
 $CIRC = $input{'CIRC'};
@@ -594,7 +595,11 @@ sub filter {
 
     if ($ASSNLS) { 
         $filter = "and report.status = 'assigned (LS)'";
-    } 
+    }
+
+    if ($PASSWORD) {
+        $filter = "and people.grp = 'Password reset'";
+    }
 
     if ($CHANGE) {
         $filter = "and people.grp = 'Change request'";
@@ -1116,6 +1121,9 @@ sub filter_display  {
     if ($filter eq "and people.grp = 'Change request'") {
         $filter_display = "Change Request";
     }
+    if ($filter eq "and people.grp = 'Password reset'") {
+        $filter_display = "Password Reset";
+    }
     if ($filter eq "and report.status != 'closed'") {
         $filter_display = "Not Closed";
     }
@@ -1222,6 +1230,8 @@ sub print_page_start_a {
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n"; 
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (US)\" NAME=\"ASSNUS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Password Reset\" NAME=\"PASSWORD\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
 
 
