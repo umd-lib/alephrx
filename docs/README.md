@@ -1,6 +1,10 @@
 Aleph Rx Application
 ====================
 
+For information on setting up a development environment, see the [VM
+docs](../vm/README.md). For information on using the HTTP API to create reports,
+see the [HTTP API docs](../cgi-bin/api/README.md).
+
 Overview of Screens
 -------------------
 
@@ -120,6 +124,8 @@ functionality. For more technical information, please see the following:
 - [All Script Interconnections](pageflow.png)
 - [Database Schema](database.md)
 - [Codebase Cleanup Ideas](codefixes.md)
+- [HTTP API](../cgi-bin/api/README.md)
+- [Development VM](../vm/README.md)
 
 ### Diagram Source Code ###
 
