@@ -25,8 +25,21 @@ submission to AlephRx, this method does not send out notification emails.
         <summary>Problem Summary</summary>
         <text>Full text describing the issue...</text>
         <!-- submitter name is optional -->
-        <submitter_name></submitter_name>
+        <submitter_name>A.N. Other</submitter_name>
     </report>
+
+#### Request Body (XML)
+
+The request should have a `Content-Type` of `application/xml` (preferred) or
+`text/xml`. The request body XML format is a simple one. All of the child
+elements of `report` are required except for `submitter_name`, and they all must
+have simple string values as their content. In addition, the following
+formatting restrictions apply:
+
+- **phone** Must be in the format `NNN-NNN-NNNN`
+- **email** Must look like an email address. See the source code in
+  [AlephRx::Database::validate_data()](../../lib/AlephRx/Database.pm) for the
+  exact rules used.
 
 ### Responses
 
