@@ -31,7 +31,16 @@ package { 'perl-HTML-Parser':
     ensure => present,
 }
 
-# LIBILS-45 added a dependency on XML::Simple
+# LIBILS-45 added a dependency on Moose and XML::Simple
+# perl-Moose is available through the EPEL repository, so install that first
+# on RHEL, must use:
+#     rpm -i http://mirror.umd.edu/fedora/epel/5/i386/epel-release-5-4.noarch.rpm
+package { 'epel-release':
+    ensure => present,
+}
+package { 'perl-Moose':
+    ensure => present,
+}
 package { 'perl-XML-Simple':
     ensure => present,
 }
