@@ -53,9 +53,13 @@ if (@errors) {
     if ($report) {
         # if successful, respond with the URL for the report details page of the
         # newly created report
-        print $q->header('text/plain');
         my $url = URI->new_abs('../ALEPH16/ALEPHsum_full.cgi', $q->url);
         $url->query($report->id);
+        print $q->header(
+            -type     => 'text/plain',
+            -status   => 201,
+            -location => $url,
+        );
         print "$url\n";
     } else {
         print $q->header('text/plain', 500);

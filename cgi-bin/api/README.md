@@ -7,7 +7,8 @@ examples that follow assume that the [../](cgi-bin directory) is mapped to
 
 ## Create a Report
 
-POST XML to [reports](reports).
+POST XML to [reports](reports). Please note that unlike the regular form
+submission to AlephRx, this method does not send out notification emails.
 
 ### Request
 
@@ -31,8 +32,8 @@ POST XML to [reports](reports).
 
 The `Content-Type` header for all responses is `text/plain`.
 
-**200 OK** Report was created. The response body contains the URL of the newly
-created report.
+**201 Created** Report was created. The `Location` response header contains the
+URL of the newly created report, as does the response body.
 
 **400 Bad Request** Unable to parse the submitted data as XML, or there were
 missing or invalid fields in the submitted data. If there are missing fields,
