@@ -23,13 +23,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
-
-my $db = AlephRx::Database->new("DBI:mysql:$database:$db_server", $user, $password);
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $id = "";

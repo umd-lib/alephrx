@@ -11,15 +11,15 @@ ALEPHstats.cgi - Page which lists basic statistics about the reports.
 
 =cut
 
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
 use CGI;
-use DBI;
+
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 
@@ -44,11 +44,9 @@ reports submitted after 2005-12-31.
 
 =cut
 sub query_one {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     $statement =   "SELECT report.date, count(*) from report, people where people.id = report.id and report.supress = 'no' and report.date > '20051231' group by report.date";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
     
     print "<TR>\n";
@@ -77,7 +75,7 @@ Fetch and print the number of reports by campus (C<people.campus>).
 sub query_two {
     $statement =   "SELECT people.campus, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.campus";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     print "<TD VALIGN=TOP>\n";
@@ -106,7 +104,7 @@ Fetch and print the number of reports by functional area (C<people.grp>).
 sub query_three {
     $statement =   "SELECT people.grp, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.grp";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     print "<TD VALIGN=TOP>\n";
@@ -135,7 +133,7 @@ Fetch and print the number of reports by name of the user (C<people.name>).
 sub query_four {
     $statement =   "SELECT people.name, count(*) from people, report where people.id = report.id and report.supress = 'no' group by people.name";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     print "<TD VALIGN=TOP>\n";
@@ -164,7 +162,7 @@ Fetch and print the number of reports by status (C<report.status>).
 sub query_five {
     $statement =   "SELECT report.status, count(*) from report, people where people.id = report.id and report.supress = 'no' group by report.status";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     print "<TD VALIGN=TOP>\n";
@@ -192,10 +190,9 @@ Get the total number of reports and store that value in C<$row_count>.
 
 =cut
 sub query_six {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement =   "SELECT COUNT(*) from report, people where report.id = people.id and report.supress = 'no' ";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     while (@crow = $sth->fetchrow_array) {
@@ -223,12 +220,11 @@ sub page_start {
 
 =head2 page_end()
 
-Disconnect the C<$dbh> and print the end of the HTML page.
+Print the end of the HTML page.
 
 =cut
 sub page_end {
     $sth->finish;
-    $dbh->disconnect;
     print "</TABLE>\n";
     print "</BODY>\n</HTML>\n";
 }
