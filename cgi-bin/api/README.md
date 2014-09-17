@@ -2,7 +2,7 @@ AlephRx HTTP API
 ================
 
 This is the documentation for a simple HTTP API to the AlephRx system. The
-examples that follow assume that the [../](cgi-bin directory) is mapped to
+examples that follow assume that the [cgi-bin directory](../) is mapped to
 `/alephrx/cgi-bin` on the server.
 
 ## Create a Report
