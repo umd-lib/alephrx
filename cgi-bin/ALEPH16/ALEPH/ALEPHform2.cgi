@@ -26,10 +26,15 @@ emails when it successfully processes one of those requests.
 ##      2012/02/13 - Hans - replace MK with MH
 ############################################################################
 
+use FindBin qw{$Bin};
+use lib "$Bin/../../../lib";
+
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use URI;
+
+use AlephRx::Util;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -1548,58 +1553,8 @@ Sets the email C<$recipient> and C<$slug> based on the functional area
 
 =cut
 sub recipient {
-    if ($grp eq "Circulation") {
-        $recipient = "usmaicoicircresill\@umd.edu";
-        $slug = "CIRC:";
-    }
-    if ($grp eq "Technical") {
-        $recipient = "usmaicoidesktech\@umd.edu";
-        $slug = "TECH:";
-    }
-    if ($grp eq "Web OPAC") {
-        $recipient = "usmaicoiuserinter\@umd.edu";
-        $slug = "OPAC:";
-    }
-    if ($grp eq "Cataloging") {
-        $recipient = "usmaicoicatdbmaint\@umd.edu";
-        $slug = "CAT:";
-    }
-    if ($grp eq "Serials") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-        $slug = "SER:";
-    }
-    if ($grp eq "Acquisitions") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-        $slug = "ACQ:";
-    }
-    if ($grp eq "Item Maintenance") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
-        $slug = "ITM:";
-    }
-    if ($grp eq "Reserves") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
-        $slug = "RES:";
-    }
-    if ($grp eq "ILL") {
-        $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
-        $slug = "ILL:";
-    }
-    if ($grp eq "other") {
-        $recipient = "usmaialeph\@umd.edu";
-        $slug = "OTHR:";
-    }
-    if ($grp eq "Report request") {
-        $recipient = "usmaialeph\@umd.edu";
-        $slug = "RQST:";
-    }
-    if ($grp eq "Change request") {
-        $recipient = "usmaialeph\@umd.edu";
-        $slug = "CHNG:";
-    }
-    if ($grp eq "AV18") {
-        $recipient = "usmaialeph\@umd.edu";
-        $slug = "AV18:";
-    }
+    $recipient = $AlephRx::Util::RECIPIENT_FOR{$grp};
+    $slug      = $AlephRx::Util::SLUG_FOR{$grp};
 }
 
 =head2 cell_background()

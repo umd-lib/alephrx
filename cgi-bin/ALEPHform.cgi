@@ -14,11 +14,16 @@ ALEPHform.cgi - Report Submission Form
 
 ## 2010/09/07  Hans  Change aleph@itd.umd.edu to usmaialeph@umd.edu
 
+use FindBin qw{$Bin};
+use lib "$Bin/../lib";
+
 use CGI;
 use DBI;
 use CGI::Carp qw(fatalsToBrowser);
 use IO::Handle;
 use lib "/lims/lib/perl";
+
+use AlephRx::Util;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -203,18 +208,11 @@ sub print_form {
     print "<th bgcolor=\"#FFFF00\" align=\"right\" ><FONT SIZE=-1>Functional Area:</FONT>&nbsp;</td>\n";
     print "<td bgcolor=\"#CCCCCC\"> <select name=\"grp\" size=1>\n";
     print "<option>\n";
-    print "<option>Report request\n";
-    print "<option>Change request\n";
-    print "<option>Acquisitions\n";
-    print "<option>Cataloging\n";
-    print "<option>Circulation\n";
-    print "<option>Item Maintenance\n";
-    print "<option>Reserves\n";
-    print "<option>ILL\n";
-    print "<option>Serials\n";
-    print "<option>Technical\n";
-    print "<option>Web OPAC\n";
-    print "<option>other\n";
+
+    for my $functional_area (@AlephRx::Util::FUNCTIONAL_AREAS) {
+        print "<option>" . $functional_area->{name} . "\n";
+    }
+
     print "</select>\n";
     print "</td>\n";
     print "<th bgcolor=\"#FFFF00\" align=\"right\"><FONT SIZE=-1>Submitted By:</FONT>&nbsp;</td>\n";
@@ -320,44 +318,10 @@ Sets the recipient email (C<$recipient>) based on the selected group (C<$grp>).
 
 =cut
 sub recipient {
-
-    if ($grp eq "Circulation") {
-        $recipient = "usmaicoicircresill\@umd.edu";
-    }
-    if ($grp eq "Technical") {
-        $recipient = "usmaicoidesktech\@umd.edu";
-    }
-    if ($grp eq "Web OPAC") {
-        $recipient = "usmaicoiuserinter\@umd.edu";
-    }
-    if ($grp eq "Cataloging") {
-        $recipient = "usmaicoicatdbmaint\@umd.edu";
-    }
-    if ($grp eq "Serials") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-    }
-    if ($grp eq "Acquisitions") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-    }
-    if ($grp eq "Item Maintenance") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
-    }
-    if ($grp eq "Reserves") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
-    }
-    if ($grp eq "ILL") {
-        $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
-    }
-    if ($grp eq "Change request") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
-    if ($grp eq "other") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
-    if ($grp eq "Report request") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
+    $recipient = $AlephRx::Util::RECIPIENT_FOR{$grp};
 }
+
+    
 
 =head2 match()
 
