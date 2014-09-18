@@ -64,7 +64,7 @@ $PAC = $input{'PAC'};
 $CLOSED = $input{'CLOSED'};
 $POST = $input{'POSTPONED'};
 $NEW = $input{'NEW'};
-$PEND = $input{'PENDING'};
+$PASSWORD = $input{'PASSWORD'};
 $TECH = $input{'TECH'};
 $RECORD = $input{'record'};
 $NEXT = $input{'NEXT'};
@@ -425,8 +425,8 @@ sub filter {
         $filter = "and report.status = 'closed'";
     }
 
-    if ($PEND) {
-        $filter = "and report.status = 'pending'";
+    if ($PASSWORD) {
+        $filter = "and people.grp = 'Password reset'";
     }
 
     if ($POST) {
@@ -495,7 +495,8 @@ sub print_page_start {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"New\" NAME=\"NEW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Pending\" NAME=\"PENDING\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Password Reset\"
+NAME=\"PASSWORD\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Active\" NAME=\"ACTIVE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
@@ -744,8 +745,8 @@ sub filter_display  {
         $filter_display = "New";
     }
 
-    if ($filter eq "and report.status = 'pending'") {
-        $filter_display = "Pending";
+    if ($filter eq "and people.grp = 'Password reset'") {
+        $filter_display = "Password Reset";
     }
 
     if ($filter eq "and report.status != 'closed'") {
