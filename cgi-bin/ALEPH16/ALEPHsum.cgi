@@ -493,18 +493,18 @@ sub print_page_start {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Technical\" NAME=\"TECH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"New\" NAME=\"NEW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Password Reset\"
 NAME=\"PASSWORD\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Active\" NAME=\"ACTIVE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Change Request\" NAME=\"CHANGE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Closed\" NAME=\"CLOSED\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
-
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Report Requests\" NAME=\"REPORT\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"New\" NAME=\"NEW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Active\" NAME=\"ACTIVE\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Closed\" NAME=\"CLOSED\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"All Summaries\" NAME=\"ALL\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
