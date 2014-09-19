@@ -1460,7 +1460,7 @@ sub mail {
     $details_url->query($id);
 
     if ($emailx eq "yes") {
-        open (MAIL,"|$mailprog -t");
+        open (MAIL,"|$mailprog");
         print MAIL "To: $final_email_list\n";
         print MAIL "Bcc: $bcc\n" if $bcc;
         print MAIL <<END;

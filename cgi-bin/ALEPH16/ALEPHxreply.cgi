@@ -256,8 +256,8 @@ sub bad_email_display {
 
 =head2 mail()
 
-Formats and submits the confirmatione mail to the mailer prog. This function
-retireves the path to the mailer form the C<$mailprog> variable, but it is
+Formats and submits the confirmation email to the mailer prog. This function
+retrieves the path to the mailer from the C<$mailprog> variable, but it is
 ultimately set via the C<ALEPHRX_MAILER> environment variable.
 
 Only sends email if C<$emailx> is "yes".
@@ -273,7 +273,7 @@ sub mail {
         my $details_url = URI->new_abs('ALEPHsum_full.cgi', $query->url);
         $details_url->query($row_id);
 
-        open (MAIL,"|$mailprog -t");
+        open (MAIL,"|$mailprog");
         print MAIL <<END;
 To: $final_list
 Bcc: usmaialeph\@umd.edu

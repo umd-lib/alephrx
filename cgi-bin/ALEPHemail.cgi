@@ -180,7 +180,7 @@ sub display_record {
 =head2 mail()
 
 Formats and submits the confirmation email to the mailer prog. This function
-retireves the path to the mailer form the C<$mailprog> variable, but it is
+retireves the path to the mailer from the C<$mailprog> variable, but it is
 ultimately set via the C<ALEPHRX_MAILER> environment variable.
 
 Calls C<bcc_create()> to create a Bcc header (stored in C<$bcc>), if needed.
@@ -197,7 +197,7 @@ sub mail {
     my $details_url = URI->new_abs('ALEPH16/ALEPHsum_full.cgi', $query->url);
     $details_url->query($id);
 
-    open (MAIL,"|$mailprog -t");
+    open (MAIL,"|$mailprog");
     print MAIL "To: $final_email_list\n";
     print MAIL "Bcc: $bcc\n" if $bcc;
     print MAIL <<END;
