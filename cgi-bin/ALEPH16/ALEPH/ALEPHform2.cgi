@@ -1476,7 +1476,7 @@ To REPLY to this Rx: $reply_url
 This is a DSS response to the RxWeb listed below
 
  Original Report # : $id
-  Date of Report # : $date
+     Date of Report: $date
    Functional Group: $grp
              Status: $status
 

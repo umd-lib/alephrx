@@ -289,7 +289,7 @@ To REPLY to this Rx: $reply_url
 This is a REPLY to the RxWeb listed below:
 
   Original Report # : $row_id
-   Date of Report # : $sdate
+      Date of Report: $sdate
     Functional Group: $grp
               Status: $sstatus
 

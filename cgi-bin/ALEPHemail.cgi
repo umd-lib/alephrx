@@ -210,7 +210,7 @@ To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
-Report Submitted by: $name_mail
+        Reported by: $name_mail
            Report# : $id
     Date of problem: $date
    Functional Group: $grp
