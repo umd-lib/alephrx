@@ -1,5 +1,7 @@
 package AlephRx::Util;
 
+our $FROM = 'usmaialeph@umd.edu (RxWeb)';
+
 our @FUNCTIONAL_AREAS = (
     {
         name => 'Password reset',

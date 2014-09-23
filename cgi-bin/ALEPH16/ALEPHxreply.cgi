@@ -28,7 +28,7 @@ $password  = $ENV{ALEPHRX_DATABASE_PASS};
 $statement = "";
 $nameid = "";
 $mailprog = $ENV{ALEPHRX_MAILER};
-$from = "usmaialeph\@umd.edu (RxWeb)";
+$from = $AlephRx::Util::FROM;
 $replies = "replies.dat";
 @store = ();
 

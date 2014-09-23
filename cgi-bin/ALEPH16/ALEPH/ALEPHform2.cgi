@@ -47,7 +47,7 @@ $statement = "";
 $value = "";
 $count = 0;
 $mailprog = $ENV{ALEPHRX_MAILER};
-$from = "usmaialeph\@umd.edu (RxWeb)";
+$from = $AlephRx::Util::FROM;
 $id = "";
 $sort = "id";
 # records per page
