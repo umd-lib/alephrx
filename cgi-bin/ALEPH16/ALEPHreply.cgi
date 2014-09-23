@@ -8,9 +8,14 @@ ALEPHreply.cgi - User reply form
 
 ##  2010/09/07  Hans  Replace aleph@itd.umd.edu with usmaialeph@umd.edu
 
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
 use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
+
+use AlephRx::Util;
 
 # get db connection info from the environment
 # use SetEnv in the Apache config for the cgi-bin directory to set these
@@ -145,52 +150,7 @@ column in this report.
 
 =cut
 sub recipient {
-
-    if ($grp eq "Circulation") {
-        $recipient = "usmaicoicircresill\@umd.edu";
-    }
-    if ($grp eq "Technical") {
-        $recipient = "usmaicoidesktech\@umd.edu";
-    }
-    if ($grp eq "Web OPAC") {
-        $recipient = "usmaicoiuserinter\@umd.edu";
-    }
-
-    if ($grp eq "Cataloging") {
-        $recipient = "usmaicoicatdbmaint\@umd.edu";
-    }
-
-    if ($grp eq "Serials") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-    }
-
-    if ($grp eq "Acquisitions") {
-        $recipient = "usmaicoiseracq\@umd.edu";
-    }
-
-    if ($grp eq "Item Maintenance") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoicatdbmaint\@umd.edu,usmaicoiseracq\@umd.edu";
-    }
-
-    if ($grp eq "Reserves") {
-        $recipient = "usmaicoicircresill\@umd.edu,usmaicoiuserinter\@umd.edu";
-    }
-
-    if ($grp eq "Change request") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
-
-    if ($grp eq "other") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
-
-    if ($grp eq "Report request") {
-        $recipient = "usmaialeph\@umd.edu";
-    }
-
-    if ($grp eq "ILL") {
-        $recipient = "ilug\@umd.edu,usmaicoicircresill\@umd.edu";
-    }
+    $recipient = $AlephRx::Util::RECIPIENT_FOR{$grp};
 }
 
 =head2 email_display()
