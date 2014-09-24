@@ -14,6 +14,7 @@ Codebase
 - **[cgi-bin](cgi-bin):** CGI scripts making up the bulk of the application
 - **[docs](docs):** Documentation
 - **[htdocs](htdocs):** Static files used by the application
+- **[lib](lib):** Custom Perl modules used by the application
 - **[t](t):** Test scripts and utilities
 - **[vm](vm):** Vagrantfile and related scripts to create and provision a development
   VM environment
