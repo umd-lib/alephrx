@@ -1,6 +1,7 @@
 package AlephRx::Util;
 
 our $FROM = 'AlephRx <alephrx@umd.edu>';
+our $REPLY_TO = 'usmaialeph@umd.edu';
 
 our @FUNCTIONAL_AREAS = (
     {

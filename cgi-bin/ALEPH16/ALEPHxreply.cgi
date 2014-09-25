@@ -283,6 +283,7 @@ sub mail {
 To: $final_list
 Bcc: usmaialeph\@umd.edu
 From: $from
+Reply-To: $AlephRx::Util::REPLY_TO
 Subject: REPLY:$slug#$row_id:$ssummary
 
 --------------------------------------------------------------------------------

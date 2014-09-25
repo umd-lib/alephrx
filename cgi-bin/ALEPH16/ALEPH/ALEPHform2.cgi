@@ -1465,6 +1465,7 @@ sub mail {
         print MAIL "Bcc: $bcc\n" if $bcc;
         print MAIL <<END;
 From: $from
+Reply-To: $AlephRx::Util::REPLY_TO
 Subject: RESPONSE:$slug#$id:$summary
 
 --------------------------------------------------------------------------------
