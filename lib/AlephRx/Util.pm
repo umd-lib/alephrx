@@ -1,6 +1,6 @@
 package AlephRx::Util;
 
-our $FROM = 'usmaialeph@umd.edu (RxWeb)';
+our $FROM = 'AlephRx <alephrx@umd.edu>';
 
 our @FUNCTIONAL_AREAS = (
     {

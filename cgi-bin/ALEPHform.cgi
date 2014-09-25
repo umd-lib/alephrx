@@ -36,7 +36,6 @@ $statement = "";
 $id = "";
 $rname = "";
 $response = "";
-$from = "usmaialeph\@umd.edu (RxWeb)";
 $mailprog = $ENV{ALEPHRX_MAILER};
 $query = new CGI;
 
