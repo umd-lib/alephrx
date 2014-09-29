@@ -1600,6 +1600,10 @@ sub reply_query {
     $sth_8 = $dbh->prepare($statement_8);
     $sth_8->execute($row_id);
 
+    # $maxstamp keeps track of whether the most recent comment is a reply or a
+    # response. Need to clear it before to make sure it doesn't bleed over from
+    # report to report (isssue LIBILS-53)
+    $maxstamp = "";
     while (@rrow = $sth_8->fetchrow_array) {
         $now = $rrow[2];
         $twoweeksago = $rrow[3];
