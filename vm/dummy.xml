@@ -1,0 +1,12 @@
+<report>
+    <name>J. User</name>
+    <functional_area>other</functional_area>
+    <campus>UMCP</campus>
+    <phone>301-555-0123</phone>
+    <email>juser@example.com</email>
+    <status>new</status>
+    <summary>Problem Summary</summary>
+    <text>Full text describing the issue...</text>
+    <!-- submitter name is optional -->
+    <submitter_name>A.N. Other</submitter_name>
+</report>
