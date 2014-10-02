@@ -84,7 +84,7 @@ can use curl to POST the included dummy data file:
 
 You should see output similar to the following:
 
-    HTTP/1.1 201
+    HTTP/1.1 201 Created
     Date: Tue, 30 Sep 2014 20:04:24 GMT
     Server: Apache/2.2.3 (CentOS)
     Location: http://alephrx.local/cgi-bin/ALEPH16/ALEPHsum_full.cgi?21

@@ -14,13 +14,17 @@ my $q = CGI->new;
 
 # must be a POST request
 if ($q->request_method ne 'POST') {
-    print $q->header(-type => 'text/plain', -status => 405, -allow => 'POST');
+    print $q->header(
+        -type   => 'text/plain',
+        -status => '405 Method Not Allowed',
+        -allow  => 'POST',
+    );
     print "Only POST requests are allowed to this URL.\n";
     exit;
 }
 # must be an XML content type
 if ($q->content_type !~ m{^(application|text)/xml\b}) {
-    print $q->header('text/plain', 415);
+    print $q->header('text/plain', '415 Unsupported Media Type');
     printf "Expecting XML data (text/xml or application/xml); got '%s'\n",
         $q->content_type;
     exit;
@@ -33,7 +37,7 @@ my $data = eval {
     XMLin($q->param('POSTDATA'), SuppressEmpty => '');
 };
 if ($@) {
-    print $q->header('text/plain', 400);
+    print $q->header('text/plain', '400 Bad Request');
     print "Unable to parse submitted data as XML.\n";
     exit;
 }
@@ -44,7 +48,7 @@ my $db = AlephRx::Database->new_from_env;
 # check the submitted data for errors
 my @errors = $db->validate_data($data);
 if (@errors) {
-    print $q->header('text/plain', 400);
+    print $q->header('text/plain', '400 Bad Request');
     print "Missing or invalid fields.\n\n";
     print join "\n", @errors;
 } else {
@@ -57,12 +61,12 @@ if (@errors) {
         $url->query($report->id);
         print $q->header(
             -type     => 'text/plain',
-            -status   => 201,
+            -status   => '201 Created',
             -location => $url,
         );
         print "$url\n";
     } else {
-        print $q->header('text/plain', 500);
+        print $q->header('text/plain', '500 Internal Server Error');
         print "Unable to create record.\n";
     }
 }
