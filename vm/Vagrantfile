@@ -46,6 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.facter = {
       "domain" => "local",
     }
+    puppet.options = ["--environment", "vagrant"]
   end
 
   # use the shell provisioner to do additional configuration
