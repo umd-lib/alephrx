@@ -3,7 +3,7 @@ AlephRx HTTP API
 
 This is the documentation for a simple HTTP API to the AlephRx system. The
 examples that follow assume that the [cgi-bin directory](../) is mapped to
-`/alephrx/cgi-bin` on the server.
+`/cgi-bin` on the server.
 
 ## Create a Report
 
@@ -12,7 +12,7 @@ submission to AlephRx, this method does not send out notification emails.
 
 ### Request
 
-    POST /alephrx/cgi-bin/api/reports
+    POST /cgi-bin/api/reports
     Content-Type: application/xml
 
     <report>
@@ -30,7 +30,7 @@ submission to AlephRx, this method does not send out notification emails.
 
 #### Request Body (XML)
 
-The request should have a `Content-Type` of `application/xml` (preferred) or
+The request must have a `Content-Type` of `application/xml` (preferred) or
 `text/xml`. The request body XML format is a simple one. All of the child
 elements of `report` are required except for `submitter_name`, and they all must
 have simple string values as their content. In addition, the following
