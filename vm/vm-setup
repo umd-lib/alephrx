@@ -3,13 +3,10 @@
 # must run as root
 
 # The puppet manifest in manifests/simple.pp takes care of installing necessary
-# packages.
+# packages and creating the MySQL database and user.
 
 # Apache vhost
 cp /vagrant/alephrx.conf /etc/httpd/conf.d
-
-# set up hosts file
-echo "127.0.0.1 alephrx.local" >> /etc/hosts
 
 # Set up an alias for perl because the Aleph Rx CGI scripts use
 # /usr/local/bin/perl in their shebang lines.
@@ -17,14 +14,9 @@ echo "127.0.0.1 alephrx.local" >> /etc/hosts
 
 # Start servers...
 /etc/init.d/httpd start
-/etc/init.d/mysqld start
 
 # ... and ensure they start automatically on server startup
 /sbin/chkconfig httpd on
-/sbin/chkconfig mysqld on
-
-# Create the Aleph Rx database and the user that accesses it.
-mysql -uroot < /vagrant/createdb.sql
 
 # Create the tables.
 mysql -ualephrx -palephrx alephrx < /apps/git/alephrx/docs/aleph16.sql
