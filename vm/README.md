@@ -78,9 +78,13 @@ workstation browser to start testing the application:
   (username: itdstaff, password: itdstaff)
 
 To test the [HTTP API](../cgi-bin/api/README.md) for submitting a report, you
-can use curl to POST the included dummy data file:
+can use curl to POST the included dummy data files. To test the XML, use:
 
     $ curl -i -d @vm/dummy.xml -H 'Content-Type: application/xml' http://alephrx.local/cgi-bin/api/reports
+
+To test the form data version, use:
+
+    $ curl -i -d @vm/dummy.txt http://alephrx.local/cgi-bin/api/reports
 
 You should see output similar to the following:
 
