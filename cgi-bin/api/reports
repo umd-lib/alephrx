@@ -71,7 +71,7 @@ sub parse_request {
             exit;
         }
         return $data;
-    } elsif ($q->content_type eq 'application/x-www-form-urlencoded') {
+    } elsif ($q->content_type =~ m{^application/x-www-form-urlencoded\b}) {
         # tie the parameters to a hashref
         return scalar $q->Vars;
     } else {
