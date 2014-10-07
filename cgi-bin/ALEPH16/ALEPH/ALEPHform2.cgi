@@ -1474,7 +1474,7 @@ To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
-This is a DSS response to the RxWeb listed below
+This is a DSS response to the AlephRx report listed below
 
  Original Report # : $id
      Date of Report: $date
