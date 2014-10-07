@@ -1575,7 +1575,9 @@ of the report. This is the purple functionality.
 
 =cut
 sub cell_background  {
-    if ($row[4] eq "user input needed" and $maxstamp gt $date) {
+    # the most recent update to the report (report.updated is in $row[7]) is
+    # equal to the timestamp of the latest user reply ($maxstamp) 
+    if ($row[4] eq "user input needed" and $maxstamp eq $row[7]) {
         $cellbk = "#FF00FF"
     } elsif ($row[4] eq "pending" and $itd = "") {
         $cellbk = "#00FFFFF"
@@ -1595,7 +1597,7 @@ not, it increments C<$reply_count>.
 =cut
 sub reply_query {
     $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-    $statement_8 =   "SELECT DATE_FORMAT(date,'%Y%m%d'), itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = ?";
+    $statement_8 =   "SELECT date, itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = ?";
 
     $sth_8 = $dbh->prepare($statement_8);
     $sth_8->execute($row_id);
