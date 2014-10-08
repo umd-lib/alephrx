@@ -1180,7 +1180,7 @@ fields.
 sub print_page_start_a {
 
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>Reports (Staff View) - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>AlephRx Reports (Staff View)</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
