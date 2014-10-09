@@ -76,3 +76,27 @@ workstation browser to start testing the application:
   (username: usmai, password: usmai)
 - Staff summary page: <http://alephrx.local/cgi-bin/ALEPH16/ALEPH/ALEPHform2.cgi>
   (username: itdstaff, password: itdstaff)
+
+To test the [HTTP API](../cgi-bin/api/README.md) for submitting a report, you
+can use curl to POST the included dummy data files. To test the XML, use:
+
+    $ curl -i -d @vm/dummy.xml -H 'Content-Type: application/xml' http://alephrx.local/cgi-bin/api/reports
+
+To test the form data version, use:
+
+    $ curl -i -d @vm/dummy.txt http://alephrx.local/cgi-bin/api/reports
+
+You should see output similar to the following:
+
+    HTTP/1.1 201 Created
+    Date: Tue, 30 Sep 2014 20:04:24 GMT
+    Server: Apache/2.2.3 (CentOS)
+    Location: http://alephrx.local/cgi-bin/ALEPH16/ALEPHsum_full.cgi?21
+    Connection: close
+    Transfer-Encoding: chunked
+    Content-Type: text/plain; charset=ISO-8859-1
+
+    http://alephrx.local/cgi-bin/ALEPH16/ALEPHsum_full.cgi?21
+
+You should then be able to open the `Location` URL in your browser and view the
+newly created report.

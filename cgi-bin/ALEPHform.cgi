@@ -18,19 +18,14 @@ use FindBin qw{$Bin};
 use lib "$Bin/../lib";
 
 use CGI;
-use DBI;
 use CGI::Carp qw(fatalsToBrowser);
-use IO::Handle;
-use lib "/lims/lib/perl";
+
+use AlephRx::Database;
 
 use AlephRx::Util;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $id = "";
@@ -66,7 +61,6 @@ $email_config = $query->param('email_config');
 if ($query->param('submitted')) {
 
     $error_message = "";
-    &match;
     &validate_form;
 
     if ($error_message ne "") {
@@ -83,45 +77,25 @@ if ($query->param('submitted')) {
 
 =head2 validate_form()
 
-Validates the data submitted to the form. If there are any matching rows, as
-determined by C<match()>, or any problems with the data, this function places an
-HTML-formatted error message into C<$error_message>.
+Validates the submitted data by calling L<AlephRx::Database::validate_data()>.
+If there are any errors, this function places an HTML-formatted error message
+into C<$error_message>.
 
 =cut
 sub validate_form {
+    my @errors = $db->validate_data({
+        name => $name,
+        functional_area => $grp,
+        campus => $campus,
+        phone => $phone,
+        email => $email,
+        status => $status,
+        summary => $summary,
+        text => $text,
+        submitter_name => $cataloger,
+    });
 
-    if ($match_rows gt '0') {
-        $error_message .= "<LI>This is a duplicate record. <B>Procedure not allowed.</B> Clear the form and enter a new report. \n";
-    }
-
-    if ($grp eq "") {
-        $error_message .= "<LI>Please select a functional area.\n";
-    }
-
-    if ($campus eq "") {
-        $error_message .= "<LI>Please select a campus.\n";
-    }
-
-    if ($name eq "") {
-        $error_message .= "<LI>Please enter a name.\n";
-    }
-
-    if ($phone =~ /\d\d\d-\d\d\d-\d\d\d\d/) {
-    } else {
-        $error_message .= "<LI> Please enter a valid phone number.\n";
-    }
-
-    if ($summary eq "") {
-        $error_message .= "<LI>Please enter a summary.\n";
-    }
-
-    if ($text eq "") {
-        $error_message .= "<LI>Please enter the text for your report.\n";
-    }
-
-    if ($email =~ /(@.*@)|(,)|\s+|(\.\.)|(@\.)|(\.@)|(^\.)|(\.$)/ || ($email !~ /^.+\@localhost$/ && $email !~ /^.+\@\[?(\w|[-.])+\.[a-zA-Z]{2,3}|[0-9]{1,3}\]?$/)) {
-        $error_message .= "<LI>Please enter a valid email address.\n";
-    }
+    $error_message = join "\n", map { "<LI>$_" } @errors;
 }						       						      
 
 =head2 set_initial_values()
@@ -284,32 +258,23 @@ sub print_page_end {
 =head2 insert_data()
 
 Inserts the form data into database. Creates a new row in both the C<people> and
-C<report> tables.
+C<report> tables. Sets the C<$last> variable to the ID of the new report.
 
 =cut
 sub insert_data {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
-    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES (?, ?, ?, ?, ?)";
-    $sth = $dbh->prepare($statement);
-    $sth->execute($name, $grp, $campus, $phone, $email);
-
-    $statement =   "SELECT last_insert_id()";
-    $sth = $dbh->prepare($statement);
-    $sth->execute;
-
-    $last = $sth->fetchrow_array; 
-
-    $statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
-    (LAST_INSERT_ID(), NOW(), ?, ?, ?, ?, NOW(), NOW(), '18.01')";
-
-    $sth = $dbh->prepare($statement);
-    $sth->execute($status, $summary, $text, $cataloger);
-    
-    $sth->finish;
-    $dbh->disconnect
+    my $report = $db->submit_report({
+        name => $name,
+        functional_area => $grp,
+        campus => $campus,
+        phone => $phone,
+        email => $email,
+        status => $status,
+        summary => $summary,
+        text => $text,
+        submitter_name => $cataloger,
+    });
+    $last = $report->id;
 }
-
 
 =head2 recipient()
 
@@ -318,25 +283,6 @@ Sets the recipient email (C<$recipient>) based on the selected group (C<$grp>).
 =cut
 sub recipient {
     $recipient = $AlephRx::Util::RECIPIENT_FOR{$grp};
-}
-
-    
-
-=head2 match()
-
-Checks the database for matching/duplicate reports when submitting. Sets
-C<$match_rows> to the number of matching rows found.
-
-=cut
-sub match {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
-    $statement = "select report.text, report.date, people.phone, people.name from report, people WHERE people.id = report.id and report.text = ? and report.date = NOW() and people.phone = ? and people.name = ?";
-
-    $sth = $dbh->prepare($statement);
-    $sth->execute($text, $phone, $name);
-
-    $match_rows = $sth->rows;
 }
 
 =head2 email_config()

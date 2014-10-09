@@ -11,16 +11,16 @@ ALEPHsum.cgi - The user display of RxWeb Summaries
 ## Name changed to RxWeb from AlephRx on 6/20/06
 ## stats form
 
-use DBI;
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
+use AlephRx::Database;
+
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $value = "";
@@ -177,9 +177,8 @@ Counts using C<$count> and sets C<$reply_count> to the final value.
 
 =cut
 sub count_reply {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_7 =   "SELECT name from reply where parent_id = ? and itd = 'no'";
-    $sth_7 = $dbh->prepare($statement_7);
+    $sth_7 = $db->dbh->prepare($statement_7);
     $sth_7->execute($row_id);
 
     while (@row = $sth_7->fetchrow_array) {
@@ -188,7 +187,6 @@ sub count_reply {
     }
 
     $sth_7->finish;
-    $dbh->disconnect;
 }
 
 =head2 count_response()
@@ -202,9 +200,8 @@ responses.
 
 =cut
 sub count_response {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_8 =   "SELECT text from reply where parent_id = ? and itd = 'yes'";
-    $sth_8 = $dbh->prepare($statement_8);
+    $sth_8 = $db->dbh->prepare($statement_8);
     $sth_8->execute($row_id);
 
     while (@rrow = $sth_8->fetchrow_array) {
@@ -215,7 +212,6 @@ sub count_response {
     }
 
     $sth_8->finish;
-    $dbh->disconnect;
 }
 
 =head2 get_row_count()
@@ -226,16 +222,14 @@ total number of pages. The total is stored in C<$row_count>.
 =cut
 sub get_row_count {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_10 =   "SELECT COUNT(*) from report, people where report.supress = 'no' and report.id = people.id $filter";
-    $sth_10 = $dbh->prepare($statement_10);
+    $sth_10 = $db->dbh->prepare($statement_10);
     $sth_10->execute;
 
     while (@crow = $sth_10->fetchrow_array) {
         $row_count = $crow[0];
     }
     $sth_10->finish;
-    $dbh->disconnect;
 }
 
 =head2 calc_num_pages()
@@ -533,15 +527,13 @@ SIZE=-1>&nbsp;&nbsp;Indicates a DSS response has been made.&nbsp;</FONT>\n";
 
 =head2 print_page_end()
 
-Prints the end of the table, disconnects the C<$dbh>, prints hidden fields, and
-the end of the HTML page.
+Prints the end of the table, prints hidden fields, and the end of the HTML page.
 
 =cut
 sub print_page_end {
 
     print "</TABLE>\n";
     $sth->finish;
-    $dbh->disconnect;
     print "<BR>\n";
     &page_rules;
     print "<INPUT TYPE=\"hidden\" name=\"val\" VALUE=\"$sort\">\n";
@@ -590,11 +582,9 @@ Only queries records where C<report.supress = 'no'>.
 =cut
 sub get_sum_record {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     $statement =   "SELECT people.id, people.grp, people.campus, report.summary, report.status, DATE_FORMAT(report.date,'%m/%d/%y'), people.name FROM people, report WHERE report.supress = 'no' and people.id = report.id $filter order by $sort $option LIMIT $limit, 30";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 }
 

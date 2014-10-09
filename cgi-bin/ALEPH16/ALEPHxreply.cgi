@@ -11,19 +11,15 @@ ALEPHxreply.cgi - Receives and processes replies to reports.
 use FindBin qw{$Bin};
 use lib "$Bin/../../lib";
 
-use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 use URI;
 
 use AlephRx::Util;
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $nameid = "";
@@ -80,16 +76,14 @@ if ($email_check > 0) {
         # display an error page
         &validate_reply();
     } else {
-        $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
         # insert the reply into the database
         $statement =   "INSERT INTO reply (parent_id, name, date, text, itd) VALUES (?, ?, NOW(), ?, 'no')";
-        $sth = $dbh->prepare($statement);
+        $sth = $db->dbh->prepare($statement);
         $sth->execute($parent_id, $name, $text);
 
         # set the parent report's last updated value
         $statement =   "UPDATE report SET updated = NOW() where id = ?";
-        $sth = $dbh->prepare($statement);
+        $sth = $db->dbh->prepare($statement);
         $sth->execute($parent_id);
 
         print "Content-type: text/html\n\n";
@@ -104,7 +98,7 @@ if ($email_check > 0) {
         # fetch and print the full details for the report
         $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text, people.email FROM people, report WHERE people.id = ? and people.id = report.id";
 
-        $sth = $dbh->prepare($statement);
+        $sth = $db->dbh->prepare($statement);
         $sth->execute($parent_id);
 
         while (@row = $sth->fetchrow_array) {
@@ -147,7 +141,6 @@ if ($email_check > 0) {
         }
 
         $rc = $sth->finish;
-        $rc = $dbh->disconnect;
 
         print "</TABLE>\n";
         print "<BR><BR>\n";
@@ -178,9 +171,8 @@ C<$reply_type> and C<$font_color> variables.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1 = $db->dbh->prepare($statement_1);
     $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
@@ -196,7 +188,6 @@ sub fetchreply {
         print "</TR>\n";
     }
     $sth_1->finish;
-    $dbh_1->disconnect;
 }
 
 
@@ -301,9 +292,8 @@ This is a REPLY to the RxWeb listed below:
 
 END
 
-        $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
         $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
-        $sth_1 = $dbh_1->prepare($statement_1);
+        $sth_1 = $db->dbh->prepare($statement_1);
         $sth_1->execute($row_id);
 
         while (@row = $sth_1->fetchrow_array) {
@@ -318,7 +308,6 @@ END
 END
         }
         $sth_1->finish;
-        $dbh_1->disconnect;
 
         print MAIL <<END;
 
@@ -343,17 +332,14 @@ C<$parent_id>.
 =cut
 sub reply_date {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement =   "SELECT date from reply where parent_id = ?";
-
-    $sth_6 = $dbh->prepare($statement);
+    $sth_6 = $db->dbh->prepare($statement);
     $sth_6->execute($parent_id);
 
     while (@row = $sth_6->fetchrow_array) {
         $rdate = $row[0];
     }
     $sth_6->finish;
-    $dbh->disconnect;
 }
 
 =head2 reply_type()

@@ -11,18 +11,14 @@ ALEPHreply.cgi - User reply form
 use FindBin qw{$Bin};
 use lib "$Bin/../../lib";
 
-use DBI;
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
 
 use AlephRx::Util;
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $id = "";
@@ -42,10 +38,8 @@ print "<br><br>\n";
 print "<TABLE BORDER=0 CELLPADDING=2>\n";
 
 # get the full record for this report
-$dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
 $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/ %d/%y'), people.grp, people.campus, report.status, report.text, people.email FROM people, report WHERE people.id = ? and people.id = report.id";
-$sth = $dbh->prepare($statement);
+$sth = $db->dbh->prepare($statement);
 $sth->execute($value);
 
 # display the full record
@@ -80,7 +74,6 @@ while (@row = $sth->fetchrow_array) {
 }
 
 $sth->finish;
-$dbh->disconnect;
 print "</TABLE>\n";
 print "<FONT>Complete the form and configure email options below</FONT>\n";
 print "<BR>\n";
@@ -105,9 +98,8 @@ staff responses.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1 = $db->dbh->prepare($statement_1);
     $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
@@ -123,7 +115,6 @@ sub fetchreply {
         print "</TR>\n";
     }
     $sth_1->finish;
-    $dbh_1->disconnect;
 }
 
 =head2 reply_type()

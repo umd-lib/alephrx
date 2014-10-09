@@ -18,18 +18,14 @@ ALEPHurecord.cgi - Staff report update form
 use FindBin qw{$Bin};
 use lib "$Bin/../../../lib";
 
-use DBI;
 use CGI;
 use HTML::Entities;
 
 use AlephRx::Util;
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $id = "";
@@ -134,9 +130,8 @@ sub print_form {
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='../ALEPHsum.cgi?id'\">\n";
             print "<INPUT TYPE=\"button\" VALUE=\"View Reports for Staff\" onClick=\"parent.location='ALEPHform2.cgi?id'\"></p>\n";
 
-            $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
             $statement =   "SELECT people.grp, people.campus, people.phone, people.name, report.date, report.status, report.summary, report.text, report.supress, report.cataloger, people.email, DATE_FORMAT(report.timestamp,'%m/%d/%y     %l:%i %p') FROM people, report WHERE people.id = report.id and people.id = ?";
-            $sth = $dbh->prepare($statement);
+            $sth = $db->dbh->prepare($statement);
             $sth->execute($id);
 
             @row = $sth->fetchrow_array;
@@ -306,9 +301,7 @@ sub print_form {
         }
     }
     $sth->finish;
-    $dbh->disconnect;
     $sth_1->finish;
-    $dbh_1->disconnect;
     print "</BODY>\n</HTML>\n";
 }
 
@@ -319,12 +312,8 @@ that value.
 
 =cut
 sub max_id {
-
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     $statement =   "SELECT MAX(id) from report";
-
-    $sth_4 = $dbh->prepare($statement);
+    $sth_4 = $db->dbh->prepare($statement);
     $sth_4->execute;
 
     while(@row = $sth_4->fetchrow_array) {
@@ -342,9 +331,8 @@ database.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd, id from reply where parent_id = ? ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1 = $db->dbh->prepare($statement_1);
     $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
@@ -370,7 +358,6 @@ sub fetchreply {
         print "</table>\n";
     }
     $sth_1->finish;
-    $dbh_1->disconnect;
 }
 
 =head2 reply_type()

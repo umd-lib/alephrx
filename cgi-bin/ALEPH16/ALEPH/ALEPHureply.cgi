@@ -6,18 +6,16 @@ ALEPHureply.cgi - Staff form for editing a reply
 
 =cut
 
-use DBI;
+use FindBin qw{$Bin};
+use lib "$Bin/../../../lib";
+
 use CGI;
 use CGI::Carp qw(fatalsToBrowser);
-use IO::Handle;
-use lib "/lims/lib/perl";
+
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $reply_id = "";
@@ -77,11 +75,9 @@ reply with the ID C<$reply_id>.
 =cut
 sub print_form {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     $statement =   "SELECT text, name, DATE_FORMAT(date,'%b %e, %Y      %r'), id, parent_id, DATE_FORMAT(timestamp,'%b %e, %Y    %r') from reply where id = ?";
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute($reply_id);
 
     my ($text, $name, $date, $reply_id, $record, $updated) = $sth->fetchrow_array;
@@ -104,7 +100,6 @@ sub print_form {
     print "</TR>\n";
 
     $sth->finish;
-    $dbh->disconnect;
 
     print "</TABLE>\n";
     print "<br><br>\n";
@@ -135,12 +130,10 @@ updated.
 
 =cut
 sub insert {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement =   "UPDATE reply SET text = ?, timestamp = NOW() WHERE id = ?";
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute($text, $reply_id);
 
     $sth->finish;
-    $dbh->disconnect;
     $error = "Reply has been updated.";
 }

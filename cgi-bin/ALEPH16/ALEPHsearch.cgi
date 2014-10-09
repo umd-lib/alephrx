@@ -11,15 +11,15 @@ ALEPHsearch.cgi - User basic search page
 ## name changed 6/20/06
 ## basic query
 
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
 use CGI;
-use DBI;
+
+use AlephRx::Database;
 
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $id = "";
@@ -101,15 +101,13 @@ sub do_search {
     $term =~ s/\'/\\\'/g;
     $field =~ s/\'/\\\'/g;
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     if ($field eq "reply") {
         $statement =   "SELECT DISTINCT people.id, report.summary, DATE_FORMAT(report.date,'%m/%d/%y'), people.name, people.grp, report.status from people, report, reply where (reply.text LIKE '%$term%' or reply.name LIKE '%$term%') and reply.parent_id = report.id and report.id = people.id order by people.id"; 
     } else {
         $statement =   "SELECT people.id, report.summary, DATE_FORMAT(date,'%m/%d/%y'), people.name, people.grp, report.status from people, report where $field LIKE '%$term%' and report.id = people.id order by people.id";
     }
 
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute;
 
     $nr = $sth->rows;
@@ -150,7 +148,6 @@ sub display_results {
     }
 
     $rc = $sth->finish;
-    $rc = $dbh->disconnect;
 }
 
 

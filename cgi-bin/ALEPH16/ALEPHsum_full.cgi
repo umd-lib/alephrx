@@ -17,15 +17,15 @@ report.
 ## name changed 6/20/06
 ## stats form
 
-use DBI;
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
 use CGI;
 
+use AlephRx::Database;
+
 # get db connection info from the environment
-# use SetEnv in the Apache config for the cgi-bin directory to set these
-$database  = $ENV{ALEPHRX_DATABASE_NAME};
-$db_server = $ENV{ALEPHRX_DATABASE_HOST};
-$user      = $ENV{ALEPHRX_DATABASE_USER};
-$password  = $ENV{ALEPHRX_DATABASE_PASS};
+my $db = AlephRx::Database->new_from_env;
 
 $statement = "";
 $value = "";
@@ -82,9 +82,8 @@ Calls L<escapeXML()> to entity-escape the C<reply.text> column.
 =cut
 sub fetchreply {
 
-    $dbh_1 = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
     $statement_1 =   "SELECT name, DATE_FORMAT(date,'%m/%d/%y     %l:%i %p'), text, itd from reply where parent_id = ? ORDER BY date DESC";
-    $sth_1 = $dbh_1->prepare($statement_1);
+    $sth_1 = $db->dbh->prepare($statement_1);
     $sth_1->execute($row_id);
 
     while (@rrow = $sth_1->fetchrow_array) {
@@ -101,7 +100,6 @@ sub fetchreply {
         print "</TR>\n";
     }
     $sth_1->finish;
-    $dbh_1->disconnect;
 }
 
 =head2 print_page_start()
@@ -137,7 +135,6 @@ Prints end of page
 sub print_page_end {
     print "</TABLE>\n";
     $sth->finish;
-    $dbh->disconnect;
     print "</BODY>\n</HTML>\n";
 } 
 
@@ -176,10 +173,8 @@ Calls L<escapeXml()> to do entity-escaping of the C<report.text> column.
 =cut
 sub get_full_record {
 
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
     $statement =   "SELECT people.id, report.summary, people.name, people.phone, DATE_FORMAT(report.date,'%m/%d/%y'), people.grp, people.campus, report.status, report.text FROM people, report WHERE people.id = ? and people.id = report.id";
-    $sth = $dbh->prepare($statement);
+    $sth = $db->dbh->prepare($statement);
     $sth->execute($value);
 
     while (@row = $sth->fetchrow_array) {
