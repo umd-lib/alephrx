@@ -1,0 +1,70 @@
+// The AlephRx user report submission process.
+
+digraph {
+    // pages
+    node [
+        shape = rect
+    ]
+    ReportForm
+    EmailConfigForm
+    ReportErrorPage
+    EmailErrorPage
+    ReportConfirmationPage
+    ReplyForm
+
+    // processes
+    node [
+        shape = ellipse
+    ]
+    insert_report [ label = "insert report into database" ]
+    send_email [ label = "send email notifications" ]
+
+    // error checking
+    node [
+        shape = diamond
+        label = ""
+    ]
+    validate_report
+    validate_email
+
+    // set the starting page
+    start [ shape = point ]
+    start -> ReportForm
+
+    // application flow
+    ReportForm -> validate_report [ label = "SUBMIT" ]
+    validate_report -> ReportErrorPage [ label = "[invalid]" ]
+    ReportErrorPage -> ReportForm [ label = "Back" ]
+    validate_report -> insert_report [ label = "[valid]" ]
+    insert_report -> EmailConfigForm
+
+    EmailConfigForm -> validate_email [ label = "Confirm Email Configuration" ]
+    validate_email -> EmailErrorPage [ label = "[invalid]" ]
+    EmailErrorPage -> EmailConfigForm [ label = "Back" ]
+    validate_email -> send_email [ label = "[valid]" ]
+    send_email -> ReportConfirmationPage
+
+    ReportConfirmationPage -> ReplyForm [ label = "Reply" ]
+
+    // group the pages and processes by which script handles them
+    subgraph cluster_0 {
+        label = "ALEPHform.cgi"
+        ReportForm
+        EmailConfigForm
+        ReportErrorPage
+        validate_report
+        insert_report
+    }
+    subgraph cluster_1 {
+        label = "ALEPHemail.cgi"
+        validate_email
+        EmailErrorPage
+        send_email
+        ReportConfirmationPage
+    }
+    subgraph cluster_2 {
+        label = "ALEPH16/ALEPHreply.cgi"
+        labelloc = b
+        ReplyForm
+    }
+}

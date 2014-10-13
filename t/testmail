@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+use strict;
+
+# This is a quick-and-dirty script to log emails instead of sending them. Set the
+# ALEPHRX_MAILER environment variable to the path to this script for testing.
+
+use FindBin qw{$Bin};
+my $mail_dir = "$Bin/mails";
+
+# ignore all flags and arguments
+@ARGV = ();
+
+my $out_file = sprintf '%s/mail_%s', $mail_dir, time;
+
+open my $fh, '>', $out_file or die "Cannot open $out_file";
+while (<>) {
+    print $fh $_
+}

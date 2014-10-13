@@ -1,0 +1,70 @@
+// The AlephRx basic search interaction.
+
+digraph {
+    // pages
+    node [
+        shape = rect
+    ]
+    SearchForm
+    SearchErrorPage
+    SearchResultsPage
+    ReportDetailsPage
+    ReportUpdateForm
+
+    // processes
+    node [
+        shape = ellipse
+    ]
+    query_database [ label = "query database" ]
+
+    // error checking and decision points
+    node [
+        shape = diamond
+        label = ""
+    ]
+    validate_search_term
+    which_script
+
+    // set the starting page
+    start [ shape = point ]
+    start -> SearchForm
+
+    // application flow
+    SearchForm -> validate_search_term [ label = "Submit Query" ]
+    validate_search_term -> SearchErrorPage [ label = "[search term is empty]" ]
+    validate_search_term -> query_database [ label = "[has search term]" ]
+    query_database -> SearchResultsPage
+    SearchResultsPage -> validate_search_term [ label = "Submit Query" ]
+    SearchErrorPage -> validate_search_term [ label = "Submit Query" ]
+
+    SearchResultsPage -> which_script [ label = "{report summary}" ]
+    which_script -> ReportDetailsPage [ label = "[in ALEPH16/ALEPHsearch.cgi]" ]
+    which_script -> ReportUpdateForm [ label = "[in ALEPH16/ALEPH/ALEPHsearch.cgi]" ]
+
+    // group the pages and processes by which script handles them
+    subgraph cluster_0 {
+        
+        // the only difference between these two scripts is their title, where
+        // the navigation button takes you (user summary and staff summary
+        // pages, respectively), and where the links in the results table take
+        // you (report details page and report update form, respectively)
+
+        label = "ALEPH16/ALEPHsearch.cgi\nALEPH16/ALEPH/ALEPHsearch.cgi"
+        labelloc = b
+        SearchForm
+        SearchErrorPage
+        SearchResultsPage
+        validate_search_term
+        query_database
+    }
+    subgraph cluster_1 {
+        label = "ALEPH16/ALEPHsum_full.cgi"
+        labelloc = b
+        ReportDetailsPage
+    }
+    subgraph cluster_2 {
+        label = "ALEPH16/ALEPH/ALEPHurecord.cgi"
+        labelloc = b
+        ReportUpdateForm
+    }
+}
