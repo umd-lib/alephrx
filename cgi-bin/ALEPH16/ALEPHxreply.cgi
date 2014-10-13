@@ -283,7 +283,7 @@ To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
-This is a REPLY to the RxWeb listed below:
+This is a REPLY to the AlephRx report listed below:
 
   Original Report # : $row_id
       Date of Report: $sdate

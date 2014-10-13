@@ -1162,7 +1162,7 @@ fields.
 sub print_page_start_a {
 
     print "Content-type: text/html\n\n";
-    print "<HTML>\n<HEAD>\n<TITLE>Reports (Staff View) - AlephRx</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<HTML>\n<HEAD>\n<TITLE>AlephRx Reports (Staff View)</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
     print "<FORM ACTION=\"ALEPHform2.cgi?id\" METHOD=\"post\">\n";
     print "<a NAME=\"top\"></a>\n";
     print "<center>\n";
@@ -1452,7 +1452,7 @@ To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
 
-This is a DSS response to the RxWeb listed below
+This is a DSS response to the AlephRx report listed below
 
  Original Report # : $id
      Date of Report: $date
@@ -1548,7 +1548,9 @@ of the report. This is the purple functionality.
 
 =cut
 sub cell_background  {
-    if ($row[4] eq "user input needed" and $maxstamp gt $date) {
+    # the most recent update to the report (report.updated is in $row[7]) is
+    # equal to the timestamp of the latest user reply ($maxstamp) 
+    if ($row[4] eq "user input needed" and $maxstamp eq $row[7]) {
         $cellbk = "#FF00FF"
     } elsif ($row[4] eq "pending" and $itd = "") {
         $cellbk = "#00FFFFF"
@@ -1567,11 +1569,15 @@ not, it increments C<$reply_count>.
 
 =cut
 sub reply_query {
-    $statement_8 =   "SELECT DATE_FORMAT(date,'%Y%m%d'), itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = ?";
+    $statement_8 =   "SELECT date, itd, NOW(), DATE_SUB(NOW(),INTERVAL 14 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), date from reply where parent_id = ?";
 
     $sth_8 = $db->dbh->prepare($statement_8);
     $sth_8->execute($row_id);
 
+    # $maxstamp keeps track of whether the most recent comment is a reply or a
+    # response. Need to clear it before to make sure it doesn't bleed over from
+    # report to report (isssue LIBILS-53)
+    $maxstamp = "";
     while (@rrow = $sth_8->fetchrow_array) {
         $now = $rrow[2];
         $twoweeksago = $rrow[3];
