@@ -5,8 +5,8 @@ This is the code for the Aleph ticket tracking system for USMAI Consortium. This
 is the system that is currently running on the itd.umd.edu server with the
 following entry points:
 
-- End-users: http://itd.umd.edu/cgi-bin/ALEPHform.cgi
-- DSS Staff: http://itd.umd.edu/cgi-bin/ALEPH16/ALEPH/ALEPHform2.cgi
+- End-users: http://usmai.umd.edu/alephrx/cgi-bin/ALEPHform.cgi
+- DSS Staff: http://usmai.umd.edu/alephrx/cgi-bin/ALEPH16/ALEPH/ALEPHform2.cgi
 
 Codebase
 --------

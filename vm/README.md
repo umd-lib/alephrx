@@ -59,7 +59,7 @@ then get a quick data dump from the current ITD server by calling *mysqldump*
 over SSH. Replace credentials on itd.umd.edu as appropriate.
 
     $ vagrant ssh
-    $ ssh <USER>@itd.umd.edu -t /usr/local/mysql/bin/mysqldump --no-create-info -u<USERNAME> -p<PASSWORD> <DBNAME> | mysql -ualephrx -palephrx alephrx
+    $ ssh <USER>@usmai.umd.edu -t /usr/bin/mysqldump --no-create-info -h<HOST> -P<port> -u<USERNAME> -p<PASSWORD> <DBNAME> | mysql -ualephrx -palephrx -Dalephrx
 
 If at any time you need to start over completely, just destroy and recreate the
 VM. From your working copy directory:
