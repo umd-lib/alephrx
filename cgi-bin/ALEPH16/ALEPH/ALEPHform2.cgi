@@ -138,6 +138,7 @@ $NEW = $input{'NEW'};
 $PURPLE = $input{'PURPLE'};
 $PEND = $input{'PENDING'};
 $TECH = $input{'TECH'};
+$OLETEST = $input{'OLETEST'};
 $RECORD = $input{'record'};
 $hidden_filter = $input{'hidden_filter'};
 $hidden_value = $input{'hidden_value'};
@@ -539,6 +540,10 @@ sub filter {
 
     if ($TECH) {
         $filter = "and people.grp = 'Technical'";
+    }
+
+    if ($OLETEST) {
+        $filter = "and people.grp = 'OLE Testing'";
     }
 
     if ($ITM) {
@@ -1212,6 +1217,7 @@ sub print_page_start_a {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Technical\" NAME=\"TECH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"OLE Testing\" NAME=\"OLETEST\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
 
     print "<tr>\n";

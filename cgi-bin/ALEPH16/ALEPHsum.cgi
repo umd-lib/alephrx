@@ -66,6 +66,7 @@ $POST = $input{'POSTPONED'};
 $NEW = $input{'NEW'};
 $PASSWORD = $input{'PASSWORD'};
 $TECH = $input{'TECH'};
+$OLETEST = $input{'OLETEST'};
 $RECORD = $input{'record'};
 $NEXT = $input{'NEXT'};
 $PREV = $input{'PREV'};
@@ -409,6 +410,10 @@ sub filter {
         $filter = "and people.grp = 'Technical'";
     }
 
+    if ($OLETEST) {
+        $filter = "and people.grp = 'OLE Testing'";
+    }
+
     if ($ITM) {
         $filter = "and people.grp = 'Item Maintenance'";
     }
@@ -492,6 +497,8 @@ sub print_page_start {
     print "<tr>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Technical\" NAME=\"TECH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"OLE Testing\" NAME=\"OLETEST\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Password Reset\"
 NAME=\"PASSWORD\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";

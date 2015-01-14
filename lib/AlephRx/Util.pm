@@ -105,6 +105,11 @@ our @FUNCTIONAL_AREAS = (
         slug => 'OPAC:',
     },
     {
+        name => 'OLE Testing',
+        recipient => 'usmaialeph@umd.edu',
+        slug => 'OLE-TEST:',
+    },
+    {
         name => 'other',
         recipient => 'usmaialeph@umd.edu',
         slug => 'OTHR:',

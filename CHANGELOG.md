@@ -13,3 +13,7 @@ CHANGELOG
 - Fixed quote- and backslash-escaping problems.
 - Fixed "Active" filter to return all non-closed reports.
 - Placed existing application into version control.
+
+## 1.1
+
+- Added "OLE Testing" functional group (LIBILS-60)
