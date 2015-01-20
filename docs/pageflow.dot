@@ -79,8 +79,8 @@ digraph {
     
     // POSTs that update or take other actions on the server
     edge [ dir = both; arrowtail = tee ]
-    form -> form [ label = "[SUBMIT]" ]
-    form -> email_confirm [ label = "Confirm Email Configuration" ]
+    form -> form [ label = "[NEXT]" ]
+    form -> email_confirm [ label = "[Submit]" ]
     user_reply -> user_reply_sent [ label = "[Submit Your Reply]" ]
     staff_edit_record -> staff_summary [ label = "[submit]" ]
     staff_edit_reply -> staff_edit_reply [ label = "[submit]" ]
