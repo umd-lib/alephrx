@@ -9,8 +9,7 @@ Overview of Screens
 The end user's point of entry to the system is the request submission screen,
 titled "RxWeb Form". On this screen, the user fills out a new request and
 submits it to the system. Once the request is submitted and validated, the
-system creates a new record in the database. Then the system takes the user to
-an email notification confirmation screen.
+system takes the user to an email notification confirmation screen.
 
 On the email notification confirmation screen, the user can select additional
 email addresses to send notifications to. The notification email is *always*
@@ -26,8 +25,8 @@ After the user submits the email confirmation form, the system checks the email
 addresses. If any of these addresses are invalid, the system displays an error
 message page to the user. The user may then navigate back to the email
 confirmation form to correct their errors. If all of the submitted addresses are
-valid, the system sends the email and then displays a confirmation page
-containing the submitted report information.
+valid, the system creates a new record in the database, sends the email and then
+displays a confirmation page containing the submitted report information.
 
 The end user also has access to the user summary screen. This screen displays a
 summary view of all of the reports in the system. By default, all reports are
