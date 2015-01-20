@@ -73,7 +73,6 @@ foreach $pair (@input_pairs) {
 }
 
 $name = $query->param('name');
-#$id = $query->param('id');
 $campus = $query->param('campus');
 $status = $query->param('status');
 $text = $query->param('text');
