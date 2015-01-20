@@ -245,7 +245,7 @@ sub print_form {
     print "<textarea wrap=\"physical\" name=text cols=60 rows=10></textarea>\n";
     print "</td>\n";
     print "<tr>\n";
-    print "<td colspan=2 align=\"center\"><input type=submit value=\"SUBMIT\"></td>\n";
+    print "<td colspan=2 align=\"center\"><input type=submit value=\"NEXT\"></td>\n";
     print "<td colspan=2 align=\"center\"><input type=reset value=\"CLEAR\"></td>\n";
     print "</tr>\n";
     print "</table>\n";
@@ -365,7 +365,7 @@ sub email_config {
     print "<table>\n";
     &email_display;
     print "<tr><td align=\"left\">\n";
-    print "<p><input TYPE=\"submit\" VALUE=\"Confirm Email Configuration\"></p>\n";
+    print "<p><input TYPE=\"submit\" VALUE=\"Submit\"></p>\n";
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
 #    print "<INPUT TYPE=\"hidden\" name=\"id\" VALUE=\"$last\">\n";
