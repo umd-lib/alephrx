@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+## 1.0.1
+
+- Changed report submission so that is occurs only after the email
+  addresses have been confirmed. Renamed the "SUBMIT" button on the
+  "Submit a Report to AlpehRx" page to "NEXT", and "Confirm Email
+  Configuration" button on "Confirm AlephRx Email Notifications"
+  page to "Submit". 
+
 ## 1.0
 
 - Added a "Password Reset" functional area.
