@@ -73,7 +73,6 @@ foreach $pair (@input_pairs) {
 }
 
 $name = $query->param('name');
-$id = $query->param('id');
 $campus = $query->param('campus');
 $status = $query->param('status');
 $text = $query->param('text');
@@ -110,6 +109,7 @@ if ($email_config = "yes") {
         &recipient;
         &slug;
         &email_options;
+        &insert_data;
         &display_record;
         if ($email_count > 0) {
             &mail;
@@ -366,3 +366,33 @@ selected in the webform and sets the C<$slug> variable.
 sub slug {
     $slug = $AlephRx::Util::SLUG_FOR{$grp};
 }
+
+=head2 insert_data()
+
+Inserts the form data into database. Creates a new row in both the C<people> and
+C<report> tables.
+
+=cut
+sub insert_data {
+    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
+
+    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES (?, ?, ?, ?, ?)";
+    $sth = $dbh->prepare($statement);
+    $sth->execute($name, $grp, $campus, $phone, $email);
+
+    $statement =   "SELECT last_insert_id()";
+    $sth = $dbh->prepare($statement);
+    $sth->execute;
+
+    $id = $sth->fetchrow_array; 
+
+    $statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
+    (LAST_INSERT_ID(), NOW(), ?, ?, ?, ?, NOW(), NOW(), '18.01')";
+
+    $sth = $dbh->prepare($statement);
+    $sth->execute($status, $summary, $text, $cataloger);
+    
+    $sth->finish;
+    $dbh->disconnect
+}
+
