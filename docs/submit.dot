@@ -32,16 +32,16 @@ digraph {
     start -> ReportForm
 
     // application flow
-    ReportForm -> validate_report [ label = "SUBMIT" ]
+    ReportForm -> validate_report [ label = "NEXT" ]
     validate_report -> ReportErrorPage [ label = "[invalid]" ]
     ReportErrorPage -> ReportForm [ label = "Back" ]
-    validate_report -> insert_report [ label = "[valid]" ]
-    insert_report -> EmailConfigForm
+    validate_report -> EmailConfigForm [ label = "[valid]" ]
 
-    EmailConfigForm -> validate_email [ label = "Confirm Email Configuration" ]
+    EmailConfigForm -> validate_email [ label = "Submit" ]
     validate_email -> EmailErrorPage [ label = "[invalid]" ]
     EmailErrorPage -> EmailConfigForm [ label = "Back" ]
-    validate_email -> send_email [ label = "[valid]" ]
+    validate_email -> insert_report [ label = "[valid]" ]
+    insert_report -> send_email
     send_email -> ReportConfirmationPage
 
     ReportConfirmationPage -> ReplyForm [ label = "Reply" ]
@@ -53,12 +53,12 @@ digraph {
         EmailConfigForm
         ReportErrorPage
         validate_report
-        insert_report
     }
     subgraph cluster_1 {
         label = "ALEPHemail.cgi"
         validate_email
         EmailErrorPage
+        insert_report
         send_email
         ReportConfirmationPage
     }

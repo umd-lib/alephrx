@@ -33,14 +33,12 @@ $user      = $ENV{ALEPHRX_DATABASE_USER};
 $password  = $ENV{ALEPHRX_DATABASE_PASS};
 
 $statement = "";
-$id = "";
 $rname = "";
 $response = "";
 $mailprog = $ENV{ALEPHRX_MAILER};
 $query = new CGI;
 
 $name = $query->param('name');
-$id = $query->param('id');
 $campus = $query->param('campus');
 $status = $query->param('status');
 $text = $query->param('text');
@@ -72,7 +70,6 @@ if ($query->param('submitted')) {
     if ($error_message ne "") {
         &display_error;
     } elsif ($error_message eq "") {
-        &insert_data;
         &recipient;
         &email_config;
     } 
@@ -131,7 +128,6 @@ Initializes variables that store the submitted values.
 =cut
 sub set_initial_values {
     $name = "";
-    $id = "";
     $campus = "";
     $status = "new";
     $text = "";
@@ -245,7 +241,7 @@ sub print_form {
     print "<textarea wrap=\"physical\" name=text cols=60 rows=10></textarea>\n";
     print "</td>\n";
     print "<tr>\n";
-    print "<td colspan=2 align=\"center\"><input type=submit value=\"SUBMIT\"></td>\n";
+    print "<td colspan=2 align=\"center\"><input type=submit value=\"NEXT\"></td>\n";
     print "<td colspan=2 align=\"center\"><input type=reset value=\"CLEAR\"></td>\n";
     print "</tr>\n";
     print "</table>\n";
@@ -281,34 +277,6 @@ sub print_page_end {
     print "</HEAD></HTML>\n";
 }
 
-=head2 insert_data()
-
-Inserts the form data into database. Creates a new row in both the C<people> and
-C<report> tables.
-
-=cut
-sub insert_data {
-    $dbh = DBI->connect("DBI:mysql:$database:$db_server", $user, $password, { RaiseError => 1 });
-
-    $statement =   "INSERT INTO people (name, grp, campus, phone, email) VALUES (?, ?, ?, ?, ?)";
-    $sth = $dbh->prepare($statement);
-    $sth->execute($name, $grp, $campus, $phone, $email);
-
-    $statement =   "SELECT last_insert_id()";
-    $sth = $dbh->prepare($statement);
-    $sth->execute;
-
-    $last = $sth->fetchrow_array; 
-
-    $statement =   "INSERT INTO report (id, date, status, summary, text, cataloger, timestamp, updated, version) VALUES 
-    (LAST_INSERT_ID(), NOW(), ?, ?, ?, ?, NOW(), NOW(), '18.01')";
-
-    $sth = $dbh->prepare($statement);
-    $sth->execute($status, $summary, $text, $cataloger);
-    
-    $sth->finish;
-    $dbh->disconnect
-}
 
 
 =head2 recipient()
@@ -365,10 +333,9 @@ sub email_config {
     print "<table>\n";
     &email_display;
     print "<tr><td align=\"left\">\n";
-    print "<p><input TYPE=\"submit\" VALUE=\"Confirm Email Configuration\"></p>\n";
+    print "<p><input TYPE=\"submit\" VALUE=\"Submit\"></p>\n";
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"id\" VALUE=\"$last\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"name\" VALUE=\"$name\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$text\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$summary\">\n";
