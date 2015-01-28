@@ -7,7 +7,7 @@ CHANGELOG
   addresses have been confirmed. Renamed the "SUBMIT" button on the
   "Submit a Report to AlpehRx" page to "NEXT", and "Confirm Email
   Configuration" button on "Confirm AlephRx Email Notifications"
-  page to "Submit". 
+  page to "Submit". (LIBILS-61)
 
 ## 1.0
 
