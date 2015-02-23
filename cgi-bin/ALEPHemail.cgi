@@ -32,6 +32,7 @@ use CGI;
 use DBI;
 use CGI::Carp qw(fatalsToBrowser);
 use URI;
+use URI::Escape;
 
 use AlephRx::Util;
 
@@ -75,8 +76,10 @@ foreach $pair (@input_pairs) {
 $name = $query->param('name');
 $campus = $query->param('campus');
 $status = $query->param('status');
-$text = $query->param('text');
-$summary = $query->param('summary');
+$escaped_text = $query->param('text');
+$text = uri_unescape($escaped_text);
+$escaped_summary = $query->param('summary');
+$summary = uri_unescape($escaped_summary);
 $date = $query->param('date');
 $grp = $query->param('grp');
 $time = $query->param('time');
