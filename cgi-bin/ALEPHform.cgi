@@ -22,6 +22,7 @@ use DBI;
 use CGI::Carp qw(fatalsToBrowser);
 use IO::Handle;
 use lib "/lims/lib/perl";
+use URI::Escape;
 
 use AlephRx::Util;
 
@@ -42,7 +43,9 @@ $name = $query->param('name');
 $campus = $query->param('campus');
 $status = $query->param('status');
 $text = $query->param('text');
+$escaped_text = uri_escape( $text );
 $summary = $query->param('summary');
+$escaped_summary = uri_escape( $summary );
 $date = $query->param('date');
 $grp = $query->param('grp');
 $time = $query->param('time');
@@ -131,7 +134,9 @@ sub set_initial_values {
     $campus = "";
     $status = "new";
     $text = "";
+    $escaped_text = "";
     $summary = "";
+    $escapes_summary = "";
     $date = "";
     $grp = "";
     $time = "";
@@ -337,8 +342,8 @@ sub email_config {
     print "<INPUT TYPE=\"hidden\" name=\"email_config\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"submitted\" VALUE=\"yes\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"name\" VALUE=\"$name\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$text\">\n";
-    print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$summary\">\n";
+    print "<INPUT TYPE=\"hidden\" name=\"text\" VALUE=\"$escaped_text\">\n";
+    print "<INPUT TYPE=\"hidden\" name=\"summary\" VALUE=\"$escaped_summary\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"phone\" VALUE=\"$phone\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"campus\" VALUE=\"$campus\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"status\" VALUE=\"$status\">\n";
