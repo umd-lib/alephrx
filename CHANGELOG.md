@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+## 1.0.2
+
+- Added URI escaping to the "summary" and "text" fields in the report
+  submission form. This was necessary, because text from these fields
+  was being lost if they included double quotes. (LIBILS-63)
+
 ## 1.0.1
 
 - Changed report submission so that is occurs only after the email
