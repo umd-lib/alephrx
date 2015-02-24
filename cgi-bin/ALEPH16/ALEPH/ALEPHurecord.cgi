@@ -148,8 +148,9 @@ sub print_form {
             $name = encode_entities($row[3]);
             $date = encode_entities($row[4]);
             $status = encode_entities($row[5]);
-            $summary = encode_entities($row[6]);
-            $text = encode_entities($row[7]);
+            # Summary and Text fields are already HTML encoded.
+            $summary = $row[6];
+            $text = $row[7];
             $suppress = encode_entities($row[8]);
             $cataloger = encode_entities($row[9]);
             $email = encode_entities($row[10]);

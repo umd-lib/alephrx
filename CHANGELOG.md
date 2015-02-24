@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+## 1.0.3
+
+- Fixed issue with "special characters" (dashes, Microsoft Word
+  "smart quotes", and bullets) being expanded every time a DSS
+  response was made. (LIBILS-62)
+  
 ## 1.0.2
 
 - Added URI escaping to the "summary" and "text" fields in the report
