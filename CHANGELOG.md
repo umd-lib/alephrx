@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+## 1.0.4
+
+- Fixed issue with a direct call to ALEPHemail.cgi resulting in
+  an empty report being added to the database. (LIBILS-64)
+
 ## 1.0.3
 
 - Fixed issue with "special characters" (dashes, Microsoft Word
