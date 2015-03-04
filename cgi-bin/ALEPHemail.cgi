@@ -104,7 +104,7 @@ $text_mail = $text;
 if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
-if ($email_config = "yes") {
+if ($email_config eq "yes") {
     &Check_Email;
     if ($email_check gt 1) {
         &bad_email_display;
@@ -118,7 +118,12 @@ if ($email_config = "yes") {
             &mail;
         }
     }
+} else {
+    # We can get here is someone goes the ALEPHemail.cgi page directly
+    # (see LIBILS-64). Provide a page indicating an error. 
+    &unknown_submission_display;
 }
+
 
 =head2 display_record()
 
@@ -346,6 +351,24 @@ sub bad_email_display {
     print "<p><input TYPE=\"button\" VALUE=\" Back \" onClick=\"history.go(-1)\"></p>\n";
     print "</form>\n";
     print "</body>\n</html>\n";
+
+}
+
+=head2 unknown_submission_display()
+
+Displays error message when a page has been called without submitting necessary
+data.
+
+=cut
+sub unknown_submission_display {
+
+    print "Content-type: text/html\n\n";
+    print "<HTML>\n<HEAD>\n<TITLE>Unknown Submission Request</TITLE>\n</HEAD>\n<BODY BGCOLOR=\"#98AFC7\">\n";
+    print "<h2>Unknown Submission Request</h2>\n";
+    print "Submission contained no data.\n";
+    print "<P><INPUT TYPE=\"button\" VALUE=\"Submit a Report\" onClick=\"parent.location ='ALEPHform.cgi'\">\n";
+    print "<INPUT TYPE=\"button\" VALUE=\"View Reports\" onClick=\"parent.location='ALEPH16/ALEPHsum.cgi?id'\"></p>\n";
+    print "</BODY>\n</HTML>\n";
 
 }
 
