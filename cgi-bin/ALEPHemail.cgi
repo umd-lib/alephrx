@@ -104,7 +104,7 @@ $text_mail = $text;
 if ($email3) { &Check_Email($email3a);}
 if ($email4) { &Check_Email($email4a);}
 
-if ($email_config = "yes") {
+if ($email_config eq "yes") {
     &Check_Email;
     if ($email_check gt 1) {
         &bad_email_display;
