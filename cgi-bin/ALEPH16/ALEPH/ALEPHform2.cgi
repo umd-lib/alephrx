@@ -117,7 +117,7 @@ $ASSNHH = $input{'ASSNHH'};
 $ASSNHB = $input{'ASSNHB'};
 $ASSNDS = $input{'ASSNDS'};
 $ASSNUS = $input{'ASSNUS'};
-$ASSNMH = $input{'ASSNMH'};
+$ASSNJK = $input{'ASSNJK'};
 $ASSNLS = $input{'ASSNLS'};
 $PASSWORD = $input{'PASSWORD'};
 $CHANGE = $input{'CHANGE'};
@@ -589,8 +589,8 @@ sub filter {
         $filter = "and report.status = 'assigned (US)'";
     }
 
-    if ($ASSNMH) {
-        $filter = "and report.status = 'assigned (MH)'";
+    if ($ASSNJK) {
+        $filter = "and report.status = 'assigned (JK)'";
     }
 
     if ($ASSNLS) { 
@@ -1225,7 +1225,7 @@ sub print_page_start_a {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DS)\" NAME=\"ASSNDS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (MH)\" NAME=\"ASSNMH\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (JK)\" NAME=\"ASSNJK\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n"; 
 

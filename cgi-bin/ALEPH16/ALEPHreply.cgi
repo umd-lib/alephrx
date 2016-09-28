@@ -52,6 +52,9 @@ $sth->execute($value);
 while (@row = $sth->fetchrow_array) {
     print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
 
+    $row[8] = &escapeXml($row[8]);
+    $row[8] =~ s/\n/\n<BR>/g;
+
     print "<TR>\n
     <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
     <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Phone</I></TH>\n
@@ -102,6 +105,8 @@ Fetch and print all replies and responses to the report with ID C<$row_id>.
 Calls L<reply_type()> to alter the UI to distinguish between user replies and
 staff responses.
 
+Calls L<escapeXML()> to entity-escape the C<reply.text> column.
+
 =cut
 sub fetchreply {
 
@@ -112,6 +117,7 @@ sub fetchreply {
 
     while (@rrow = $sth_1->fetchrow_array) {
 
+	$rrow[2] = &escapeXml($rrow[2]);
         $rrow[2] =~ s/\n/<BR>/g;
         $itd = $rrow[3];
         &reply_type;
@@ -185,4 +191,20 @@ sub email_display {
     print "</tr>\n";
 
     print "</TABLE><br>\n";
+}
+
+=head2 escapeXml()
+
+Takes a single string argument, replaces "&", "<", and ">" with the appropriate
+XML character entities, and returns the modified string.
+
+=cut
+sub escapeXml {
+    my $text = shift;
+
+    $text =~ s/&/&amp;/g;
+    $text =~ s/</&lt;/g;
+    $text =~ s/>/&gt;/g;
+
+    return $text;
 }

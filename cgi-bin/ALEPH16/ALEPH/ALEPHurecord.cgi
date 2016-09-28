@@ -236,7 +236,7 @@ sub print_form {
             print "<option>assigned (HB)\n";
             print "<option>assigned (HH)\n";
             print "<option>assigned (DW)\n";
-            print "<option>assigned (MH)\n";
+            print "<option>assigned (JK)\n";
             print "<option>assigned (LS)\n";
             print "<option>assigned (US)\n";
             print "<option>assigned (DS)\n";
