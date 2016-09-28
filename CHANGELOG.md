@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+## 1.0.5
+
+- Changed "Assign To MH" to "Assign To JK"
+- HTML cleanup
+ 
 ## 1.0.4
 
 - Fixed issue with a direct call to ALEPHemail.cgi resulting in

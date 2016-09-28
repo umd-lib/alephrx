@@ -75,7 +75,7 @@ if ($email_check > 0) {
     &bad_email_display;
 } else {
 
-    if ($text eq "") {
+    if ($text eq "" || $name eq "") {
         # reply text must not be empty
         # display an error page
         &validate_reply();
@@ -110,6 +110,9 @@ if ($email_check > 0) {
         while (@row = $sth->fetchrow_array) {
             print " <TR><TD COLSPAN=7 ALIGN=RIGHT VALIGN=TOP><a href=\"ALEPHreply.cgi?$row[0]\">Reply to This Report</a></FONT></TD></TR>\n";
             print "<TR><TD BGCOLOR=\"#FFFF00\" COLSPAN=7><B><i>Report #</i>&nbsp;$row[0]&nbsp;&nbsp;&nbsp;&nbsp;$row[1]</B></TD></FONT></TR>\n";
+
+	    $row[8] = &escapeXml($row[8]);
+	    $row[8] =~ s/\n/\n<BR>/g;
 
             print "<TR>\n
             <TH BGCOLOR=\"#CCCCCC\"><FONT SIZE=-1><I>Name</I></TH>\n
@@ -175,6 +178,8 @@ Retrieve and print all of the replies to the report with ID C<$row_id> in
 reverse chronological order. Calls L<reply_type()> for each reply to set the
 C<$reply_type> and C<$font_color> variables.
 
+Calls L<escapeXML()> to entity-escape the C<reply.text> column.
+
 =cut
 sub fetchreply {
 
@@ -185,6 +190,7 @@ sub fetchreply {
 
     while (@rrow = $sth_1->fetchrow_array) {
 
+	$rrow[2] = &escapeXml($rrow[2]);
         $rrow[2] =~ s/\n/<BR>/g;
         $itd = $rrow[3];
         &reply_type;
@@ -213,7 +219,7 @@ sub validate_reply {
     print "</head>\n<body>\n";
     print "<center>\n";
     print "<h1>Error Replying to AlephRx Report #$parent_id</h1>\n";
-    print "<h3>Please enter a reply.</h3>\n";
+    print "<h3>Please enter a name and a reply.</h3>\n";
     print "<table>\n";
     print "<tr><td align=\"left\">\n";
     print "<UL>\n" , $error_message , "</UL>\n";
@@ -463,4 +469,20 @@ Determines the slug (prefix for email) from the report's functional area
 =cut
 sub slug {
     $slug = $AlephRx::Util::SLUG_FOR{$grp};
+}
+
+=head2 escapeXml()
+
+Takes a single string argument, replaces "&", "<", and ">" with the appropriate
+XML character entities, and returns the modified string.
+
+=cut
+sub escapeXml {
+    my $text = shift;
+
+    $text =~ s/&/&amp;/g;
+    $text =~ s/</&lt;/g;
+    $text =~ s/>/&gt;/g;
+
+    return $text;
 }
