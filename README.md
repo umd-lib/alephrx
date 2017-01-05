@@ -24,3 +24,7 @@ Development Environment
 
 To set up a fresh development environment, clone this repository and then follow
 the instructions in [vm/README.md](vm/README.md).
+
+## License
+ 
+See the [LICENSE](LICENSE.md) file for license rights and limitations (Apache 2.0).
