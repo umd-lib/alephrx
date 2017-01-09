@@ -202,7 +202,7 @@ sub print_form {
             print "<option>CSC\n";
             print "<option>FSU\n";
             print "<option>HS/HSL\n";
-            print "<option>LNDL\n"
+            print "<option>LNDL\n";
             print "<option>MS\n";
             print "<option>SMCM\n";
             print "<option>SU\n";
