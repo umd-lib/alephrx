@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl 
+#!/usr/local/bin/perl
 
 =head1 NAME
 
@@ -57,7 +57,7 @@ foreach $pair (@input_pairs) {
 
 $value = $ENV{'QUERY_STRING'};
 
-$id = $input{'record'}; 
+$id = $input{'record'};
 $REPORT = $input{'report'};
 $limit = $input{'limit'};
 $p = $input{'page_increment'};
@@ -182,7 +182,7 @@ sub print_form {
             for my $functional_area (@AlephRx::Util::FUNCTIONAL_AREAS) {
                 print "<option>" . $functional_area->{name} . "\n";
             }
-            
+
             print "</select>\n";
             print "</TD>\n";
             print "<TD ALIGN=RIGHT WIDTH=\"5%\">\n";
@@ -240,7 +240,7 @@ sub print_form {
             print "<option>assigned (JK)\n";
             print "<option>assigned (LS)\n";
             print "<option>assigned (US)\n";
-            print "<option>assigned (DM)\n";
+            print "<option>assigned (Devs)\n";
             print "<option>user input needed\n";
             print "<option>sent to func.group\n";
             print "<option>marked for enhancement\n";

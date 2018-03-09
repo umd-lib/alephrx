@@ -1,11 +1,15 @@
 CHANGELOG
 =========
 
+## 1.0.6
+- Changed "Assign to DM" to "Assign to Devs"
+- Bug fixed in release branch related to LNDL addition.
+
 ## 1.0.5
 
 - Changed "Assign To MH" to "Assign To JK"
 - HTML cleanup
- 
+
 ## 1.0.4
 
 - Fixed issue with a direct call to ALEPHemail.cgi resulting in
@@ -16,7 +20,7 @@ CHANGELOG
 - Fixed issue with "special characters" (dashes, Microsoft Word
   "smart quotes", and bullets) being expanded every time a DSS
   response was made. (LIBILS-62)
-  
+
 ## 1.0.2
 
 - Added URI escaping to the "summary" and "text" fields in the report
