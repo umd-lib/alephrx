@@ -1,5 +1,7 @@
 CHANGELOG
 =========
+## 1.0.7
+- Changed "Assign to DM" to "Assign to Devs" in ALEPHform2.cgi
 
 ## 1.0.6
 - Changed "Assign to DM" to "Assign to Devs"
