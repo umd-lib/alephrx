@@ -582,7 +582,7 @@ sub filter {
     }
 
     if ($ASSNDM) {
-        $filter = "and report.status = 'assigned (DM)'";
+        $filter = "and report.status = 'assigned (Devs)'";
     }
 
     if ($ASSNUS) {
@@ -1223,7 +1223,7 @@ sub print_page_start_a {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DW)\" NAME=\"ASSNDW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DM)\" NAME=\"ASSNDM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (Devs)\" NAME=\"ASSNDM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (JK)\" NAME=\"ASSNJK\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
