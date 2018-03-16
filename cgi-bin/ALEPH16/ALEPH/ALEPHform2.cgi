@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl 
+#!/usr/local/bin/perl
 
 =head1 NAME
 
@@ -80,7 +80,7 @@ $no = $input{'no'};
 $delete = $input{'delete'};
 $filter_value = $input{'filter_value'};
 $text = $input{'text'};
-$id = $input{'record_id'}; 
+$id = $input{'record_id'};
 $grp = $input{'grp'};
 $campus = $input{'campus'};
 $phone = $input{'phone'};
@@ -236,7 +236,7 @@ if ($submit) {
 if ($delete) {
     # show the deletion confirmation form
     &pre_delete;
-} else { 
+} else {
     if ($filter eq "") {
         # set the filter to the filter_value request parameter
         $filter = $filter_value;
@@ -389,7 +389,7 @@ sub calc_num_pages {
         $num_pages = $num_pages_2 + 1;
     }else{
         $num_pages = $num_pages_2;
-    } 
+    }
 }
 
 =head2 next_paging()
@@ -485,7 +485,7 @@ sub page_rules {
         }
     }
     # update the limit to be used in the SQL query in get_sum_record()
-    $limit = $p * $numrec; 
+    $limit = $p * $numrec;
 
     print "<BR>\n";
     print "</td></tr></table>\n";
@@ -582,7 +582,7 @@ sub filter {
     }
 
     if ($ASSNDM) {
-        $filter = "and report.status = 'assigned (DM)'";
+        $filter = "and report.status = 'assigned (Devs)'";
     }
 
     if ($ASSNUS) {
@@ -593,7 +593,7 @@ sub filter {
         $filter = "and report.status = 'assigned (JK)'";
     }
 
-    if ($ASSNLS) { 
+    if ($ASSNLS) {
         $filter = "and report.status = 'assigned (LS)'";
     }
 
@@ -814,7 +814,7 @@ name field (C<$rname>) is not empty.
 =cut
 sub updated {
     if ($rname eq "") {
-        $updated = ""; 
+        $updated = "";
     } else {
         $updated = "<span style=\"background-color : white\"><P><FONT COLOR=\"#FF0000\"> Record $id has been updated!</span></FONT></P>"
     }
@@ -870,7 +870,7 @@ sub delete {
 
 =head2 pre_delete()
 
-Presents the selected record for deletion, offers the yes or no option.  If no is 
+Presents the selected record for deletion, offers the yes or no option.  If no is
 selected user is taken back to summary screen.
 
 B<XXX: No UI is present for getting to this display.>
@@ -891,7 +891,7 @@ sub pre_delete  {
     print "<center>\n";
     print "<P><h1>RxWeb Records Maintenance</P></h1>\n";
     print "<FONT COLOR=\"#FF0000\">You are about to delete the following record!</FONT>\n";
-    print "<P><INPUT TYPE=\"submit\" VALUE=\"YES\" NAME=\"yes\">\n"; 
+    print "<P><INPUT TYPE=\"submit\" VALUE=\"YES\" NAME=\"yes\">\n";
     print "&nbsp;&nbsp;<INPUT TYPE=\"submit\" VALUE=\"NO\" NAME=\"no\"</P>\n";
     print "<INPUT TYPE=\"hidden\" name=\"record\" VALUE=\"$row[0]\">\n";
     print "<INPUT TYPE=\"hidden\" name=\"page_increment\" VALUE=\"$p\">\n";
@@ -1223,11 +1223,11 @@ sub print_page_start_a {
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DW)\" NAME=\"ASSNDW\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (DM)\" NAME=\"ASSNDM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (Devs)\" NAME=\"ASSNDM\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (JK)\" NAME=\"ASSNJK\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
-    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n"; 
+    print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (LS)\" NAME=\"ASSNLS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
     print "<td align=\"center\"><INPUT TYPE=\"SUBMIT\" VALUE=\"Assigned (US)\" NAME=\"ASSNUS\" STYLE=\"font-family:sans-serif; font-size:xx-small; background:#ff0 none; color:#000; width:10em\"></td>\n";
 
@@ -1310,7 +1310,7 @@ sub print_page_end_a {
     print "<BR><BR>\n";
     print "</BODY>\n</HTML>\n";
 
-} 
+}
 
 =head2 match()
 
@@ -1397,12 +1397,12 @@ sub email_options {
         $emailx = 'yes';
     }
 
-    if ($rname eq "") { 
-        $emailx = "no"; 
+    if ($rname eq "") {
+        $emailx = "no";
     }
 
-    if ($mresponse eq "") { 
-        $emailx = "no"; 
+    if ($mresponse eq "") {
+        $emailx = "no";
     }
 
     $final_email_list = $rec1 . $rec2 . $rec3 . $rec4 . $rec5;
@@ -1469,7 +1469,7 @@ Reply-To: $AlephRx::Util::REPLY_TO
 Subject: RESPONSE:$slug#$id:$summary
 
 --------------------------------------------------------------------------------
-Please do not reply directly to this e-mail. 
+Please do not reply directly to this e-mail.
 To REPLY to this Rx: $reply_url
 (If prompted, sign in with the standard USMAI username/password.)
 --------------------------------------------------------------------------------
@@ -1576,7 +1576,7 @@ of the report. This is the purple functionality.
 =cut
 sub cell_background  {
     # the most recent update to the report (report.updated is in $row[7]) is
-    # equal to the timestamp of the latest user reply ($maxstamp) 
+    # equal to the timestamp of the latest user reply ($maxstamp)
     if ($row[4] eq "user input needed" and $maxstamp eq $row[7]) {
         $cellbk = "#FF00FF"
     } elsif ($row[4] eq "pending" and $itd = "") {
