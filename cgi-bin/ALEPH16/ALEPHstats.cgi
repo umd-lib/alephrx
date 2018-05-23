@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 ## Jamie Bush, 2004
 ## RxWeb (AlephRx) version 3.1
