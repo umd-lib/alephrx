@@ -1,0 +1,83 @@
+#!/usr/bin/perl -w
+use strict;
+
+use FindBin qw{$Bin};
+use lib "$Bin/../../lib";
+
+use CGI;
+use URI;
+use XML::Simple;
+
+use AlephRx::Database;
+
+my $q = CGI->new;
+
+# must be a POST request
+if ($q->request_method ne 'POST') {
+    print $q->header(
+        -type   => 'text/plain',
+        -status => '405 Method Not Allowed',
+        -allow  => 'POST',
+    );
+    print "Only POST requests are allowed to this URL.\n";
+    exit;
+}
+
+# data can be either XML or form parameters
+my $data = parse_request($q);
+
+# get db connection info from the environment
+my $db = AlephRx::Database->new_from_env;
+
+# check the submitted data for errors
+my @errors = $db->validate_data($data);
+if (@errors) {
+    print $q->header('text/plain', '400 Bad Request');
+    print "Missing or invalid fields.\n\n";
+    print join "\n", @errors;
+} else {
+    # create the report in the database
+    my $report = $db->submit_report($data);
+    if ($report) {
+        # if successful, respond with the URL for the report details page of the
+        # newly created report
+        my $url = URI->new_abs('../ALEPH16/ALEPHsum_full.cgi', $q->url);
+        $url->query($report->id);
+        print $q->header(
+            -type     => 'text/plain',
+            -status   => '201 Created',
+            -location => $url,
+        );
+        print "$url\n";
+    } else {
+        print $q->header('text/plain', '500 Internal Server Error');
+        print "Unable to create record.\n";
+    }
+}
+
+sub parse_request {
+    my $q = shift;
+    # must be a recognized content type
+    if ($q->content_type =~ m{^(application|text)/xml\b}) {
+        # do an XML::Simple parse of the POST body data, with empty elements
+        # represented as the empty string (so the resulting data structure will
+        # be similar to form submission of an empty field)
+        my $data = eval {
+            XMLin($q->param('POSTDATA'), SuppressEmpty => '');
+        };
+        if ($@) {
+            print $q->header('text/plain', '400 Bad Request');
+            print "Unable to parse submitted data as XML.\n";
+            exit;
+        }
+        return $data;
+    } elsif ($q->content_type =~ m{^application/x-www-form-urlencoded\b}) {
+        # tie the parameters to a hashref
+        return scalar $q->Vars;
+    } else {
+        print $q->header('text/plain', '415 Unsupported Media Type');
+        printf "Expecting XML (text/xml or application/xml) or form data (application/x-www-form-urlencoded); got '%s'\n",
+            $q->content_type;
+        exit;
+    }
+}
