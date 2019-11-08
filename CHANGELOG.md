@@ -1,5 +1,8 @@
 CHANGELOG
 =========
+## 1.0.8
+- Changed UMUC to UMGC (ALEPHform.cgi, ALEPHurecord.cgi)
+
 ## 1.0.7
 - Changed "Assign to DM" to "Assign to Devs" in ALEPHform2.cgi
 
