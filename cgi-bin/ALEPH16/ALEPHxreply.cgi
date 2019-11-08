@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 ## 2010/09/07  Hans  Replace aleph@itd.umd.edu with usmaialeph@umd.edu
 
