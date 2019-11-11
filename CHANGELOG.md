@@ -1,5 +1,8 @@
 CHANGELOG
 =========
+## 1.0.8.1
+- Move UMCG entry to correct location in drop-downs
+
 ## 1.0.8
 - Changed UMUC to UMGC (ALEPHform.cgi, ALEPHurecord.cgi)
 
