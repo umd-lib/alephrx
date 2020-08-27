@@ -510,8 +510,8 @@ NAME=\"PASSWORD\" STYLE=\"font-family:sans-serif; font-size:xx-small; background
 
     print "<tr><td colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;FILTER = <b>$filter_display</b></font></td><td cellpadding=\"2\" colspan=\"1\"><font size=\"-1\">&nbsp;&nbsp;SORT = <b>$sort_display</b></font></td><td cellpadding=\"2\" colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp;ORDER = <b>$option_value</b></font></td>\n";
 
-    print "<td colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp<a href=\"http://usmai.umd.edu/groups/digital-systems-and-stewardship/workplan-folder/submit-aleph-request-rx\">Learn more about AlephRx</a></font></td>\n";
-    print "<td><font size=\"-1\"><a href=\"http://usmai.umd.edu\">USMAI Alerts<a/></td>\n";
+    print "<td colspan=\"2\"><font size=\"-1\">&nbsp;&nbsp<a href=\"https://usmai.org/portal/x/hYlu\">Learn more about AlephRx</a></font></td>\n";
+    print "<td><font size=\"-1\"><a href=\"https://usmai.org\">USMAI Alerts<a/></td>\n";
     print "</table>\n";
     print "</FORM>\n";
     print "<FORM ACTION=\"ALEPHsum_full.cgi\" METHOD=\"post\">\n";
