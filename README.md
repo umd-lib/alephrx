@@ -1,6 +1,9 @@
 Aleph Rx
 ========
 
+> [!NOTE]  
+> This repository is archived and no longer maintained.
+> 
 This is the code for the Aleph ticket tracking system for USMAI Consortium. This
 is the system that is currently running on the itd.umd.edu server with the
 following entry points:
